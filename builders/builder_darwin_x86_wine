@@ -31,4 +31,12 @@ ln -s "/root/osxcross/target/bin/i386-apple-darwin12-as" "/root/osxcross/target/
 ./configure --host i386-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -m32"
 make -j 4
 make install DESTDIR="/root/wine"
+
+## Copying libs
 cp /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
+
+## To make package smaller, we are only going to keep i386 part of the libraries
+cd "/root/wine/lib/"
+for file in *.dylib; do
+  [ ! -L "$file" ] && i386-apple-darwin12-lipo -extract i386 "$file" -o "$file" 2> /dev/null
+done

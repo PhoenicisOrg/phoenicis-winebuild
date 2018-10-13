@@ -12,7 +12,6 @@ RUN cd /root
 RUN git clone https://github.com/tpoechtrager/osxcross /root/osxcross
 
 COPY darwin/SDK/MacOSX10.8.sdk.tar.xz /root/osxcross/tarballs/
-COPY darwin/osxtools-macport-universal-support.patch /root/osxcross
 
 RUN cd /root/osxcross && UNATTENDED=1 ./build.sh
 
