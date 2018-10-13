@@ -73,6 +73,5 @@ You have to set environment variables so that wine can find its dependencies.
 
 
 ## TODO
-- Support of patches
 - Webservice system
 - 64bits support

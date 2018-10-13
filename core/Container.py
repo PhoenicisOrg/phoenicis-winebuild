@@ -20,12 +20,15 @@ class Container:
         else:
             run(["docker", "exec", "--workdir", workdir, self.container_id] + command)
 
+    def put(self, local_file, remote_file):
+        run(["docker", "cp", local_file, self.container_id + ":" + remote_file])
+
     def get_file(self, file, local_file = None):
         if(local_file is None):
             local_path = "./"
         else:
             local_path = "./" + local_file
-            
+
         run(["docker", "cp", self.container_id + ":" + file, local_path])
 
     def run_script(self, script):

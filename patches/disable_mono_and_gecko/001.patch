@@ -1,0 +1,19 @@
+diff --git a/dlls/appwiz.cpl/appwiz.c b/dlls/appwiz.cpl/appwiz.c
+index cd76f51..b410740 100644
+--- a/dlls/appwiz.cpl/appwiz.c
++++ b/dlls/appwiz.cpl/appwiz.c
+@@ -976,12 +976,12 @@ static LONG start_params(const WCHAR *params)
+         return FALSE;
+
+     if(!strcmpW(params, install_geckoW)) {
+-        install_addon(ADDON_GECKO);
++        //install_addon(ADDON_GECKO);
+         return TRUE;
+     }
+
+     if(!strcmpW(params, install_monoW)) {
+-        install_addon(ADDON_MONO);
++        //install_addon(ADDON_MONO);
+         return TRUE;
+     }
+ 
