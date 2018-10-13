@@ -1,2 +1,4 @@
 *.pyc
 __pycache__
+darwin/SDK/*.tar.xz
+.DS_Store

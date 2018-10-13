@@ -1,0 +1,3 @@
+550a551,552
+>       elif [ $opt == "-universal" -o $opt == "--universal" ]; then
+>         ARCH="i386-x86_64"
