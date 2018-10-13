@@ -1,5 +1,5 @@
 #!/bin/bash
 cd "/root/wine-git"
-./configure
+./configure --prefix="/"
 make -j 4
 make install DESTDIR="/root/wine"
