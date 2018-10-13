@@ -1,6 +1,12 @@
 from core.Process import run_and_return, run
 
 class Container:
+    @staticmethod
+    def from_id(container_id):
+        container = Container(None)
+        container.container_id = container_id
+        return container
+
     def __init__(self, environment):
         self.container_id = None
         self.environment = environment
