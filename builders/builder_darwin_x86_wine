@@ -18,7 +18,7 @@ export FRAMEWORK="10.8"
 export CC="clang -target i386-apple-darwin12 -mlinker-version=0.0 -mmacosx-version-min=$FRAMEWORK -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/"
 
 ## This hack will allow winegcc to use the right compiler
-echo '$CC "\$@"' > "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
+echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
 chmod +x "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
 
 ## Some tools are not directly found by wine

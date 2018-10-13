@@ -2,6 +2,7 @@
 
 
 ## How to use
+### Build wine for OSX 
 
 ## Running wine
 ### On OSX
