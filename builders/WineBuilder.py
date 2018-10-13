@@ -7,6 +7,6 @@ class WineBuilder:
         self.container.run(["git", "checkout", "-f", version], workdir = "/root/wine-git")
         self.container.run_script(script)
 
-    def archive(self):
+    def archive(self, local_file = None):
         self.container.run(["tar", "czvf", "/root/wine.tar.gz", "."], workdir = "/root/wine")
-        self.container.get_file("/root/wine.tar.gz")
+        self.container.get_file("/root/wine.tar.gz", local_file)
