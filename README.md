@@ -36,7 +36,12 @@ A script can be run inside a context initiated by a builder. We have two scripts
 - builder_darwin_x86_wine
 - builder_linux_x86_wine
 
-## Example
+
+## Examples 
+### Simple
+After setup, run interactive_builder.py
+
+### Advanced
 
     #!/usr/bin/env python
     from core.Container import Container
