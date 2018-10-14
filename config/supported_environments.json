@@ -1,0 +1,11 @@
+[{
+    "name": "wine",
+    "os": "linux",
+    "arch": "x86",
+    "description": "A 32bits environment containing dependencies required to build wine"
+},{
+    "name": "wine_osxcross",
+    "os": "linux",
+    "arch": "x86",
+    "description": "A 32bits environment containing dependencies required to build wine and tools to build Mac OS binaries"
+}]

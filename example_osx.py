@@ -4,7 +4,7 @@ from core.Container import Container
 from core.Environment import Environment
 from builders.WineBuilder import WineBuilder
 
-environment = Environment("osxcross", "linux", "x86")
+environment = Environment("wine_osxcross", "linux", "x86")
 environment.build()
 
 container = Container(environment)
