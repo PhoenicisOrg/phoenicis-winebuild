@@ -3,3 +3,5 @@ __pycache__
 darwin/SDK/*.tar.xz
 .DS_Store
 dist/
+*.tar.gz
+*.pol
