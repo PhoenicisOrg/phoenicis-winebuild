@@ -7,7 +7,7 @@ from builders.WineBuilder import WineBuilder
 environment = Environment("wine", "linux", "x86")
 environment.build()
 
-container = Container(environment)
+container = Container(environment).with_log_file("test_log.log")
 
 
 container.start()
