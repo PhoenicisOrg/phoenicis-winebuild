@@ -18,11 +18,6 @@ chmod +x winebuild
 mkdir -p "/root/wine-git/wine64-build/"
 mkdir -p "/root/wine-git/wine32-build/"
 export FRAMEWORK="10.8"
-export CC="clang -target i386-apple-darwin12 -mlinker-version=0.0 -mmacosx-version-min=$FRAMEWORK -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/"
-
-## This hack will allow winegcc to use the right compiler
-echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
-chmod +x "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
 
 ## Some tools are not directly found by wine
 ln -s "/root/osxcross/target/bin/i386-apple-darwin12-ld" "/root/osxcross/target/bin/ld"
@@ -33,11 +28,21 @@ ln -s "/root/osxcross/target/bin/i386-apple-darwin12-as" "/root/osxcross/target/
 
 
 #### 64bits
+export CC="clang -target x86_64-apple-darwin12 -mlinker-version=0.0 -mmacosx-version-min=$FRAMEWORK -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/"
+## This hack will allow winegcc to use the right compiler
+echo '$CC "$@"' > "/root/osxcross/target/bin/x86_64-apple-darwin12-gcc"
+chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin12-gcc"
+
 cd "/root/wine-git/wine64-build/"
 ../configure --enable-win64 --host x86_64-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib"
 make -j 4
 
 #### 32bits
+export CC="clang -target i386-apple-darwin12 -mlinker-version=0.0 -mmacosx-version-min=$FRAMEWORK -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/"
+## This hack will allow winegcc to use the right compiler
+echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
+chmod +x "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
+
 cd "/root/wine-git/wine32-build/"
 ../configure --with-wine64=/root/wine-git/wine64-build --host i386-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib"
 make -j 4
