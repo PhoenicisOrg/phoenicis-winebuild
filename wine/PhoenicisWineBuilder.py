@@ -19,10 +19,10 @@ class PhoenicisWineBuilder:
         # FIXME: Put more abstraction here:
         if(os == "darwin"):
             environment = "wine_osxcross"
-            builder = "builders/builder_darwin_x86_wine"
+            builderPath = "builders/builder_darwin_x86_wine"
         else:
             environment = "wine"
-            builder = "builders/builder_linux_x86_wine"
+            builderPath = "builders/builder_linux_x86_wine"
 
         directory = "-".join(["upstream", os, arch])
         filename = "-".join(["phoenicis", version, os, arch])
@@ -37,7 +37,7 @@ class PhoenicisWineBuilder:
         try:
             container.start()
             builder = WineBuilder(container)
-            builder.build(builder, version)
+            builder.build(builderPath, version)
             builder.archive("dist/binaries/"+directory+"/"+filename+".tar.gz")
             callback()
         finally:
