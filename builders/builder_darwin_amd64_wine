@@ -34,7 +34,7 @@ ln -s "/root/osxcross/target/bin/i386-apple-darwin12-as" "/root/osxcross/target/
 
 #### 64bits
 cd "/root/wine-git/wine64-build/"
-../configure --enable-win64 --host i386-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib"
+../configure --enable-win64 --host x86_64-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib"
 make -j 4
 
 #### 32bits
