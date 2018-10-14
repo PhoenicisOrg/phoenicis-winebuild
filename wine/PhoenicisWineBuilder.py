@@ -27,15 +27,18 @@ class PhoenicisWineBuilder:
         directory = "-".join(["upstream", os, arch])
         filename = "-".join(["phoenicis", version, os, arch])
 
+        pathlib.Path("dist/logs/" + directory).mkdir(parents=True, exist_ok=True)
+        pathlib.Path("dist/binaries/" + directory).mkdir(parents=True, exist_ok=True)
+
         environment = Environment(environment, "linux", arch)
         environment.build()
 
-        container = Container(environment).with_log_file("logs/" + directory + "/" + filename + ".log")
+        container = Container(environment).with_log_file("dist/logs/" + directory + "/" + filename + ".log")
         try:
             container.start()
             builder = WineBuilder(container)
             builder.build(builder, version)
-            builder.archive("binaries/"+directory+"/"+filename+".tar.gz")
+            builder.archive("dist/binaries/"+directory+"/"+filename+".tar.gz")
             callback()
         finally:
             container.clean()
