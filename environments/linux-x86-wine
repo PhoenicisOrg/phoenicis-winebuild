@@ -6,6 +6,6 @@ RUN echo 'deb-src http://deb.debian.org/debian jessie-updates main' >> /etc/apt/
 
 RUN apt-get update
 RUN apt-get -y build-dep wine
+RUN apt-get -y install opencl-dev libpcap-dev libsane-dev libv4l-dev libgphoto2-dev libtiff-dev libpulse-dev libgstreamer1.0-dev libudev-dev libcapi20-dev
 RUN apt-get -y install git
-
 RUN cd /root

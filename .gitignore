@@ -5,3 +5,4 @@ darwin/SDK/*.tar.xz
 dist/
 *.tar.gz
 *.pol
+*.log
