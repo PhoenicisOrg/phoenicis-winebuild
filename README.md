@@ -1,5 +1,8 @@
 
 # phoenicis-winebuild
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5a2ba048397a4c3dac18682b6045b9c6)](https://app.codacy.com/app/PhoenicisOrg/phoenicis-winebuild?utm_source=github.com&utm_medium=referral&utm_content=PhoenicisOrg/phoenicis-winebuild&utm_campaign=Badge_Grade_Dashboard)
+
 Phoenicis Winebuild is a python library and a command line tool that compiles winehq automatically. It is the designated successor of PlayOnLinux Winebuild service.
 
 Phoenicis Winebuild can:
