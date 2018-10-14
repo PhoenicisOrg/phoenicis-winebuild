@@ -12,10 +12,17 @@ Phoenicis Winebuild can:
   - Docker
   - Python 3
 
+### Linux user
+Ensure that your current user belongs to the docker group. You might need to restart your session
+
 ### OSX targeted builds
 You need to extract Mac OS 10.8 SDK from XCode 4, compress it into a .tar.xz file and place it to darwin/SDK directory  
 
 ## How to use
+### Basic usage
+After setup, run interactive_builder.py
+
+### Advanced scripting 
 You have two example python files (example_linux.py and example_darwin.py). If you need to tweak your build (select the version, use custom script, ...) you'll probably need to use the python API (See Key Concepts)
 
 ## Key concepts
@@ -38,12 +45,7 @@ A script can be run inside a context initiated by a builder. We have two scripts
   - builder_darwin_x86_wine
   - builder_linux_x86_wine
 
-## Examples 
-### Simple
-After setup, run interactive_builder.py
-
-### Advanced
-
+## Examples
     #!/usr/bin/env python
     from core.Container import Container
     from core.Environment import Environment
