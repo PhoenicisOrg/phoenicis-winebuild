@@ -28,7 +28,7 @@ ln -s "/root/osxcross/target/bin/i386-apple-darwin12-as" "/root/osxcross/target/
 
 
 #### 64bits
-export CC="clang -target x86_64-apple-darwin12 -mlinker-version=0.0 -mmacosx-version-min=$FRAMEWORK -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/"
+export CC="clang -O3 -target x86_64-apple-darwin12 -mlinker-version=0.0 -mmacosx-version-min=$FRAMEWORK -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/"
 ## This hack will allow winegcc to use the right compiler
 echo '$CC "$@"' > "/root/osxcross/target/bin/x86_64-apple-darwin12-gcc"
 chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin12-gcc"
@@ -38,7 +38,7 @@ cd "/root/wine-git/wine64-build/"
 make -j 4
 
 #### 32bits
-export CC="clang -target i386-apple-darwin12 -mlinker-version=0.0 -mmacosx-version-min=$FRAMEWORK -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/"
+export CC="clang -O3 -target i386-apple-darwin12 -mlinker-version=0.0 -mmacosx-version-min=$FRAMEWORK -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/"
 ## This hack will allow winegcc to use the right compiler
 echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
 chmod +x "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
