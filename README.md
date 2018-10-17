@@ -10,9 +10,10 @@ Phoenicis Winebuild can:
 
 ## Prerequisites
   - Python 3
+  - Docker
   - docker-py
 
-    pip install docker 
+    pip install docker
 
 ### Linux user
 Ensure that your current user belongs to the docker group. You might need to restart your session
