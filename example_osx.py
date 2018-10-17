@@ -12,7 +12,5 @@ container.start()
 
 
 builder = WineBuilder(container)
-builder.build("builders/builder_darwin_x86_wine", "wine-3.18")
+builder.build("builders/scripts/builder_darwin_x86_wine", "wine-3.18")
 builder.archive("wine-3.18-darwin-x86.tar.gz")
-
-container.clean()

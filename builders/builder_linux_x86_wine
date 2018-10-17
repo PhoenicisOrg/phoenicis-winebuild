@@ -1,6 +1,0 @@
-#!/bin/bash
-export CFLAGS="-O3"
-cd "/root/wine-git"
-./configure --prefix="/"
-make -j 4
-make install DESTDIR="/root/wine"
