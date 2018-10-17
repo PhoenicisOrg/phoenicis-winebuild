@@ -9,8 +9,10 @@ Phoenicis Winebuild can:
   - build wine for any target OS (see prerequisites).
 
 ## Prerequisites
-  - Docker
   - Python 3
+  - docker-py
+
+    pip install docker 
 
 ### Linux user
 Ensure that your current user belongs to the docker group. You might need to restart your session
@@ -22,7 +24,7 @@ You need to extract Mac OS 10.8 SDK from XCode 4, compress it into a .tar.xz fil
 ### Basic usage
 After setup, run interactive_builder.py
 
-### Advanced scripting 
+### Advanced scripting
 You have two example python files (example_linux.py and example_darwin.py). If you need to tweak your build (select the version, use custom script, ...) you'll probably need to use the python API (See Key Concepts)
 
 ## Key concepts

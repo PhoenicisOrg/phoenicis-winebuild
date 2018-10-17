@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from wine.WineVersionFetcher import WineVersionFetcher
-from wine.PhoenicisWineBuilder import PhoenicisWineBuilder
+from packagers.PhoenicisWinePackageCreator import PhoenicisWinePackageCreator
 
 def input_from_choices(choices, text):
     print("Choices: " + ", ".join(choices))
