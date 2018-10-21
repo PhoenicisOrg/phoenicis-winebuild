@@ -9,6 +9,7 @@ class Task(threading.Thread, ABC):
         self.start_date = datetime.datetime.now()
         self.end_date = None
         self.last_update_date = None
+        self._progress = 0
         threading.Thread.__init__(self)
 
     def id(self):
