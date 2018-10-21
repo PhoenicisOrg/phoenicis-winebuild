@@ -1,0 +1,15 @@
+diff --git a/dlls/winemac.drv/cocoa_app.m b/dlls/winemac.drv/cocoa_app.m
+index 46176f77f9..73bcf4805e 100644
+--- a/dlls/winemac.drv/cocoa_app.m
++++ b/dlls/winemac.drv/cocoa_app.m
+@@ -297,7 +297,9 @@ - (void) transformProcessToForeground
+             [NSApp setMainMenu:mainMenu];
+             [NSApp setWindowsMenu:submenu];
+ 
+-            [NSApp setApplicationIconImage:self.applicationIcon];
++            if( ! [[[[NSProcessInfo processInfo]environment]objectForKey:@"SET_ICON"] isEqualToString: @"FALSE"] ) {
++                [NSApp setApplicationIconImage:self.applicationIcon];
++            }
+         }
+     }
+ 

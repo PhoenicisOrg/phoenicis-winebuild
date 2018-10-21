@@ -8,10 +8,13 @@ class WineBuilder:
         self.container = container
         self.patches = patches
 
-    def build(self, script, version):
+    def prepare(self, version):
         self.container.run(["git", "clone", "https://github.com/wine-mirror/wine", "/root/wine-git"])
-        self._apply_patches()
         self.container.run(["git", "checkout", "-f", version], workdir = "/root/wine-git")
+        self._apply_patches()
+
+    def build(self, script, version):
+        self.prepare(version)
         self.container.run_script(script)
 
     def archive(self, local_file):
@@ -26,5 +29,5 @@ class WineBuilder:
 
     def _apply_patch(self, patch):
         self.container.run(["mkdir", "-p", "/root/patches"])
-        self.container.put("patches/" + patch, "/root/patches/")
+        self.container.put_directory("patches/" + patch, "/root/patches/" + patch)
         self.container.run(["sh", "-c", "git apply /root/patches/"+patch+"/*.patch"], workdir = "/root/wine-git")

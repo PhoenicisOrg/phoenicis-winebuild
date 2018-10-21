@@ -1,0 +1,27 @@
+diff --git a/dlls/winemac.drv/cocoa_app.m b/dlls/winemac.drv/cocoa_app.m
+index 46176f77f9..d50620aee2 100644
+--- a/dlls/winemac.drv/cocoa_app.m
++++ b/dlls/winemac.drv/cocoa_app.m
+@@ -237,11 +237,19 @@ - (void) transformProcessToForeground
+             [NSApp activateIgnoringOtherApps:YES];
+
+             mainMenu = [[[NSMenu alloc] init] autorelease];
++
++            if(  [[[[NSProcessInfo processInfo]environment]objectForKey:@"HIDE_WINE"] isEqualToString: @"TRUE"] )
++                [NSApp setActivationPolicy:NSApplicationActivationPolicyProhibited];
++            else
++                [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+
+             // Application menu
+-            submenu = [[[NSMenu alloc] initWithTitle:WineLocalizedString(STRING_MENU_WINE)] autorelease];
+-            bundleName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey];
+-
++
++            bundleName = [[[NSProcessInfo processInfo]environment]objectForKey:@"BUNDLE_NAME"];
++            if([bundleName length] == 0)
++                 bundleName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleNameKey];
++            submenu = [[[NSMenu alloc] initWithTitle:bundleName] autorelease];
++
+             if ([bundleName length])
+                 title = [NSString stringWithFormat:WineLocalizedString(STRING_MENU_ITEM_HIDE_APPNAME), bundleName];
+             else

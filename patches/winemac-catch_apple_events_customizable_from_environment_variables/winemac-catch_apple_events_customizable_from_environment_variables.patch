@@ -1,0 +1,38 @@
+diff --git a/dlls/winemac.drv/cocoa_app.m b/dlls/winemac.drv/cocoa_app.m
+index 46176f77f9..26b17a90ca 100644
+--- a/dlls/winemac.drv/cocoa_app.m
++++ b/dlls/winemac.drv/cocoa_app.m
+@@ -151,6 +151,33 @@ + (WineApplicationController*) sharedController
+         return sharedController;
+     }
+
++    - (BOOL)application:(NSApplication *)sender openFile:(NSString *)filename {
++        NSString* allowedExtensions = [[[NSProcessInfo processInfo]environment]objectForKey:@"FILE_EVENT_ALLOWED_EXTENSIONS"];
++        NSString *prgmPath = [[[NSProcessInfo processInfo] environment]objectForKey: @"FILE_EVENT_PRGMPATH"];
++
++        if(allowedExtensions == nil || prgmPath == nil) {
++            return NO;
++        }
++
++        NSArray* allowedExtensionsArray = [allowedExtensions componentsSeparatedByString:@"|"];
++        if(filename != nil && filename.length && ![filename hasPrefix:@"z:/"]) {
++            for (int i = 0; i < [allowedExtensionsArray count]; i++) {
++                NSString *allowedExtension = (NSString*) [allowedExtensionsArray objectAtIndex:i];
++                if([filename hasSuffix:allowedExtension]) {
++                    NSTask* task = [[NSTask alloc] init];
++                    NSString* winePath = NSProcessInfo.processInfo.arguments[0];
++                    [task setLaunchPath: winePath];
++                    [task setArguments:@[prgmPath, [NSString stringWithFormat:@"z:/%@", filename]]];
++                    [task setStandardOutput:[NSPipe pipe]];
++                    [task launch];
++                    return YES;
++                }
++            }
++        }
++
++        return NO;
++    }
++
+     - (id) init
+     {
+         self = [super init];
