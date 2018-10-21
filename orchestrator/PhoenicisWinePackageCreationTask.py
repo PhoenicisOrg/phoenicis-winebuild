@@ -30,6 +30,9 @@ class PhoenicisWinePackageCreationTask(Task):
     def get_progress(self):
         return self._progress
 
+    def get_message(self):
+        return self.builder_stage_reader.get_message()
+
     def set_progress(self, progress):
         self._progress = progress
 
@@ -38,4 +41,5 @@ class PhoenicisWinePackageCreationTask(Task):
 
     def _building_hook(self, line):
         self.builder_stage_reader.feed(line)
+        self.last_update_date = datetime.datetime.now()
         self.set_progress(self.builder_stage_reader.get_percentage_estimation())

@@ -20,6 +20,7 @@ class Orchestrator:
                 "description": task.description(),
                 "argument": task.argument(),
                 "type": task.type(),
+                "message": task.get_message(),
                 "running": task.running,
                 "progress": task.get_progress(),
                 "start_date": task.start_date,
