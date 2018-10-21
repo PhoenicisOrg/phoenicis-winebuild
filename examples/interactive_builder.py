@@ -18,4 +18,4 @@ distribution = input_from_choices(["upstream"], "Choose a distribution: ")
 
 builder = PhoenicisWinePackageCreator()
 
-builder.build(lambda: None, lambda e: print(e), distribution, version, os, arch)
+builder.build(distribution, version, os, arch)
