@@ -30,8 +30,12 @@ class BuilderStageReader:
             self._max_step = 0
 
         if(step_result.group(1) == "STEP"):
-            self._current_step = int(step_result.group(2))
-            self._max_step = int(step_result.group(3))
+            if int(step_result.group(2)) <= int(step_result.group(3)):
+                self._current_step = int(step_result.group(2))
+                self._max_step = int(step_result.group(3))
+            else:
+                self._current_step = int(step_result.group(3))
+                self._max_step = int(step_result.group(3))
             self._step_message = step_result.group(4)
 
         self.estimate_percentage()
@@ -47,10 +51,11 @@ class BuilderStageReader:
             percentage_size_of_stage = 100 / self._max_stage
 
             if(self._current_step != 0):
-                step_increment = percentage_size_of_stage * self._max_step / self._current_step
+                step_increment = percentage_size_of_stage * self._current_step / self._max_step
             else:
                 step_increment = 0
-            self._percentage = (self._current_stage - 1) * percentage_size_of_stage + step_increment
+
+            self._percentage = int((self._current_stage - 1) * percentage_size_of_stage + step_increment)
 
     def get_percentage_estimation(self):
         return self._percentage
