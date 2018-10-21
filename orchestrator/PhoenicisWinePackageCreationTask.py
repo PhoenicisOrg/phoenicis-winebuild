@@ -6,7 +6,7 @@ from packagers.PhoenicisWinePackageCreator import PhoenicisWinePackageCreator
 from builders.BuilderStageReader import BuilderStageReader
 
 class PhoenicisWinePackageCreationTask(Task):
-    def __init__(self, distribution: str, version: str, os: str, arch: str):
+    def __init__(self, distribution: str, os: str, version: str, arch: str):
         self.phoencisWinePackager = PhoenicisWinePackageCreator().with_output_callback(self._building_hook)
         self.distribution = distribution
         self.version = version
