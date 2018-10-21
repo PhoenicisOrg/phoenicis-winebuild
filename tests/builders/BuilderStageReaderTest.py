@@ -1,4 +1,4 @@
-import unittest
+import unittest, os
 from builders.BuilderStageReader import BuilderStageReader
 
 class BuilderStageReaderTest(unittest.TestCase):
@@ -34,6 +34,27 @@ class BuilderStageReaderTest(unittest.TestCase):
         builder_stage_reader.feed("[STEP 0/1] test")
         self.assertEqual(0, builder_stage_reader.get_percentage_estimation())
         builder_stage_reader.feed("[STEP 1/1] test")
+        self.assertEqual(25, builder_stage_reader.get_percentage_estimation())
+        builder_stage_reader.feed("[STAGE 4/4] test2")
+        self.assertEqual(75, builder_stage_reader.get_percentage_estimation())
+
+    def test_buildSimulation_withFixture(self):
+        builder_stage_reader = BuilderStageReader()
+        with open(os.path.dirname(__file__) + "/builderStageReaderTestFixture.txt", 'r') as file:
+            for line in file.readlines():
+                builder_stage_reader.feed(line)                
+                self.assertTrue(builder_stage_reader.get_percentage_estimation() >= 0)
+                self.assertTrue(builder_stage_reader.get_percentage_estimation() <= 100)
+
+
+    def test_overflow_hasNoEffect(self):
+        builder_stage_reader = BuilderStageReader()
+        self.assertEqual(0, builder_stage_reader.get_percentage_estimation())
+        builder_stage_reader.feed("[STAGE 1/4] test")
+        self.assertEqual(0, builder_stage_reader.get_percentage_estimation())
+        builder_stage_reader.feed("[STEP 0/1] test")
+        self.assertEqual(0, builder_stage_reader.get_percentage_estimation())
+        builder_stage_reader.feed("[STEP 2/1] test")
         self.assertEqual(25, builder_stage_reader.get_percentage_estimation())
         builder_stage_reader.feed("[STAGE 4/4] test2")
         self.assertEqual(75, builder_stage_reader.get_percentage_estimation())
