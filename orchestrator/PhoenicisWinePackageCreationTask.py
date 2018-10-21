@@ -3,6 +3,7 @@ import re, datetime
 from orchestrator.Task import Task
 from core.DockerStepReader import DockerStepReader
 from packagers.PhoenicisWinePackageCreator import PhoenicisWinePackageCreator
+from builders.BuilderStageReader import BuilderStageReader
 
 class PhoenicisWinePackageCreationTask(Task):
     def __init__(self, distribution: str, version: str, os: str, arch: str):
@@ -11,6 +12,8 @@ class PhoenicisWinePackageCreationTask(Task):
         self.version = version
         self.os = os
         self.arch = arch
+        self.builder_stage_reader = BuilderStageReader()
+
         Task.__init__(self)
 
     def description(self):
@@ -34,6 +37,5 @@ class PhoenicisWinePackageCreationTask(Task):
         self.phoencisWinePackager.build(self.distribution, self.version, self.os, self.arch)
 
     def _building_hook(self, line):
-        # FIXME: Use this hook to estimate build percentage
-        print("--> %s" % line, end = '')
-        pass
+        self.builder_stage_reader.feed(line)
+        self.set_progress(self.builder_stage_reader.get_percentage_estimation())

@@ -35,13 +35,14 @@ class Container:
         self.container = self.docker_client.client.containers.run(self.environment.full_name(), detach = True, stdin_open = True, tty = True)
 
     def run(self, command, workdir = None):
+        buffer = LineBuffer()
+
         if self._logfile is not None:
             logfile = open(self._logfile, 'w')
         else:
             logfile = None
 
         def do_output(chunk):
-            buffer = LineBuffer()
             if self._output_callback is not None:
                 buffer.append(chunk)
                 if(not buffer.empty()):
