@@ -2,6 +2,7 @@ import docker, io, tarfile, os, tempfile
 
 from core.DockerClient import DockerClient
 from core.Process import run
+from core.TarUtils import make_tarfile
 
 class Container:
     @staticmethod
@@ -52,6 +53,13 @@ class Container:
         finally:
             if(logfile is not None):
                 logfile.close()
+
+    def put_directory(self, local_directory, remote_directory):
+        tar_file = make_tarfile(local_directory)
+        self.run(["mkdir", "-p", remote_directory])
+        self.put_file(tar_file.name, remote_directory, remote_file_name = "temp.tar.gz")
+        self.run(["tar", "xvf", "temp.tar.gz"], workdir = remote_directory)
+        self.run(["rm", "temp.tar.gz"], workdir = remote_directory)
 
     def put_file(self, local_file, remote_directory, remote_file_name = None):
         if(remote_file_name is None):
