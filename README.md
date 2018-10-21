@@ -21,34 +21,64 @@ Ensure that your current user belongs to the docker group. You might need to res
 ### OSX targeted builds
 You need to extract Mac OS 10.8 SDK from XCode 4, compress it into a .tar.xz file and place it to darwin/SDK directory  
 
+
+
+
 ## How to use
 ### Basic usage
-After setup, run interactive_builder.py
+After setup, run examples/interactive_builder.py
+   PYTHONPATH="$PWD" python examples/interactive_builder.py  
 
-### Advanced scripting
-You have two example python files (example_linux.py and example_darwin.py). If you need to tweak your build (select the version, use custom script, ...) you'll probably need to use the python API (See Key Concepts)
-
-## Key concepts
-### Environment
+### Key concepts
+#### Environment
 An *Environment* is a pre-installed operating system where wine can be built. It corresponds to a docker image. We support currently two environment:
 
   - **linux-x86-wine** is a x86 environment containing all tools required to build wine for Linux
   - **darwin-x86-wine** is a x86 environment containing all tools required to cross-compile wine for MacOS
 
-### Container
+#### Container
 A container is the instanciation of an environment. It corresponds to a docker container. Thanks to containers, you can run multiple compilation inside a given environment at the same time
 
-### Builders
+#### Builders
 A *Builder* is the components that builds wine. A builder needs a container to operate. We currently support one kind of builder :
 
   - **WineBuilder** downloads the source of wine into /root/wine-git and runs a script
 
-### Script
+#### Script
 A script can be run inside a context initiated by a builder. We have two scripts:
   - builder_darwin_x86_wine
   - builder_linux_x86_wine
 
-## Examples
+### Web Services
+After setup, run run_web_server.py
+
+#### Create an environment
+ * Go to the endpoint /environments (http://localhost:5000/environments)
+ * Grab the docker name of a supported environment (exemple: phoenicis/winebuild/linux-x86:wine)
+ * Create an environement creation task
+
+    curl -d '{"type": "EnvironmentCreationTask", "argument": "phoenicis/winebuild/linux-x86:wine"}' -H "Content-Type: application/json" -X POST http://localhost:5000/tasks
+
+ * Go to the endpoint /tasks to track the task creation process: http://127.0.0.1:5000/tasks. You should get a response like this one:
+
+ [{
+   "argument": {
+     "docker_name": "phoenicis/winebuild/linux-x86:wine_osxcross"
+   },
+   "description": "Environment creation: phoenicis/winebuild/linux-x86:wine_osxcross",
+   "end_date": null,
+   "id": "698ed9bd-f0af-4ed4-9063-d058fb7ec391",
+   "last_update_date": "Sun, 21 Oct 2018 14:22:51 GMT",
+   "progress": 94,
+   "running": true,
+   "start_date": "Sun, 21 Oct 2018 14:18:39 GMT",
+   "type": "EnvironmentCreationTask"
+  }]
+
+### Advanced scripting
+You have two example python files (example_linux.py and example_darwin.py). If you need to tweak your build (select the version, use custom script, ...) you'll probably need to use the python API (See Key Concepts)
+
+#### Examples
     #!/usr/bin/env python
     from core.Container import Container
     from core.Environment import Environment

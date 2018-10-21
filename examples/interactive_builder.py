@@ -16,6 +16,6 @@ arch = input_from_choices(["x86", "amd64"], "Choose an architecture: ")
 os = input_from_choices(["linux", "darwin"], "Choose an OS: ")
 distribution = input_from_choices(["upstream"], "Choose a distribution: ")
 
-builder = PhoenicisWineBuilder()
+builder = PhoenicisWinePackageCreator()
 
 builder.build(lambda: None, lambda e: print(e), distribution, version, os, arch)
