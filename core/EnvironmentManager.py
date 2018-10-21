@@ -18,13 +18,18 @@ class EnvironmentManager:
             instance = Environment(environment["name"], environment["os"], environment["arch"])
             environment["docker_name"] = instance.full_name()
             environment["state"] = instance.state()
-            
+
             loaded_environments += [{
                 "instance": instance,
                 "environment": environment
             }]
 
         self.environments = loaded_environments
+
+    def get_instance(self, docker_name: str):
+        for environment in self.list():
+            if(environment["environment"]["docker_name"] == docker_name):
+                return environment["instance"]
 
     def list(self):
         return self.environments

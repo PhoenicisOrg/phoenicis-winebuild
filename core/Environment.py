@@ -1,7 +1,8 @@
-import docker, os
+import docker, os, io
 
 from core.DockerClient import DockerClient
 from core.TarUtils import make_environment_tarfile
+from core.LineBuffer import LineBuffer
 
 class Environment:
     def __init__(self, name: str, os: str, arch: str):
@@ -25,12 +26,14 @@ class Environment:
         return self.docker_client.client.images.get(self.full_name())
 
     def state(self):
-        if(self.get_id() is None):
-            return "NOT_READY"
-        else:
+        try:
+            self.get()
             return "READY"
+        except docker.errors.ImageNotFound:
+            return "NOT_READY"
 
-    def build(self):
+    def build(self, callback = None):
+        buffer = LineBuffer()
         for x in self.docker_client.build_image(
             path = ".",
             custom_context = True,
@@ -38,7 +41,16 @@ class Environment:
             dockerfile = self.dockerfile_name(),
             tag = self.full_name()
         ):
-            print(x, end='')
+            if(callback is None):
+                callback = lambda content: print(content, end='')
+
+            self.callback_line_by_line(buffer, x, callback)
+
+    def callback_line_by_line(self, buffer, data_written, callback):
+        buffer.append(data_written)
+        if(not buffer.empty()):
+            for line in buffer.get():
+                callback(line)
 
     def clean(self):
         try:
