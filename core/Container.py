@@ -3,6 +3,7 @@ import docker, io, tarfile, os, tempfile
 from core.DockerClient import DockerClient
 from core.Process import run
 from core.TarUtils import make_tarfile
+from core.LineBuffer import LineBuffer
 
 class Container:
     @staticmethod
@@ -15,7 +16,12 @@ class Container:
         self.container = None
         self.environment = environment
         self._logfile = None
+        self._output_callback = lambda line: print(line, end = '')
         self.with_docker_client(DockerClient.from_env())
+
+    def with_output_callback(self, output_callback):
+        self._output_callback = output_callback
+        return self
 
     def with_docker_client(self, docker_client):
         self.docker_client = docker_client
@@ -35,7 +41,13 @@ class Container:
             logfile = None
 
         def do_output(chunk):
-            print(chunk, end = '')
+            buffer = LineBuffer()
+            if self._output_callback is not None:
+                buffer.append(chunk)
+                if(not buffer.empty()):
+                    for line in buffer.get():
+                        self._output_callback(line)
+
             if logfile is not None:
                 logfile.write(chunk)
                 logfile.flush()
