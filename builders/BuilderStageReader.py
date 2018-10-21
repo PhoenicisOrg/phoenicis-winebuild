@@ -46,6 +46,11 @@ class BuilderStageReader:
     def get_stage_message(self):
         return self._stage_message
 
+    def get_message(self):
+        if(self.stage_message == ""):
+            return ""
+        return self._stage_message + ": " + self._step_message
+
     def estimate_percentage(self):
         if(self._max_stage != 0):
             percentage_size_of_stage = 100 / self._max_stage

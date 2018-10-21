@@ -35,3 +35,6 @@ class DockerStepReader:
             return None
 
         return self.groups.group(4)
+
+    def get_message(self):
+        return self.get_step_name() + ": " + self.get_details()

@@ -54,6 +54,10 @@ class Task(threading.Thread, ABC):
         pass
 
     @abstractmethod
+    def get_message(self) -> str:
+        pass
+
+    @abstractmethod
     def get_progress(self) -> int:
         pass
 

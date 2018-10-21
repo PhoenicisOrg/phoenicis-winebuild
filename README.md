@@ -53,9 +53,9 @@ A script can be run inside a context initiated by a builder. We have two scripts
 After setup, run run_web_server.py
 
 #### Create an environment
- * Go to the endpoint /environments (http://localhost:5000/environments)
- * Grab the docker name of a supported environment (exemple: phoenicis/winebuild/linux-x86:wine)
- * Create an environement creation task
+ - Go to the endpoint /environments (http://localhost:5000/environments)
+ - Grab the docker name of a supported environment (exemple: phoenicis/winebuild/linux-x86:wine)
+ - Create an environement creation task
 
     curl -d '{"type": "EnvironmentCreationTask", "argument": "phoenicis/winebuild/linux-x86:wine"}' -H "Content-Type: application/json" -X POST http://localhost:5000/tasks
 
@@ -74,6 +74,11 @@ After setup, run run_web_server.py
    "start_date": "Sun, 21 Oct 2018 14:18:39 GMT",
    "type": "EnvironmentCreationTask"
   }]
+
+#### Create a wine build task
+ - Make a POST request to the /tasks endpoint:
+
+    curl -d '{"type": "PhoenicisWinePackageCreationTask", "argument": {"os": "darwin", "distribution": "upstream", "arch": "x86", "version": "wine-3.0.3"}}' -H "Content-Type: application/json" -X POST http://localhost:5000/tasks
 
 ### Advanced scripting
 You have two example python files (example_linux.py and example_darwin.py). If you need to tweak your build (select the version, use custom script, ...) you'll probably need to use the python API (See Key Concepts)
