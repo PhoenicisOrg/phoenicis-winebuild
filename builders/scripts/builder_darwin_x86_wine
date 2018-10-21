@@ -56,3 +56,5 @@ cd "/root/wine/lib/"
 for file in *.dylib; do
   [ ! -L "$file" ] && i386-apple-darwin12-lipo -extract i386 "$file" -o "$file" 2> /dev/null
 done
+
+echo "[END]"
