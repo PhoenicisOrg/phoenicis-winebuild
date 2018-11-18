@@ -55,7 +55,7 @@ class Container:
 
         try:
             if(workdir is None):
-                execution = self.container.exec_run(command, stdout = True, stderr = True, stream = True)
+                execution = self.container.exec_run(command, stdout = True, stderr = True, stream = True, privileged = True)
             else:
                 execution = self.container.exec_run(command, stdout = True, stderr = True, workdir = workdir, stream = True)
 

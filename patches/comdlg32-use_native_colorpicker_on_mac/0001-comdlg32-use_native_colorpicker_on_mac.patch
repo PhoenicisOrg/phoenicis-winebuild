@@ -1,0 +1,105 @@
+diff --git a/dlls/comdlg32/Makefile.in b/dlls/comdlg32/Makefile.in
+index f919a266a0..0d5d8cf084 100644
+--- a/dlls/comdlg32/Makefile.in
++++ b/dlls/comdlg32/Makefile.in
+@@ -3,6 +3,8 @@ IMPORTLIB = comdlg32
+ IMPORTS   = uuid shell32 shlwapi comctl32 winspool user32 gdi32 advapi32
+ DELAYIMPORTS = ole32
+ 
++EXTRALIBS = -framework AppKit -framework Carbon
++
+ C_SRCS = \
+ 	cdlg32.c \
+ 	colordlg.c \
+@@ -21,5 +23,8 @@ SVG_SRCS = \
+ 	pd32_landscape.svg \
+ 	pd32_nocollate.svg \
+ 	pd32_portrait.svg
++	
++OBJC_SRCS = \
++	cocoa_colordlg.m
+ 
+ IDL_SRCS = comdlg32_classes.idl
+diff --git a/dlls/comdlg32/colordlg.c b/dlls/comdlg32/colordlg.c
+index bead9ba38c..3a1554786f 100644
+--- a/dlls/comdlg32/colordlg.c
++++ b/dlls/comdlg32/colordlg.c
+@@ -35,6 +35,18 @@
+ #include "cderr.h"
+ #include "cdlg.h"
+ 
++#ifdef __APPLE__
++struct RGBColor {
++  unsigned short red;
++  unsigned short green;
++  unsigned short blue;
++};
++
++int cocoa_run_color_dialog_modal(struct RGBColor *color);
++
++#endif
++
++
+ WINE_DEFAULT_DEBUG_CHANNEL(commdlg);
+ 
+ static INT_PTR CALLBACK ColorDlgProc( HWND hWnd, UINT wMsg, WPARAM wParam, LPARAM lParam );
+@@ -1246,6 +1258,21 @@ static INT_PTR CALLBACK ColorDlgProc( HWND hDlg, UINT message,
+      return FALSE ;
+ }
+ 
++
++#ifdef __APPLE__
++static BOOL ChooseColor_CocoaCommon(COLORREF *color, BOOL init) {
++  struct RGBColor rgb = { 0, 0, 0 };
++  if (init) {
++    rgb.red = GetRValue(*color) * 257;
++    rgb.green = GetGValue(*color) * 257;
++    rgb.blue = GetBValue(*color) * 257;
++  }
++  BOOL ret = cocoa_run_color_dialog_modal(&rgb);
++  if (ret) *color = RGB(rgb.red / 257, rgb.green / 257, rgb.blue / 257);
++  return ret;
++}
++#endif
++
+ /***********************************************************************
+  *            ChooseColorW  (COMDLG32.@)
+  *
+@@ -1261,6 +1288,12 @@ static INT_PTR CALLBACK ColorDlgProc( HWND hDlg, UINT message,
+  */
+ BOOL WINAPI ChooseColorW( CHOOSECOLORW *lpChCol )
+ {
++#ifdef __APPLE__
++	if (!lpChCol) {
++		return FALSE;
++	}
++	return ChooseColor_CocoaCommon(&lpChCol->rgbResult, lpChCol->Flags & CC_RGBINIT);
++#else
+     HANDLE hDlgTmpl = 0;
+     const void *template;
+ 
+@@ -1313,6 +1346,7 @@ BOOL WINAPI ChooseColorW( CHOOSECOLORW *lpChCol )
+ 
+     return DialogBoxIndirectParamW(COMDLG32_hInstance, template, lpChCol->hwndOwner,
+                      ColorDlgProc, (LPARAM)lpChCol);
++#endif
+ }
+ 
+ /***********************************************************************
+@@ -1323,6 +1357,10 @@ BOOL WINAPI ChooseColorW( CHOOSECOLORW *lpChCol )
+ BOOL WINAPI ChooseColorA( LPCHOOSECOLORA lpChCol )
+ 
+ {
++#ifdef __APPLE__
++	if (!lpChCol) return FALSE;
++		return ChooseColor_CocoaCommon(&lpChCol->rgbResult, lpChCol->Flags & CC_RGBINIT);
++#elif
+   LPWSTR template_name = NULL;
+   BOOL ret;
+ 
+@@ -1353,4 +1391,5 @@ BOOL WINAPI ChooseColorA( LPCHOOSECOLORA lpChCol )
+   HeapFree(GetProcessHeap(), 0, template_name);
+   HeapFree(GetProcessHeap(), 0, lpcc);
+   return ret;
++#endif
+ }

@@ -1,0 +1,23 @@
+diff --git a/dlls/comdlg32/cocoa_colordlg.m b/dlls/comdlg32/cocoa_colordlg.m
+new file mode 100644
+index 0000000000..1f2f9da948
+--- /dev/null
++++ b/dlls/comdlg32/cocoa_colordlg.m
+@@ -0,0 +1,16 @@
++#import <AppKit/AppKit.h>
++#import <Carbon/Carbon.h>
++
++int cocoa_run_color_dialog_modal(RGBColor *color) {
++  __block int ret = 0;
++
++  void (^block)(void) = ^{
++    ret = GetColor((Point){ 0, 0 }, (const unsigned char *)"Color", color,
++color);
++  };
++
++  if ([NSThread isMainThread]) block();
++  else dispatch_sync(dispatch_get_main_queue(), block);
++
++  return ret;
++}
+\ No newline at end of file
