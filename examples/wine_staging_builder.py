@@ -14,3 +14,5 @@ container.start()
 builder = WineBuilder(container)
 builder.build("builders/scripts/builder_linux_x86_wine", "wine-3.8", "staging")
 builder.archive("wine-staging.tar.gz")
+
+container.clean()
