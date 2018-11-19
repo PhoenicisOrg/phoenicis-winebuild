@@ -1,10 +1,10 @@
 #!/bin/bash
-cp -a "/root/wine-git" "/root/wine-tools"
+cp -a "/root/wine-git" "/root/wine-tools" || exit 1
 
 ####### Build Tools
 cd "/root/wine-tools"
-./configure
-make __tooldeps__ -j 4
+./configure || exit 2
+make __tooldeps__ -j 4 || exit 3
 cd "tools/winebuild"
 mv "winebuild" "winebuild.real"
 echo '#!/bin/bash' > winebuild
@@ -34,8 +34,8 @@ echo '$CC "$@"' > "/root/osxcross/target/bin/x86_64-apple-darwin12-gcc"
 chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin12-gcc"
 
 cd "/root/wine-git/wine64-build/"
-../configure --enable-win64 --host x86_64-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib"
-make -j 4
+../configure --enable-win64 --host x86_64-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib" || exit 4
+make -j 4 || exit 5
 
 #### 32bits
 export CC="clang -O3 -target i386-apple-darwin12 -mlinker-version=0.0 -mmacosx-version-min=$FRAMEWORK -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/"
@@ -44,13 +44,13 @@ echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
 chmod +x "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
 
 cd "/root/wine-git/wine32-build/"
-../configure --with-wine64=/root/wine-git/wine64-build --host i386-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib"
-make -j 4
+../configure --with-wine64=/root/wine-git/wine64-build --host i386-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib" || exit 6
+make -j 4 || exit 7
 
 cd "/root/wine-git/wine64-build/"
-make install DESTDIR="/root/wine"
+make install DESTDIR="/root/wine" || exit 8
 cd "/root/wine-git/wine32-build/"
-make install DESTDIR="/root/wine"
+make install DESTDIR="/root/wine" || exit 9
 
 ## Copying libs
 cp /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"

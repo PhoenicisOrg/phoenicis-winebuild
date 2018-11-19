@@ -1,6 +1,6 @@
 #!/bin/bash
 export CFLAGS="-O3"
 cd "/root/wine-git"
-./configure --prefix="/"
-make -j 4
-make install DESTDIR="/root/wine"
+./configure --prefix="/" || exit 1
+make -j 4 || exit 2
+make install DESTDIR="/root/wine" || exit 3
