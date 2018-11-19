@@ -1,24 +1,24 @@
 #!/bin/bash
 export CFLAGS="-O3"
 cd "/root/wine-git"
-./configure --prefix="/"
-make -j 4
-make install DESTDIR="/root/wine"
+./configure --prefix="/" || exit 1
+make -j 4 || exit 2
+make install DESTDIR="/root/wine" || exit 3
 
 mkdir -p "/root/wine-git/wine64-build/"
 mkdir -p "/root/wine-git/wine32-build/"
 
 ### 64bits build
 cd "/root/wine-git/wine64-build/"
-../configure --enable-win64 --prefix="/"
-make -j 4
+../configure --enable-win64 --prefix="/" || exit 4
+make -j 4 || exit 5
 
 ### 32bits build
 cd "/root/wine-git/wine32-build/"
-../configure --with-wine64=/root/wine-git/wine64-build --prefix="/"
-make -j 4
+../configure --with-wine64=/root/wine-git/wine64-build --prefix="/" || exit 6
+make -j 4 || exit 7
 
 cd "/root/wine-git/wine64-build/"
-make install DESTDIR="/root/wine"
+make install DESTDIR="/root/wine" || exit 8
 cd "/root/wine-git/wine32-build/"
-make install DESTDIR="/root/wine"
+make install DESTDIR="/root/wine" || exit 9

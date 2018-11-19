@@ -15,8 +15,8 @@ class WineBuilder:
 
         if distribution == "staging":
             self.container.run(["git", "clone", "https://github.com/wine-staging/wine-staging", "/root/wine-staging"])
-            self.container.run(["git", "checkout", "-f", "v" + version], workdir="/root/wine-staging")
-            self.container.run(["./patches/patchinstall.sh", "DESTDIR=\"/root/wine-git\"", "--all"], workdir="/root/wine-staging")
+            self.container.run(["git", "checkout", "-f", version.replace("wine-", "v")], workdir="/root/wine-staging")
+            self.container.run(["./patches/patchinstall.sh", "DESTDIR=/root/wine-git", "--all"], workdir="/root/wine-staging")
 
         self._apply_patches()
 
