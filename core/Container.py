@@ -68,12 +68,11 @@ class Container:
             )
 
             for chunk in exec_output:
-                exit_code = self.docker_client.api_client.exec_inspect(resp['Id'])['ExitCode']
-                if exit_code != 0 and exit_code is not None:
-                    raise Exception("Builder returned a non-zero code: " + str(exit_code))
-
                 do_output(chunk.decode())
 
+            exit_code = self.docker_client.api_client.exec_inspect(resp['Id'])['ExitCode']
+            if exit_code != 0 and exit_code is not None:
+                raise Exception("Builder returned a non-zero code: " + str(exit_code))
 
         finally:
             if logfile is not None:
