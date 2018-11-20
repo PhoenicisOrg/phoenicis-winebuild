@@ -26,7 +26,7 @@ class PhoenicisWinePackageCreator:
             builderPath = "builders/scripts/builder_linux_x86_wine"
 
         directory = "-".join([distribution, os, arch])
-        filename = "-".join(["phoenicis", version, os, arch])
+        filename = "-".join(["phoenicis", version, distribution, os, arch])
 
         pathlib.Path("dist/logs/" + directory).mkdir(parents=True, exist_ok=True)
         pathlib.Path("dist/binaries/" + directory).mkdir(parents=True, exist_ok=True)

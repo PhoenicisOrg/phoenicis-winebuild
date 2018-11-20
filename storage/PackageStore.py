@@ -1,4 +1,5 @@
 import os
+import re
 
 
 class PackageStore:
@@ -19,14 +20,26 @@ class PackageStore:
         except FileNotFoundError:
             return []
 
-    def fetch_logs(self, distribution):
+    def fetch_versions(self, distribution):
+        versions = set()
         try:
-            return os.listdir(os.path.join(self.get_logs_path(), distribution))
+            logs = os.listdir(os.path.join(self.get_logs_path(), distribution))
+            for log in logs:
+                match = re.search(r"phoenicis-wine-(.+)-"+distribution+".log", log)
+                if match is not None:
+                    version_number = match.group(1)
+                    versions.add(version_number)
+
+            binaries = os.listdir(os.path.join(self.get_binaries_path(), distribution))
+            for binary in binaries:
+                match = re.search(r"phoenicis-wine-(.+)-"+distribution+".tar.gz", binary)
+                if match is not None:
+                    version_number = match.group(1)
+                    versions.add(version_number)
+
+            return list(versions)
         except FileNotFoundError:
             return []
-
-    def fetch_binaries(self, distribution):
-        return os.listdir(os.path.join(self.get_binaries_path(), distribution))
 
     class fetch_log():
         def __init__(self, distribution, log):
@@ -50,8 +63,19 @@ class PackageStore:
         def __exit__(self, type, value, traceback):
             self.file.close()
 
-    def fetch_binary_name(self, distribution, binary):
-        return os.path.join(PackageStore.get_binaries_path(), distribution, binary)
+    def fetch_binary_name(self, distribution, version):
+        binary = "phoenicis-wine-%s-%s.tar.gz" % (version, distribution)
+        binary_path = os.path.join(PackageStore.get_binaries_path(), distribution, binary)
+        if os.path.exists(binary_path):
+            return binary_path
+        else:
+            return None
 
-    def fetch_log_name(self, distribution, log_file):
-        return os.path.join(PackageStore.get_logs_path(), distribution, log_file)
+    def fetch_log_name(self, distribution, version):
+        log_name = "phoenicis-wine-%s-%s.log" % (version, distribution)
+        log_path = os.path.join(PackageStore.get_logs_path(), distribution, log_name)
+
+        if os.path.exists(log_path):
+            return log_path
+        else:
+            return None
