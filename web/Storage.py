@@ -17,6 +17,10 @@ def storage_binaries(distribution):
 def storage_log(distribution, log_file):
     return send_file(packageStore.fetch_log_name(distribution, log_file), attachment_filename=log_file, mimetype='text/plain')
 
+@storage_api.route("/storage/binaries/missing/<distribution>")
+def storage_missing_binaries(distribution):
+    return jsonify(packageStore.fetch_missing_versions(distribution))
+
 @storage_api.route("/storage/binaries/<distribution>/<binary_file>")
 def storage_binary(distribution, binary_file):
     return send_file(packageStore.fetch_binary_name(distribution, binary_file), attachment_filename=binary_file, mimetype='application/gzip')
