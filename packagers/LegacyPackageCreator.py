@@ -1,8 +1,10 @@
 import tempfile, pathlib, os, shutil
 from core.Process import run
 
+
 """
-    Convert .tar.gz generated package to a PlayOnLinux / PlayOnMac 4.0 compatible package
+    Convert .tar.gz generated package to a PlayOnLinux / PlayOnMac < 4.3 compatible package.
+    Deprecated
 """
 class LegacyPackageCreator:
     def convert(self, package, os, arch, version):
