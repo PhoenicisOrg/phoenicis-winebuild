@@ -3,7 +3,7 @@ import os, pathlib
 from core.Container import Container
 from core.Environment import Environment
 from builders.WineBuilder import WineBuilder
-
+from storage.PackageStore import PackageStore
 
 class PhoenicisWinePackageCreator:
     def __init__(self):
@@ -14,11 +14,11 @@ class PhoenicisWinePackageCreator:
         return self
 
     def build(self, distribution, version, os, arch):
-        pathlib.Path("dist/binaries").mkdir(parents=True, exist_ok=True)
-        pathlib.Path("dist/logs").mkdir(parents=True, exist_ok=True)
+        pathlib.Path(PackageStore.get_binaries_path()).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(PackageStore.get_logs_path()).mkdir(parents=True, exist_ok=True)
 
         # FIXME: Put more abstraction here:
-        if (os == "darwin"):
+        if os == "darwin":
             environment = "wine_osxcross"
             builderPath = "builders/scripts/builder_darwin_x86_wine"
         else:
@@ -44,3 +44,5 @@ class PhoenicisWinePackageCreator:
             builder.archive("dist/binaries/" + directory + "/" + filename + ".tar.gz")
         finally:
             container.clean()
+
+
