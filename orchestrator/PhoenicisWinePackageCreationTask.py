@@ -1,9 +1,9 @@
-import re, datetime
+import datetime
 
-from orchestrator.Task import Task
-from core.DockerStepReader import DockerStepReader
-from packagers.PhoenicisWinePackageCreator import PhoenicisWinePackageCreator
 from builders.BuilderStageReader import BuilderStageReader
+from orchestrator.Task import Task
+from packagers.PhoenicisWinePackageCreator import PhoenicisWinePackageCreator
+
 
 class PhoenicisWinePackageCreationTask(Task):
     def __init__(self, distribution: str, os: str, version: str, arch: str):
