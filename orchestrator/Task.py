@@ -43,7 +43,8 @@ class Task(threading.Thread, ABC):
             self.status = "DONE"
             for event in self._on_finish_events:
                 event()
-        except:
+        except Exception as e:
+            print(e)
             self.status = "ERROR"
             for event in self._on_error_events:
                 event()
