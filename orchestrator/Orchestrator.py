@@ -2,17 +2,21 @@ import threading
 
 from orchestrator.Task import Task
 
+
 class Orchestrator:
     def __init__(self):
         self._tasks = []
         self._semaphore = threading.Semaphore(4)
 
     def run_task(self, task: Task) -> None:
-        self._semaphore.acquire()
         self._tasks += [task]
         task.append_on_finish_event(lambda: self._when_task_is_terminated(task))
         task.append_on_error_event(lambda: self._when_task_is_onerror(task))
+        task.append_on_start_event(lambda: self._when_task_is_started(task))
         task.start()
+
+    def _when_task_is_started(self, task):
+        self._semaphore.acquire()
 
     def _when_task_is_terminated(self, task):
         ## self._tasks.remove(task)
@@ -38,3 +42,6 @@ class Orchestrator:
                 "end_date": task.end_date
             }]
         return tasks
+
+
+default_orchestrator = Orchestrator()
