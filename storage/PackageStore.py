@@ -12,7 +12,10 @@ class PackageStore:
 
     @staticmethod
     def get_logs_path():
-        return os.path.join(os.path.dirname(__file__), "../dist/logs")
+        try:
+            return os.environ["LOGS_PATH"]
+        except KeyError:
+            return os.path.join(os.path.dirname(__file__), "../dist/logs")
 
     def fetch_distributions(self):
         try:
