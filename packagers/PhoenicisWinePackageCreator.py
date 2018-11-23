@@ -42,6 +42,7 @@ class PhoenicisWinePackageCreator:
             builder = WineBuilder(container)
             builder.build(builderPath, version, distribution=distribution)
             builder.archive("dist/binaries/" + directory + "/" + filename + ".tar.gz")
+            builder.checksum()
         finally:
             container.clean()
 
