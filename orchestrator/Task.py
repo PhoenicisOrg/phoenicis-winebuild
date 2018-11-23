@@ -7,6 +7,7 @@ class Task(threading.Thread, ABC):
         self.running: bool = False
         self._on_finish_events = []
         self._on_error_events = []
+        self._on_start_events = []
         self._id = str(uuid.uuid4())
         self.start_date = datetime.datetime.now()
         self.end_date = None
@@ -24,12 +25,19 @@ class Task(threading.Thread, ABC):
     def append_on_error_event(self, callback):
         self._on_error_events += [callback]
 
+    def append_on_start_event(self, callback):
+        self._on_start_events += [callback]
+
     def start(self):
-        self.status = "RUNNING"
-        self.running = True
         super().start()
 
     def run(self):
+        for event in self._on_start_events:
+            event()
+
+        self.status = "RUNNING"
+        self.running = True
+
         try:
             self.handle()
             self.status = "DONE"
