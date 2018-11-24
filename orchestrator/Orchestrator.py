@@ -6,7 +6,7 @@ from orchestrator.Task import Task
 class Orchestrator:
     def __init__(self):
         self._tasks = []
-        self._semaphore = threading.Semaphore(4)
+        self._semaphore = threading.Semaphore(2)
 
     def run_task(self, task: Task) -> None:
         self._tasks += [task]
