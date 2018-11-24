@@ -11,11 +11,11 @@ class WineBuilder:
         self._local_archive = None
 
     def prepare(self, version, distribution="upstream"):
-        self.container.run(["git", "clone", "https://github.com/wine-mirror/wine", "/root/wine-git"])
+        self.container.run(["git", "clone", "--progress", "https://github.com/wine-mirror/wine", "/root/wine-git"])
         self.container.run(["git", "checkout", "-f", version], workdir="/root/wine-git")
 
         if distribution == "staging":
-            self.container.run(["git", "clone", "https://github.com/wine-staging/wine-staging", "/root/wine-staging"])
+            self.container.run(["git", "clone", "--progress", "https://github.com/wine-staging/wine-staging", "/root/wine-staging"])
             self.container.run(["git", "checkout", "-f", version.replace("wine-", "v")], workdir="/root/wine-staging")
             self.container.run(["./patches/patchinstall.sh", "DESTDIR=/root/wine-git", "--all"], workdir="/root/wine-staging")
 
