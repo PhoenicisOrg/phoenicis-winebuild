@@ -49,7 +49,7 @@ echo "[STAGE 7/7] Make install"
 make install DESTDIR="/root/wine" || exit 7
 
 ## Copying libs
-cp /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib" || exit 8
+cp /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
 
 ## To make package smaller, we are only going to keep i386 part of the libraries
 cd "/root/wine/lib/"
