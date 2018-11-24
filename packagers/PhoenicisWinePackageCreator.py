@@ -21,9 +21,11 @@ class PhoenicisWinePackageCreator:
         if os == "darwin":
             environment = "wine_osxcross"
             builderPath = "builders/scripts/builder_darwin_x86_wine"
+            env_arch = "x86"
         else:
             environment = "wine"
             builderPath = "builders/scripts/builder_linux_x86_wine"
+            env_arch = arch
 
         directory = "-".join([distribution, os, arch])
         filename = "-".join(["PlayOnLinux", version, distribution, os, arch])
@@ -31,7 +33,7 @@ class PhoenicisWinePackageCreator:
         pathlib.Path(PackageStore.get_logs_path() + "/" + directory).mkdir(parents=True, exist_ok=True)
         pathlib.Path(PackageStore.get_binaries_path() + "/" + directory).mkdir(parents=True, exist_ok=True)
 
-        environment = Environment(environment, "linux", arch)
+        environment = Environment(environment, "linux", env_arch)
         environment.build()
 
         container = Container(environment).with_log_file(
