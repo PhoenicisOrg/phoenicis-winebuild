@@ -40,7 +40,7 @@ class Container:
         buffer = LineBuffer()
 
         if self._logfile is not None:
-            logfile = open(self._logfile, 'w')
+            logfile = open(self._logfile, 'a')
         else:
             logfile = None
 
