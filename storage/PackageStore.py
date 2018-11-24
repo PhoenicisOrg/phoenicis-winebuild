@@ -38,14 +38,14 @@ class PackageStore:
         try:
             logs = os.listdir(os.path.join(self.get_logs_path(), distribution))
             for log in logs:
-                match = re.search(r"phoenicis-(.+)-"+distribution+".log", log)
+                match = re.search(r"(phoenicis|PlayOnLinux)-(.+)-"+distribution+".log", log)
                 if match is not None:
                     version_number = match.group(1)
                     versions.add(version_number)
 
             binaries = os.listdir(os.path.join(self.get_binaries_path(), distribution))
             for binary in binaries:
-                match = re.search(r"phoenicis-(.+)-"+distribution+".tar.gz", binary)
+                match = re.search(r"(phoenicis|PlayOnLinux)-(.+)-"+distribution+".tar.gz", binary)
                 if match is not None:
                     version_number = match.group(1)
                     versions.add(version_number)
