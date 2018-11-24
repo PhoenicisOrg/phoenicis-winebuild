@@ -9,4 +9,4 @@ app.register_blueprint(environments_api)
 app.register_blueprint(storage_api)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')
