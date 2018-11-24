@@ -28,20 +28,20 @@ class PhoenicisWinePackageCreator:
         directory = "-".join([distribution, os, arch])
         filename = "-".join(["phoenicis", version, distribution, os, arch])
 
-        pathlib.Path("dist/logs/" + directory).mkdir(parents=True, exist_ok=True)
-        pathlib.Path("dist/binaries/" + directory).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(PackageStore.get_logs_path() + "/" + directory).mkdir(parents=True, exist_ok=True)
+        pathlib.Path(PackageStore.get_binaries_path() + "/" + directory).mkdir(parents=True, exist_ok=True)
 
         environment = Environment(environment, "linux", arch)
         environment.build()
 
         container = Container(environment).with_log_file(
-            "dist/logs/" + directory + "/" + filename + ".log").with_output_callback(self._output_callback)
+            PackageStore.get_logs_path() + "/" + directory + "/" + filename + ".log").with_output_callback(self._output_callback)
 
         try:
             container.start()
             builder = WineBuilder(container)
             builder.build(builderPath, version, distribution=distribution)
-            builder.archive("dist/binaries/" + directory + "/" + filename + ".tar.gz")
+            builder.archive(PackageStore.get_binaries_path() + "/" + directory + "/" + filename + ".tar.gz")
             builder.checksum()
         finally:
             container.clean()
