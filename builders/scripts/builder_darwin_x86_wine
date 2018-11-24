@@ -37,7 +37,7 @@ echo "[STAGE 4/7] Configure"
 
 ./configure --host i386-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -m32" || exit 4
 
-echo "[STAGE 5/7] Make "
+echo "[STAGE 5/7] Make"
 numberOfSteps="$(make __builddeps__ --no-print-directory -nrRk 2> /dev/null|wc -l)"
 make __builddeps__ -j 4 | awk "{print \"[STEP \" NR \"/$numberOfSteps] \" \$s}" || exit 5
 
