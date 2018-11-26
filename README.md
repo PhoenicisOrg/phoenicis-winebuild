@@ -114,6 +114,7 @@ You have to set environment variables so that wine can find its dependencies.
 
     export FREETYPE_PROPERTIES="truetype:interpreter-version=35"
     export DYLD_FALLBACK_LIBRARY_PATH="$PWD/../lib/"
+    export DYLD_LIBRARY_PATH="/usr/lib"
     ./wine winecfg
 
 ## TODO
