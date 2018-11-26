@@ -14,6 +14,7 @@ class Task(threading.Thread, ABC):
         self.last_update_date = None
         self._progress = 0
         self.status = "PENDING"
+        self.canceled = False
         threading.Thread.__init__(self)
 
     def id(self):
@@ -37,20 +38,26 @@ class Task(threading.Thread, ABC):
 
         self.status = "RUNNING"
         self.running = True
-
-        try:
-            self.handle()
-            self.status = "DONE"
-            for event in self._on_finish_events:
-                event()
-        except Exception as e:
-            print(e)
-            self.status = "ERROR"
+        if self.canceled:
+            self.status = "CANCELED"
             for event in self._on_error_events:
                 event()
-        finally:
             self.running = False
             self.end_date = datetime.datetime.now()
+        else:
+            try:
+                self.handle()
+                self.status = "DONE"
+                for event in self._on_finish_events:
+                    event()
+            except Exception as e:
+                print(e)
+                self.status = "ERROR"
+                for event in self._on_error_events:
+                    event()
+            finally:
+                self.running = False
+                self.end_date = datetime.datetime.now()
 
     def type(self):
         return self.__class__.__name__

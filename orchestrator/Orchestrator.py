@@ -30,6 +30,8 @@ class Orchestrator:
         for task in self._tasks:
             if task["id"] != task_id:
                 tasks += [task]
+            else:
+                task.canceled = True
         self._tasks = tasks
 
     def tasks(self):
