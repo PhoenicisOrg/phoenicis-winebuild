@@ -25,6 +25,13 @@ class Orchestrator:
     def _when_task_is_onerror(self, task):
         self._semaphore.release()
 
+    def remove_task(self, task_id):
+        tasks = []
+        for task in self._tasks:
+            if task["id"] != task_id:
+                tasks += [task]
+        self._tasks = tasks
+
     def tasks(self):
         tasks = []
         for task in self._tasks:
