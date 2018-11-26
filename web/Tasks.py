@@ -8,6 +8,11 @@ from core.EnvironmentManager import EnvironmentManager
 tasks_api = Blueprint('tasks_api', __name__)
 environmentManager = EnvironmentManager()
 
+
+@tasks_api.route("/tasks/<task_id>", methods=["DELETE"])
+def remove_task(task_id):
+    default_orchestrator.remove_task(task_id)
+
 @tasks_api.route("/tasks", methods=["GET", "POST"])
 def tasks():
     if request.method == 'POST':
