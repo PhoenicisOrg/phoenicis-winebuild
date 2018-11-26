@@ -77,7 +77,7 @@ class PackageStore:
             self.file.close()
 
     def fetch_binary_name(self, distribution, version):
-        binary = "phoenicis-%s-%s.tar.gz" % (version, distribution)
+        binary = "PlayOnLinux-%s-%s.tar.gz" % (version, distribution)
         binary_path = os.path.join(PackageStore.get_binaries_path(), distribution, binary)
         if os.path.exists(binary_path):
             return binary_path
@@ -85,7 +85,7 @@ class PackageStore:
             return None
 
     def fetch_log_name(self, distribution, version):
-        log_name = "phoenicis-%s-%s.log" % (version, distribution)
+        log_name = "PlayOnLinux-%s-%s.log" % (version, distribution)
         log_path = os.path.join(PackageStore.get_logs_path(), distribution, log_name)
 
         if os.path.exists(log_path):
