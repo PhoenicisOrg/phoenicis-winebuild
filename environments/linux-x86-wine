@@ -1,16 +1,25 @@
-FROM i386/debian:jessie
+FROM i386/debian:stretch
 
-RUN echo 'deb-src http://deb.debian.org/debian jessie main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://security.debian.org/debian-security jessie/updates main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://deb.debian.org/debian jessie-updates main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian stretch main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://security.debian.org/debian-security stretch/updates main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian stretch-updates main' >> /etc/apt/sources.list
 
 RUN apt-get update
 RUN apt-get -y build-dep wine
-RUN apt-get -y install opencl-dev libpcap-dev libsane-dev libv4l-dev libgphoto2-dev libtiff-dev libpulse-dev libgstreamer1.0-dev libudev-dev libcapi20-dev
+RUN apt-get -y install libkrb5-dev opencl-dev libpcap-dev libsane-dev libv4l-dev libgphoto2-dev libtiff-dev libpulse-dev libgstreamer1.0-dev libudev-dev libcapi20-dev
 RUN apt-get -y install git
 
 # Wine Staging
 RUN apt-get -y install libsdl2-dev
 RUN apt-get -y install gtk3.0-dev libgtk-3-dev libva-dev
 
-RUN cd /root
+# Vulkan
+RUN apt-get -y install libvulkan-dev
+
+# VKD3D
+RUN apt-get -y install wget
+RUN mkdir -p /root/vkd3d
+RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-1_i386.deb
+RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-1_i386.deb
+RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-1_i386.deb
+RUN dpkg -i *.deb
