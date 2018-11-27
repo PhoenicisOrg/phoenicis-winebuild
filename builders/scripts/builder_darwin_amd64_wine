@@ -66,3 +66,4 @@ make install DESTDIR="/root/wine" || exit 9
 ## Copying libs
 echo "[STAGE 9/9] Copying libs"
 cp /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
+echo "[END]"
