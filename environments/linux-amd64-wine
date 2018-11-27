@@ -47,6 +47,6 @@ RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-1_i386.deb
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-1_i386.deb
 RUN echo dpkg -i /root/vkd3d-32/*.deb >> /root/install_32bits_dependencies.sh
 
-RUN echo apt-get -y install g++-multilib libgstreamer1.0-dev:i386 libsdl2-dev:i386 libglib2.0-dev:i386 libpulse-dev:i386 libfontconfig1-dev:i386 libopenal-dev:i386 libldap-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 fontconfig:i386 libcups2-dev:i386 libncurses-dev:i386 liblcms2-dev:i386 libxcomposite-dev:i386 libosmesa-dev:i386 libmpg123-dev:i386 libxslt-dev:i386 libxml2-dev:i386 libgnutls28-dev:i386 libfreetype6-dev:i386 libva-dev:i386 opencl-dev:i386  libv4l-dev:i386 libgphoto2-dev:i386 libtiff-dev:i386 libudev-dev:i386 libcapi20-dev:i386 >> /root/install_32bits_dependencies.sh
+RUN echo apt-get -y install libicu-dev:i386 g++-multilib libgstreamer1.0-dev:i386 libsdl2-dev:i386 libglib2.0-dev:i386 libpulse-dev:i386 libfontconfig1-dev:i386 libopenal-dev:i386 libldap-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 fontconfig:i386 libcups2-dev:i386 libncurses-dev:i386 liblcms2-dev:i386 libxcomposite-dev:i386 libosmesa-dev:i386 libmpg123-dev:i386 libxslt-dev:i386 libxml2-dev:i386 libgnutls28-dev:i386 libfreetype6-dev:i386 libva-dev:i386 opencl-dev:i386  libv4l-dev:i386 libgphoto2-dev:i386 libtiff-dev:i386 libudev-dev:i386 libcapi20-dev:i386 >> /root/install_32bits_dependencies.sh
 
 RUN chmod +x /root/install_32bits_dependencies.sh
