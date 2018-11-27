@@ -20,11 +20,11 @@ class PhoenicisWinePackageCreator:
         # FIXME: Put more abstraction here:
         if os == "darwin":
             environment = "wine_osxcross"
-            builderPath = "builders/scripts/builder_darwin_x86_wine"
+            builderPath = "builders/scripts/builder_darwin_"+arch+"_wine"
             env_arch = "x86"
         else:
             environment = "wine"
-            builderPath = "builders/scripts/builder_linux_x86_wine"
+            builderPath = "builders/scripts/builder_linux_"+arch+"_wine"
             env_arch = arch
 
         directory = "-".join([distribution, os, arch])
