@@ -19,6 +19,7 @@ RUN apt-get -y install libvulkan-dev
 # VKD3D
 RUN apt-get -y install wget
 RUN mkdir -p /root/vkd3d
+WORKDIR /root/vkd3d
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-1_i386.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-1_i386.deb
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-1_i386.deb
