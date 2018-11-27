@@ -1,4 +1,4 @@
-  FROM amd64/debian:jessie
+FROM amd64/debian:jessie
 
 RUN echo 'deb-src http://deb.debian.org/debian jessie main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://security.debian.org/debian-security jessie/updates main' >> /etc/apt/sources.list
@@ -13,5 +13,6 @@ RUN apt-get -y install git
 
 RUN apt-get -y install wine-development
 RUN apt-get -y install opencl-dev:i386 libsane-dev:i386 libv4l-dev:i386 libgphoto2-dev:i386 libtiff-dev:i386 libpulse-dev:i386 libgstreamer1.0-dev:i386 libudev-dev:i386 libcapi20-dev:i386
+RUN apt-get -y install apt-get install g++-multilib
 
 RUN cd /root
