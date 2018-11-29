@@ -6,7 +6,7 @@ RUN echo 'deb-src http://deb.debian.org/debian stretch-updates main' >> /etc/apt
 
 RUN apt-get update
 RUN apt-get -y build-dep wine
-RUN apt-get -y install libkrb5-dev opencl-dev libpcap-dev libsane-dev libv4l-dev libgphoto2-dev libtiff-dev libpulse-dev libgstreamer1.0-dev libudev-dev libcapi20-dev
+RUN apt-get -y install libkrb5-dev opencl-dev libpcap-dev libsane-dev libv4l-dev libgphoto2-dev libtiff-dev libpulse-dev libgstreamer1.0-dev libudev-dev libcapi20-dev libgstreamer-plugins-base1.0-dev
 RUN apt-get -y install git
 
 # Wine Staging
@@ -23,4 +23,10 @@ WORKDIR /root/vkd3d
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-1_i386.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-1_i386.deb
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-1_i386.deb
+RUN dpkg -i *.deb
+
+#OSSv4
+RUN mkdir -p /root/ossv4
+WORKDIR /root/ossv4
+RUN wget http://deb.debian.org/debian/pool/main/o/oss4/oss4-dev_4.2-build2010-5_all.deb
 RUN dpkg -i *.deb
