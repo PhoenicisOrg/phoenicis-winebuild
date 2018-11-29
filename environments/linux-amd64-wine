@@ -11,7 +11,7 @@ RUN apt-get -y install wget git
 RUN apt-get -y build-dep wine
 
 #### 64 bits
-RUN apt-get -y install libva-dev libkrb5-dev opencl-dev libpcap-dev libsane-dev libv4l-dev libgphoto2-dev libtiff-dev libpulse-dev libgstreamer1.0-dev libudev-dev libcapi20-dev
+RUN apt-get -y install libva-dev libkrb5-dev opencl-dev libpcap-dev libsane-dev libv4l-dev libgphoto2-dev libtiff-dev libpulse-dev libgstreamer1.0-dev libudev-dev libcapi20-dev libgstreamer-plugins-base1.0-dev
 
 # Wine Staging
 RUN apt-get -y install libsdl2-dev
@@ -26,6 +26,11 @@ RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-1_amd64.de
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-1_amd64.deb
 RUN dpkg -i *.deb
 
+#OSSv4
+RUN mkdir -p /root/ossv4
+WORKDIR /root/ossv4
+RUN wget http://deb.debian.org/debian/pool/main/o/oss4/oss4-dev_4.2-build2010-5_all.deb
+RUN dpkg -i *.deb
 
 
 
@@ -47,6 +52,8 @@ RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-1_i386.deb
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-1_i386.deb
 RUN echo dpkg -i /root/vkd3d-32/*.deb >> /root/install_32bits_dependencies.sh
 
-RUN echo apt-get -y install libicu-dev:i386 g++-multilib libgstreamer1.0-dev:i386 libsdl2-dev:i386 libglib2.0-dev:i386 libpulse-dev:i386 libfontconfig1-dev:i386 libopenal-dev:i386 libldap-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 fontconfig:i386 libcups2-dev:i386 libncurses-dev:i386 liblcms2-dev:i386 libxcomposite-dev:i386 libosmesa-dev:i386 libmpg123-dev:i386 libxslt-dev:i386 libxml2-dev:i386 libgnutls28-dev:i386 libfreetype6-dev:i386 libva-dev:i386 opencl-dev:i386  libv4l-dev:i386 libgphoto2-dev:i386 libtiff-dev:i386 libudev-dev:i386 libcapi20-dev:i386 >> /root/install_32bits_dependencies.sh
+RUN echo apt-get -y install libsane-dev:i386 libpcap0.8-dev:i386 libicu-dev:i386 g++-multilib libsdl2-dev:i386 libglib2.0-dev:i386 libpulse-dev:i386 libfontconfig1-dev:i386 libopenal-dev:i386 libldap-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 fontconfig:i386 libcups2-dev:i386 libncurses-dev:i386 liblcms2-dev:i386 libxcomposite-dev:i386 libosmesa-dev:i386 libmpg123-dev:i386 libxslt-dev:i386 libxml2-dev:i386 libgnutls28-dev:i386 libfreetype6-dev:i386 libva-dev:i386 opencl-dev:i386  libv4l-dev:i386 libgphoto2-dev:i386 libtiff-dev:i386 libudev-dev:i386 libcapi20-dev:i386 >> /root/install_32bits_dependencies.sh
+
+RUN echo apt-get -y --force-yes install libgstreamer1.0-dev:i386 libgstreamer-plugins-base1.0-dev:i386 >> /root/install_32bits_dependencies.sh
 
 RUN chmod +x /root/install_32bits_dependencies.sh
