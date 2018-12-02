@@ -1,4 +1,6 @@
-import docker, os, json
+import docker
+import json
+
 
 class DockerClient:
     @staticmethod

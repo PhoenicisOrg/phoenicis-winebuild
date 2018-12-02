@@ -1,9 +1,10 @@
-import os, pathlib
+import pathlib
 
+from builders.WineBuilder import WineBuilder
 from core.Container import Container
 from core.Environment import Environment
-from builders.WineBuilder import WineBuilder
 from storage.PackageStore import PackageStore
+
 
 class PhoenicisWinePackageCreator:
     def __init__(self):
