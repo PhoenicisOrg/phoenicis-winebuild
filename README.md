@@ -5,13 +5,13 @@
 Phoenicis Winebuild is a python library and a command line tool that compiles winehq automatically. It is the designated successor of PlayOnLinux Winebuild service.
 
 Phoenicis Winebuild can:
-- run on any OS (Linux and Mac OS)
-- build wine for any target OS (see prerequisites).
+ - run on any OS (Linux and Mac OS)
+ - build wine for any target OS (see prerequisites).
 
 ## Prerequisites
-- Python 3
-- Docker
-- docker-py
+ - Python 3
+ - Docker
+ - docker-py
 
 ```
 pip install docker
@@ -31,9 +31,8 @@ After setup, run examples/interactive_builder.py
 ### Key concepts
 #### Environment
 An *Environment* is a pre-installed operating system where wine can be built. It corresponds to a docker image. We support currently two environment:
-
-- **linux-x86-wine** is a x86 environment containing all tools required to build wine for Linux
-- **darwin-x86-wine** is a x86 environment containing all tools required to cross-compile wine for MacOS
+ - **linux-x86-wine** is a x86 environment containing all tools required to build wine for Linux
+ - **darwin-x86-wine** is a x86 environment containing all tools required to cross-compile wine for MacOS
 
 #### Container
 A container is the instanciation of an environment. It corresponds to a docker container. Thanks to containers, you can run multiple compilation inside a given environment at the same time
@@ -41,26 +40,26 @@ A container is the instanciation of an environment. It corresponds to a docker c
 #### Builders
 A *Builder* is the components that builds wine. A builder needs a container to operate. We currently support one kind of builder :
 
-- **WineBuilder** downloads the source of wine into /root/wine-git and runs a script
+ - **WineBuilder** downloads the source of wine into /root/wine-git and runs a script
 
 #### Script
 A script can be run inside a context initiated by a builder. We have two scripts:
-- builder_darwin_x86_wine
-- builder_linux_x86_wine
+ - builder_darwin_x86_wine
+ - builder_linux_x86_wine
 
 ### Web Services
 After setup, run run_web_server.py
 
 #### Create an environment
-- Go to the endpoint /environments (http://localhost:5000/environments)
-- Grab the docker name of a supported environment (exemple: phoenicis/winebuild/linux-x86:wine)
-- Create an environement creation task
+ - Go to the endpoint /environments (http://localhost:5000/environments)
+ - Grab the docker name of a supported environment (exemple: phoenicis/winebuild/linux-x86:wine)
+ - Create an environement creation task
 
 ```
  curl -d '{"type": "EnvironmentCreationTask", "argument": "phoenicis/winebuild/linux-x86:wine"}' -H "Content-Type: application/json" -X POST http://localhost:5000/tasks
 ```
 
-- Go to the endpoint /tasks to track the task creation process: http://127.0.0.1:5000/tasks. You should get a response like this one:
+ - Go to the endpoint /tasks to track the task creation process: http://127.0.0.1:5000/tasks. You should get a response like this one:
 
 ```
 [{
@@ -79,9 +78,10 @@ After setup, run run_web_server.py
 ```
 
 #### Create a wine build task
-- Make a POST request to the /tasks endpoint:
-
-    curl -d '{"type": "PhoenicisWinePackageCreationTask", "argument": {"os": "darwin", "distribution": "upstream", "arch": "x86", "version": "wine-3.0.3"}}' -H "Content-Type: application/json" -X POST http://localhost:5000/tasks
+Make a POST request to the /tasks endpoint:
+```
+curl -d '{"type": "PhoenicisWinePackageCreationTask", "argument": {"os": "darwin", "distribution": "upstream", "arch": "x86", "version": "wine-3.0.3"}}' -H "Content-Type: application/json" -X POST http://localhost:5000/tasks
+```
 
 ### Advanced scripting
 You have two example python files (example_linux.py and example_darwin.py). If you need to tweak your build (select the version, use custom script, ...) you'll probably need to use the python API (See Key Concepts)
@@ -125,5 +125,5 @@ export DYLD_LIBRARY_PATH="/usr/lib"
 ```
 
 ## TODO
-- Webservice system
-- 64bits support
+ - Webservice system
+ - 64bits support
