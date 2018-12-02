@@ -1,8 +1,9 @@
-import re, datetime
+import datetime
 
-from orchestrator.Task import Task
-from core.Environment import Environment
 from core.DockerStepReader import DockerStepReader
+from core.Environment import Environment
+from orchestrator.Task import Task
+
 
 class EnvironmentCreationTask(Task):
     def __init__(self, environment: Environment):
