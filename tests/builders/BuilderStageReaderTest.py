@@ -42,10 +42,9 @@ class BuilderStageReaderTest(unittest.TestCase):
         builder_stage_reader = BuilderStageReader()
         with open(os.path.dirname(__file__) + "/builderStageReaderTestFixture.txt", 'r') as file:
             for line in file.readlines():
-                builder_stage_reader.feed(line)                
+                builder_stage_reader.feed(line)
                 self.assertTrue(builder_stage_reader.get_percentage_estimation() >= 0)
                 self.assertTrue(builder_stage_reader.get_percentage_estimation() <= 100)
-
 
     def test_overflow_hasNoEffect(self):
         builder_stage_reader = BuilderStageReader()
