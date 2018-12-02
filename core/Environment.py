@@ -1,8 +1,9 @@
-import docker, os, io
+import docker
 
 from core.DockerClient import DockerClient
-from core.TarUtils import make_environment_tarfile
 from core.LineBuffer import LineBuffer
+from core.TarUtils import make_environment_tarfile
+
 
 class Environment:
     def __init__(self, name: str, os: str, arch: str):
