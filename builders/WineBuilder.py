@@ -5,9 +5,9 @@ from core.Process import run
 
 
 class WineBuilder:
-    def __init__(self, container: Container, patches=[]):
+    def __init__(self, container: Container, patches=None):
         self.container = container
-        self.patches = patches
+        self.patches = patches or []
         self._local_archive = None
 
     def prepare(self, version, distribution="upstream"):
