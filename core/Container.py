@@ -1,9 +1,10 @@
-import docker, io, tarfile, os, tempfile
+import io
+import os
+import tarfile
 
 from core.DockerClient import DockerClient
-from core.Process import run
-from core.TarUtils import make_tarfile
 from core.LineBuffer import LineBuffer
+from core.TarUtils import make_tarfile
 
 
 class Container:

@@ -17,15 +17,15 @@ def remove_task(task_id):
 def tasks():
     if request.method == 'POST':
         request_content = request.json
-        type = request_content["type"]
+        task_type = request_content["type"]
 
-        if(type == 'EnvironmentCreationTask'):
+        if task_type == 'EnvironmentCreationTask':
             argument = request_content["argument"]
             environment = environmentManager.get_instance(argument)
             environment_creation_task = EnvironmentCreationTask(environment)
             default_orchestrator.run_task(environment_creation_task)
 
-        if(type == 'PhoenicisWinePackageCreationTask'):
+        if task_type == 'PhoenicisWinePackageCreationTask':
             argument = request_content["argument"]
             wine_package_creation_task = PhoenicisWinePackageCreationTask(argument["distribution"], argument["os"], argument["version"], argument["arch"])
             default_orchestrator.run_task(wine_package_creation_task)

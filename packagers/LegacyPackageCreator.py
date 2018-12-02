@@ -1,6 +1,8 @@
-import tempfile, pathlib, os, shutil
-from core.Process import run
+import pathlib
+import shutil
+import tempfile
 
+from core.Process import run
 
 """
     Convert .tar.gz generated package to a PlayOnLinux / PlayOnMac < 4.3 compatible package.

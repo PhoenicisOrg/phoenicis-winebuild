@@ -13,6 +13,6 @@ container.start()
 
 builder = WineBuilder(container)
 builder.build("builders/scripts/builder_linux_amd64_wine", "wine-3.21")
-builder.archive()
+builder.archive("wine.tar.gz")
 
 container.clean()
