@@ -47,6 +47,7 @@ class PhoenicisWinePackageCreator:
             builder.archive(PackageStore.get_binaries_path() + "/" + directory + "/" + filename + ".tar.gz")
             builder.checksum()
         finally:
+            print("Cleaning container")
             container.clean()
 
 
