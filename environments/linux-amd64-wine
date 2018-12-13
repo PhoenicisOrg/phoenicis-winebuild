@@ -41,7 +41,7 @@ RUN echo "#/bin/bash" > /root/install_32bits_dependencies.sh
 RUN echo apt-get -y remove gir1.2-ibus-1.0:amd64 libsane-dev:amd64 >> /root/install_32bits_dependencies.sh
 RUN echo apt-get -y build-dep wine >> /root/install_32bits_dependencies.sh
 # Wine Staging
-RUN echo apt-get -y install gtk3.0-dev:i386 libgtk-3-dev libva-dev:i386 >> /root/install_32bits_dependencies.sh
+RUN echo apt-get -y install gtk3.0-dev:i386 libgtk-3-dev:i386 libva-dev:i386 >> /root/install_32bits_dependencies.sh
 RUN echo apt-get -y install libavcodec-dev:i386 >> /root/install_32bits_dependencies.sh
 # Vulkan
 RUN echo apt-get -y install libvulkan-dev:i386 >> /root/install_32bits_dependencies.sh
