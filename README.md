@@ -4,6 +4,8 @@
 
 Phoenicis Winebuild is a python library and a command line tool that compiles winehq automatically. It is the designated successor of PlayOnLinux Winebuild service.
 
+We also provide pre-built binaries for Linux and macOS: https://www.playonlinux.com/wine/binaries/phoenicis/
+
 Phoenicis Winebuild can:
 
 -   run on any OS (Linux and Mac OS)
