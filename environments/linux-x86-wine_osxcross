@@ -24,3 +24,4 @@ RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 RUN osxcross-macports -32 fakeinstall -v pulseaudio
 RUN osxcross-macports -32 install -v wine-devel
 RUN osxcross-macports -32 install gnutls-dev
+RUN env MACOSX_DEPLOYMENT_TARGET=10.12 osxcross-macports install MoltenVK
