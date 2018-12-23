@@ -20,7 +20,9 @@ chmod +x winebuild
 cd "/root/wine-git"
 ## Environment preparation
 export FRAMEWORK="10.11"
-export CC="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -L/root/osxcross/target/macports/pkgs/opt/local/lib/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+export CC="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/"
+export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib"
 
 ## This hack will allow winegcc to use the right compiler
 echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin15-gcc"
