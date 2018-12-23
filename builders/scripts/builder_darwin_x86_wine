@@ -20,22 +20,22 @@ chmod +x winebuild
 cd "/root/wine-git"
 ## Environment preparation
 export FRAMEWORK="10.11"
-export CC="clang -O3 -target i386-apple-darwin12 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -L/root/osxcross/target/macports/pkgs/opt/local/lib/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+export CC="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -L/root/osxcross/target/macports/pkgs/opt/local/lib/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
 
 ## This hack will allow winegcc to use the right compiler
-echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
-chmod +x "/root/osxcross/target/bin/i386-apple-darwin12-gcc"
+echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin15-gcc"
+chmod +x "/root/osxcross/target/bin/i386-apple-darwin15-gcc"
 
 ## Some tools are not directly found by wine
-ln -s "/root/osxcross/target/bin/i386-apple-darwin12-ld" "/root/osxcross/target/bin/ld"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin12-otool" "/root/osxcross/target/bin/otool"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin12-ranlib" "/root/osxcross/target/bin/ranlib"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin12-ar" "/root/osxcross/target/bin/ar"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin12-as" "/root/osxcross/target/bin/as"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ld" "/root/osxcross/target/bin/ld"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin15-otool" "/root/osxcross/target/bin/otool"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ranlib" "/root/osxcross/target/bin/ranlib"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ar" "/root/osxcross/target/bin/ar"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin15-as" "/root/osxcross/target/bin/as"
 
 echo "[STAGE 4/7] Configure"
 
-./configure --host i386-apple-darwin12 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -m32" || exit 4
+./configure --host i386-apple-darwin15 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -m32" || exit 4
 
 echo "[STAGE 5/7] Make"
 numberOfSteps="$(make __builddeps__ --no-print-directory -nrRk 2> /dev/null|wc -l)"
@@ -54,7 +54,7 @@ cp /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
 ## To make package smaller, we are only going to keep i386 part of the libraries
 cd "/root/wine/lib/"
 for file in *.dylib; do
-  [ ! -L "$file" ] && i386-apple-darwin12-lipo -extract i386 "$file" -o "$file" 2> /dev/null
+  [ ! -L "$file" ] && i386-apple-darwin15-lipo -extract i386 "$file" -o "$file" 2> /dev/null
 done
 
 echo "[END]"
