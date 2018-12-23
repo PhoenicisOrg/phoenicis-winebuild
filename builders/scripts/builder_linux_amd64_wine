@@ -30,3 +30,4 @@ make install DESTDIR="/root/wine" || exit 8
 echo "[STAGE 7/7] Make install 32 bits"
 cd "/root/wine-git/wine32-build/"
 make install DESTDIR="/root/wine" || exit 9
+echo "[END]"

@@ -48,9 +48,11 @@ RUN mv dynamic/* /root/osxcross/target/macports/pkgs/opt/local/lib/
 # RUN mv lib/* /root/osxcross/target/macports/pkgs/opt/local/lib/
 # RUN mv include/* /root/osxcross/target/macports/pkgs/opt/local/include/
 
-# WORKDIR /root
-# RUN git clone https://github.com/KhronosGroup/SPIRV-Headers
-# RUN mv /root/SPIRV-Headers/include/spirv/ /root/osxcross/target/macports/pkgs/opt/local/include/
+### VK3D3
+WORKDIR /root
+RUN git clone https://github.com/KhronosGroup/SPIRV-Headers
+RUN apt-get install -y libtool-bin
+COPY darwin/install_vkd3d.sh /root/
 
 ## Removing preinstalled wine libs to prevent conflict
 RUN rm /root/osxcross/target/macports/pkgs/opt/local/lib/libwine.*
