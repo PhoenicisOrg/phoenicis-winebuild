@@ -11,7 +11,12 @@ class WineBuilder:
         self._local_archive = None
 
     def prepare(self, version, distribution="upstream"):
-        self.container.run(["git", "clone", "--progress", "https://github.com/wine-mirror/wine", "/root/wine-git"])
+        if distribution == "cx":
+            print("Cloning CX")
+            self.container.run(["git", "clone", "--progress", "https://github.com/PhoenicisOrg/winecx", "/root/wine-git"])
+        else:
+            self.container.run(["git", "clone", "--progress", "https://github.com/wine-mirror/wine", "/root/wine-git"])
+
         self.container.run(["git", "checkout", "-f", version], workdir="/root/wine-git")
 
         if distribution == "staging":
