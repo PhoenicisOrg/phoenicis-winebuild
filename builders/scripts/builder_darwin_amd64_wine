@@ -40,7 +40,7 @@ chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin15-gcc"
 echo "[STAGE 3/10] Installing vkd3d"
 bash "/root/install_vkd3d.sh" "vkd3d-1.1" || exit 4
 
-export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/"
+export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vkd3d/include/"
 export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib"
 
 cd "/root/wine-git/wine64-build/"
