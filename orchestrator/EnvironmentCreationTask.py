@@ -36,6 +36,6 @@ class EnvironmentCreationTask(Task):
         step_reader = DockerStepReader(line)
         percentage = step_reader.get_percentage()
         self.last_update_date = datetime.datetime.now()
-        if(percentage is not None):
+        if percentage is not None:
             self.set_progress(percentage)
             self._message = step_reader.get_message()
