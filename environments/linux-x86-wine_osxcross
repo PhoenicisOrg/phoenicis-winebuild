@@ -51,3 +51,7 @@ RUN mv dynamic/* /root/osxcross/target/macports/pkgs/opt/local/lib/
 # WORKDIR /root
 # RUN git clone https://github.com/KhronosGroup/SPIRV-Headers
 # RUN mv /root/SPIRV-Headers/include/spirv/ /root/osxcross/target/macports/pkgs/opt/local/include/
+
+## Removing preinstalled wine libs to prevent conflict
+RUN rm /root/osxcross/target/macports/pkgs/opt/local/lib/libwine.*
+RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/lib/wine
