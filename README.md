@@ -137,8 +137,3 @@ You have to set environment variables so that wine can find its dependencies.
     export DYLD_FALLBACK_LIBRARY_PATH="$PWD/../lib/"
     export DYLD_LIBRARY_PATH="/usr/lib"
     ./wine winecfg
-
-## TODO
-
--   Webservice system
--   64bits support
