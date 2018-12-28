@@ -80,39 +80,4 @@ ln -sf /usr/cross-freebsd/x86_64-pc-freebsd12/include/machine/float.h /usr/cross
 ln -sf /usr/cross-freebsd/x86_64-pc-freebsd12/include/machine/floatingpoint.h /usr/cross-freebsd/x86_64-pc-freebsd12/include/floatingpoint.h
 ln -sf /usr/cross-freebsd/x86_64-pc-freebsd12/include/machine/stdarg.h /usr/cross-freebsd/x86_64-pc-freebsd12/include/stdarg.h
 
-
 ln -sf /usr/cross-freebsd/x86_64-pc-freebsd12/include/curses.h /usr/cross-freebsd/x86_64-pc-freebsd12/ncurses.h
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
