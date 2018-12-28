@@ -9,7 +9,7 @@ class ApplyDosboxPatch(AbstractHook):
         return "after-build"
 
     def patch(self, container, operating_system, arch, version, distribution):
-        container.run(["git", "clone", "--progress", "https://github.com/PlayOnLinux/Dosbox-PlayOnLinux-Wrapper", "/root/wine-dosbox-wrapper"])
+        container.run(["git", "clone", "--progress", "https://github.com/PhoenicisOrg/phoenicis-wine-dosbox_support", "/root/wine-dosbox-wrapper"])
         container.run(["bash", "patch-wine.sh", "/root/wine/"], workdir="/root/wine-dosbox-wrapper")
 
         if operating_system == "darwin":
