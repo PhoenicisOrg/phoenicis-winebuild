@@ -63,7 +63,7 @@ class PhoenicisWinePackageCreator:
         for hook_config in hooks:
             hook_name = hook_config["template"]
             hook_module =  __import__("hooks.%s" % hook_name, fromlist=["hooks"])
-            hook_clazz = getattr(hook_module, hook_name)
+            hook_clazz = getattr(hook_module, hook_name.split(".")[-1:][0])
             hooks_instances += [hook_clazz()]
 
         return hooks_instances
