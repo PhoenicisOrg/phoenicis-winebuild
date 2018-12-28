@@ -22,10 +22,10 @@ RUN make install
 RUN mkdir -p /usr/cross-freebsd/x86_64-pc-freebsd12/include
 RUN mkdir -p /usr/cross-freebsd/x86_64-pc-freebsd12/lib
 
-COPY freebsd/SDK/freebsd12.sdk.tar.gz  /root
+COPY freebsd/SDK/freebsd12.sdk.tar.xz  /root
 COPY freebsd/SDK/symlink.sh /root
 WORKDIR /root
-RUN tar -xf freebsd12.sdk.tar.gz 
+RUN tar -xf freebsd12.sdk.tar.xz
 RUN cp -r freebsd12.sdk/usr/lib/*  /usr/cross-freebsd/x86_64-pc-freebsd12/lib
 RUN cp -r freebsd12.sdk/usr/include/*  /usr/cross-freebsd/x86_64-pc-freebsd12/include
 RUN cp -r freebsd12.sdk/lib/*  /usr/cross-freebsd/x86_64-pc-freebsd12/lib
