@@ -54,8 +54,6 @@ RUN ./configure --prefix=/usr/cross-freebsd --with-gnu-ld --with-gmp=/usr/cross-
 RUN make
 RUN make install
 
-RUN ln -sf /usr/cross-freebsd/x86_64-pc-freebsd12/lib/libm.so.5 /usr/cross-freebsd/x86_64-pc-freebsd12/lib/libm.so
-
 WORKDIR /root
 RUN wget https://ftp.gnu.org/gnu/gcc/gcc-6.5.0/gcc-6.5.0.tar.gz
 RUN tar -xf gcc-6.5.0.tar.gz
