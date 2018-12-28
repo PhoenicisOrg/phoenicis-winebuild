@@ -15,7 +15,6 @@ WORKDIR /root
 RUN wget https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.xz
 RUN tar -xf binutils-2.31.tar.xz
 WORKDIR /root/binutils-2.31
-RUN ls
 RUN ./configure --enable-libssp --enable-gold --enable-ld --target=x86_64-pc-freebsd12 --prefix=/usr/cross-freebsd
 RUN make
 RUN make install
@@ -64,5 +63,4 @@ RUN mkdir objdir
 WORKDIR /root/objdir
 RUN ../gcc-6.5.0/configure --without-headers --with-gnu-as --with-gnu-ld --enable-languages=c,c++ --disable-nls --enable-libssp --enable-gold --enable-ld --target=x86_64-pc-freebsd12 --prefix=/usr/cross-freebsd --with-gmp=/usr/cross-freebsd --with-mpc=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --disable-libgomp
 RUN LD_LIBRARY_PATH=/usr/cross-freebsd/lib make
-RUN ls
 RUN make install
