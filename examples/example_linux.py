@@ -13,7 +13,7 @@ container = Container(environment).with_log_file("test_log.log")
 container.start()
 
 builder = WineBuilder(container)
-builder.build("builders/scripts/builder_linux_x86_wine", "wine-3.21")
+builder.build("linux", "x86", "wine-3.21")
 builder.archive("wine.tar.gz")
 
 container.clean()

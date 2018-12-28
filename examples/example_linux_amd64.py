@@ -12,7 +12,7 @@ container = Container(environment)
 container.start()
 
 builder = WineBuilder(container)
-builder.build("builders/scripts/builder_linux_amd64_wine", "wine-3.21")
+builder.build("linux", "amd64", "wine-3.21")
 builder.archive("wine.tar.gz")
 
 container.clean()

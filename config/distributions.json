@@ -1,0 +1,27 @@
+[
+  {
+    "name": "cx",
+    "extends": "",
+    "source": "https://github.com/PhoenicisOrg/winecx",
+    "hooks": [],
+    "patches": []
+  },
+  {
+    "name": "upstream",
+    "extends": "",
+    "source": "https://github.com/wine-mirror/wine",
+    "hooks": [],
+    "patches": []
+  },
+  {
+    "name": "staging",
+    "extends": "upstream",
+    "source": "https://github.com/wine-mirror/wine",
+    "hooks": [
+      {
+        "template": "ApplyWineStagingPatches"
+      }
+    ],
+    "patches": []
+  }
+]
