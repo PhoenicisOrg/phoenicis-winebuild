@@ -121,7 +121,7 @@ You have two example python files (example_linux.py and example_darwin.py). If y
     builder = WineBuilder(container)
 
     ## Builds wine 3.0.3 with the script builders/builder_darwin_x86_wine
-    builder.build("builders/builder_darwin_x86_wine", "wine-3.0.3")
+    builder.build("darwin", "x86", "wine-3.0.3")
 
     ## Archive the compiled binaries into wine-3.0.3-darwin.tar.gz
     builder.archive("wine-3.0.3-darwin.tar.gz")
