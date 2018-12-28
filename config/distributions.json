@@ -14,6 +14,20 @@
     "patches": []
   },
   {
+    "name": "dos_support",
+    "extends": "upstream",
+    "source": "https://github.com/wine-mirror/wine",
+    "hooks": [
+      {
+        "template": "dosbox_support.InstallDosbox"
+      },
+      {
+        "template": "dosbox_support.ApplyDosboxPatch"
+      }
+    ],
+    "patches": []
+  },
+  {
     "name": "staging",
     "extends": "upstream",
     "source": "https://github.com/wine-mirror/wine",
