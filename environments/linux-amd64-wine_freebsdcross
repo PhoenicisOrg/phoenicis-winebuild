@@ -1,0 +1,68 @@
+FROM amd64/debian:stretch
+
+RUN echo 'deb-src http://deb.debian.org/debian stretch main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://security.debian.org/debian-security stretch/updates main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian stretch-updates main' >> /etc/apt/sources.list
+
+RUN dpkg --add-architecture i386
+
+RUN apt-get update
+RUN apt-get -y install wget git build-essential m4 xz-utils
+
+RUN export CFLAGS="-O2 -fPIC"
+
+WORKDIR /root
+RUN wget https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.xz
+RUN tar -xf binutils-2.31.tar.xz
+WORKDIR /root/binutils-2.31
+RUN ls
+RUN ./configure --enable-libssp --enable-gold --enable-ld --target=x86_64-pc-freebsd12 --prefix=/usr/cross-freebsd
+RUN make
+RUN make install
+
+RUN mkdir -p /usr/cross-freebsd/x86_64-pc-freebsd12/include
+RUN mkdir -p /usr/cross-freebsd/x86_64-pc-freebsd12/lib
+
+COPY freebsd/SDK/freebsd12.sdk.tar.gz  /root
+COPY freebsd/SDK/symlink.sh /root
+WORKDIR /root
+RUN tar -xf freebsd12.sdk.tar.gz 
+RUN cp -r freebsd12.sdk/usr/lib/*  /usr/cross-freebsd/x86_64-pc-freebsd12/lib
+RUN cp -r freebsd12.sdk/usr/include/*  /usr/cross-freebsd/x86_64-pc-freebsd12/include
+RUN cp -r freebsd12.sdk/lib/*  /usr/cross-freebsd/x86_64-pc-freebsd12/lib
+RUN ./symlink.sh
+
+RUN wget https://ftp.gnu.org/gnu/gmp/gmp-6.1.2.tar.xz
+RUN tar -xf gmp-6.1.2.tar.xz
+WORKDIR /root/gmp-6.1.2
+RUN ./configure --prefix=/usr/cross-freebsd --enable-shared --enable-static --enable-fft --enable-cxx --host=x86_64-pc-freebsd12
+RUN make
+RUN make install
+
+WORKDIR /root
+RUN wget https://ftp.gnu.org/gnu/mpfr/mpfr-4.0.1.tar.xz
+RUN tar -xf mpfr-4.0.1.tar.xz
+WORKDIR /root/mpfr-4.0.1
+RUN ./configure --prefix=/usr/cross-freebsd --with-gnu-ld --with-gmp=/usr/cross-freebsd --enable-static --enable-shared --host=x86_64-pc-freebsd12
+RUN make
+RUN make install
+
+WORKDIR /root
+RUN wget https://ftp.gnu.org/gnu/mpc/mpc-1.1.0.tar.gz
+RUN tar -xf mpc-1.1.0.tar.gz
+WORKDIR /root/mpc-1.1.0
+RUN ./configure --prefix=/usr/cross-freebsd --with-gnu-ld --with-gmp=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --enable-static --enable-shared --host=x86_64-pc-freebsd12
+RUN make
+RUN make install
+
+RUN ln -sf /usr/cross-freebsd/x86_64-pc-freebsd12/lib/libm.so.5 /usr/cross-freebsd/x86_64-pc-freebsd12/lib/libm.so
+
+WORKDIR /root
+RUN wget https://ftp.gnu.org/gnu/gcc/gcc-6.5.0/gcc-6.5.0.tar.gz
+RUN tar -xf gcc-6.5.0.tar.gz
+RUN mkdir objdir
+WORKDIR /root/objdir
+RUN ../gcc-6.5.0/configure --without-headers --with-gnu-as --with-gnu-ld --enable-languages=c,c++ --disable-nls --enable-libssp --enable-gold --enable-ld --target=x86_64-pc-freebsd12 --prefix=/usr/cross-freebsd --with-gmp=/usr/cross-freebsd --with-mpc=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --disable-libgomp
+RUN LD_LIBRARY_PATH=/usr/cross-freebsd/lib make
+RUN ls
+RUN make install
