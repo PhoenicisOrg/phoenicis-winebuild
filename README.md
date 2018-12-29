@@ -126,14 +126,10 @@ You have two example python files (example_linux.py and example_darwin.py). If y
     ## Archive the compiled binaries into wine-3.0.3-darwin.tar.gz
     builder.archive("wine-3.0.3-darwin.tar.gz")
 
-## Running wine
+## Troubleshooting
 
-### On OSX
+### The fonts are ugly on macOS
 
-The dependencies are bundled into the output archive by default.
-You have to set environment variables so that wine can find its dependencies.
+Try to export this environement variable:
 
     export FREETYPE_PROPERTIES="truetype:interpreter-version=35"
-    export DYLD_FALLBACK_LIBRARY_PATH="$PWD/../lib/"
-    export DYLD_LIBRARY_PATH="/usr/lib"
-    ./wine winecfg
