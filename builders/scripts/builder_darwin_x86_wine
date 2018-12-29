@@ -34,6 +34,7 @@ ln -s "/root/osxcross/target/bin/i386-apple-darwin15-otool" "/root/osxcross/targ
 ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ranlib" "/root/osxcross/target/bin/ranlib"
 ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ar" "/root/osxcross/target/bin/ar"
 ln -s "/root/osxcross/target/bin/i386-apple-darwin15-as" "/root/osxcross/target/bin/as"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin15-install_name_tool" "/root/osxcross/target/bin/install_name_tool"
 
 echo "[STAGE 4/8] Configure"
 
