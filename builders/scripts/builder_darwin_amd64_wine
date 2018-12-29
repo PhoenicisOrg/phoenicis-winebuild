@@ -70,8 +70,13 @@ echo "[STAGE 9/11] Make install 32 bits"
 cd "/root/wine-git/wine32-build/"
 make install DESTDIR="/root/wine" || exit 10
 
+## Copying libs
+echo "[STAGE 10/11] Copying libs"
+cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
+echo "[END]"
+
 ## Fixing imports
-echo "[STAGE 10/11] Fixing imports"
+echo "[STAGE 11/11] Fixing imports"
 bash /root/fix_imports.sh "/root/wine"
 
 ## A dependency is missing for gnutls
@@ -82,7 +87,3 @@ ln -s "libidn.12.dylib" "libidn.11.dylib"
 cd "/root/wine/lib"
 rm "libncurses.6.dylib"
 
-## Copying libs
-echo "[STAGE 11/11] Copying libs"
-cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
-echo "[END]"
