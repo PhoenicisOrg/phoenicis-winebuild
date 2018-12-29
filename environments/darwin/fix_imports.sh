@@ -18,7 +18,7 @@
 
 fix_imports () {
   [[ "$1" = "" ]] && echo "Please set a library name" && return
-  printf "Fixing $1... "
+  echo "Fixing $1... "
   install_name_tool -id "$1" "$1"
 
   for lib in $(otool -L $1 |grep /opt/local --color=never|cut -d"(" -f1|xargs); do
@@ -28,6 +28,7 @@ fix_imports () {
   done
 
   echo "Done"
+  echo ""
 }
 
 usage () {

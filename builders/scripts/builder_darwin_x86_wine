@@ -61,6 +61,10 @@ cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
 cd "/root/wine/lib"
 ln -s "libidn.12.dylib" "libidn.11.dylib"
 
+## Workaround for the bug https://github.com/PhoenicisOrg/phoenicis-winebuild/issues/47
+cd "/root/wine/lib"
+rm "libncurses.6.dylib"
+
 ## To make package smaller, we are only going to keep i386 part of the libraries
 cd "/root/wine/lib/"
 for file in *.dylib; do

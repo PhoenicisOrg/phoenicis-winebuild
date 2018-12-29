@@ -74,6 +74,14 @@ make install DESTDIR="/root/wine" || exit 10
 echo "[STAGE 10/11] Fixing imports"
 bash /root/fix_imports.sh "/root/wine"
 
+## A dependency is missing for gnutls
+cd "/root/wine/lib"
+ln -s "libidn.12.dylib" "libidn.11.dylib"
+
+## Workaround for the bug https://github.com/PhoenicisOrg/phoenicis-winebuild/issues/47
+cd "/root/wine/lib"
+rm "libncurses.6.dylib"
+
 ## Copying libs
 echo "[STAGE 11/11] Copying libs"
 cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
