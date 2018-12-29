@@ -1,3 +1,4 @@
+#!/bin/sh
 mkdir -p /usr/cross-freebsd/x86_64-pc-freebsd$VERSION/include
 mkdir -p /usr/cross-freebsd/x86_64-pc-freebsd$VERSION/lib
 
