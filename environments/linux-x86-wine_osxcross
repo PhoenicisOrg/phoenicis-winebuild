@@ -40,10 +40,10 @@ RUN tar -xvf  ncurses-6.1.tar.gz
 WORKDIR /root/ncurses/ncurses-6.1
 ENV FRAMEWORK="10.11"
 RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
-ENV CC="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
-RUN ./configure --host i386-apple-darwin15 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
-RUN make -j 4
-RUN make install
+ENV CC_OSX="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+RUN env CC="$CC_OSX" ./configure --host i386-apple-darwin15 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
+RUN env CC="$CC_OSX" make -j 4
+RUN env CC="$CC_OSX" make install
 RUN rm "/root/osxcross/target/bin/strip"
 
 ### Vulkan
