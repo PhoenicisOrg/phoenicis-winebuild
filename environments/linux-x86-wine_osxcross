@@ -53,6 +53,7 @@ WORKDIR /root
 RUN git clone https://github.com/KhronosGroup/SPIRV-Headers
 RUN apt-get install -y libtool-bin
 COPY darwin/install_vkd3d.sh /root/
+COPY darwin/fix_imports.py /root/
 
 ## Removing preinstalled wine libs to prevent conflict
 RUN rm /root/osxcross/target/macports/pkgs/opt/local/lib/libwine.*
