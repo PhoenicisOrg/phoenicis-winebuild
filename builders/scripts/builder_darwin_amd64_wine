@@ -72,7 +72,7 @@ make install DESTDIR="/root/wine" || exit 10
 
 ## Fixing imports
 echo "[STAGE 10/11] Fixing imports"
-python /root/fix_imports.py --destdir="/root/wine" --verbose
+bash /root/fix_imports.sh "/root/wine"
 
 ## Copying libs
 echo "[STAGE 11/11] Copying libs"

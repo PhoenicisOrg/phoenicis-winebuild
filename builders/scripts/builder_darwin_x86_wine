@@ -52,10 +52,14 @@ make install DESTDIR="/root/wine" || exit 7
 
 ## Fixing imports
 echo "[STAGE 8/8] Fixing imports"
-python /root/fix_imports.py --destdir="/root/wine" --verbose
+bash /root/fix_imports.sh "/root/wine"
 
 ## Copying libs
 cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
+
+## A dependency is missing for gnutls
+cd "/root/wine/lib"
+ln -s "libidn.12.dylib" "libidn.11.dylib"
 
 ## To make package smaller, we are only going to keep i386 part of the libraries
 cd "/root/wine/lib/"
