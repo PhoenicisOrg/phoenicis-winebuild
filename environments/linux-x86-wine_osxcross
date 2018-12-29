@@ -60,7 +60,7 @@ COPY darwin/fix_imports.sh /root/
 ## MS Hook Prologue support
 COPY ms_hook_prologue/*.patch /root/
 COPY ms_hook_prologue/install_clang_ms_hook_prologue_support.sh /root/
-RUN bash /root/install_clang_ms_hook_prologue_support.sh
+# RUN bash /root/install_clang_ms_hook_prologue_support.sh
 
 ## Removing preinstalled wine libs to prevent conflict
 RUN rm /root/osxcross/target/macports/pkgs/opt/local/lib/libwine.*
