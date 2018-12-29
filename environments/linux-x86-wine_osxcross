@@ -15,11 +15,12 @@ COPY darwin/SDK/MacOSX10.11.sdk.tar.xz /root/osxcross/tarballs/
 RUN cd /root/osxcross && UNATTENDED=1 ./build.sh
 
 ENV PATH="/root/osxcross/target/bin:${PATH}"
-ENV MACOSX_DEPLOYMENT_TARGET="10.8"
+ENV MACOSX_DEPLOYMENT_TARGET="10.11"
 
 RUN mkdir -p /root/osxcross/target/macports
 RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 
+# RUN osxcross-macports -32 fakeinstall -v pulseaudio
 RUN osxcross-macports -32 install -v wine-devel
 RUN osxcross-macports -32 install gnutls-dev
 # RUN env MACOSX_DEPLOYMENT_TARGET=10.12 osxcross-macports install MoltenVK
