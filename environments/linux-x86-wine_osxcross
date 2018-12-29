@@ -78,7 +78,7 @@ COPY darwin/install_vkd3d.sh /root/
 COPY darwin/fix_imports.sh /root/
 
 ## MS Hook Prologue support
-RUN MKDIR /root/ms_hook_prologue
+RUN mkdir /root/ms_hook_prologue
 COPY ms_hook_prologue/*.patch /root/ms_hook_prologue/
 COPY ms_hook_prologue/install_clang_ms_hook_prologue_support.sh /root/ms_hook_prologue/
 # RUN bash /root/install_clang_ms_hook_prologue_support.sh
