@@ -51,12 +51,12 @@ make -j 4 | awk "{print \"[STEP \" NR \"/$numberOfSteps] \" \$s}" || exit 6
 echo "[STAGE 7/8] Make install"
 make install DESTDIR="/root/wine" || exit 7
 
+## Copying libs
+cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
+
 ## Fixing imports
 echo "[STAGE 8/8] Fixing imports"
 bash /root/fix_imports.sh "/root/wine"
-
-## Copying libs
-cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
 
 ## A dependency is missing for gnutls
 cd "/root/wine/lib"
