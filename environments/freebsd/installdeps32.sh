@@ -1,5 +1,5 @@
 #!/bin/bash
-url="http://pkg.freebsd.org/FreeBSD:"$VERSION":i386/latest/All/"
+url="http://pkg.freebsd.org/FreeBSD:$VERSION:i386/latest/All/"
 installdeps(){
 	mkdir tmp/
 	cd tmp/
