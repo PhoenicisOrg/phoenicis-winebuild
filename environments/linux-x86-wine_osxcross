@@ -22,13 +22,29 @@ RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 
 # RUN osxcross-macports -32 fakeinstall -v pulseaudio
 
-# We need use an older ncurse version TERMINFO is not set to /opt/local/share/terminfo to avoid
-# terminals database is inaccessible error
-RUN env MACOSX_DEPLOYMENT_TARGET=10.8 osxcross-macports -32 install ncurses
+# We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
+# This will prevent wine-devel from installing it
+RUN env osxcross-macports fakeinstall ncurses
 
 RUN osxcross-macports -32 install -v wine-devel
 RUN osxcross-macports -32 install gnutls-dev
 # RUN env MACOSX_DEPLOYMENT_TARGET=10.12 osxcross-macports install MoltenVK
+
+### NCurses
+# We need to build manually ncurses so that TERMINFO is not set to /opt/local/share/terminfo to avoid
+# terminals database is inaccessible error
+RUN mkdir /root/ncurses
+WORKDIR /root/ncurses
+RUN wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.1.tar.gz
+RUN tar -xvf  ncurses-6.1.tar.gz
+WORKDIR /root/ncurses/ncurses-6.1
+ENV FRAMEWORK="10.11"
+RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
+ENV CC="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+RUN ./configure --host i386-apple-darwin15 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
+RUN make -j 4
+RUN make install
+RUN rm "/root/osxcross/target/bin/strip"
 
 ### Vulkan
 WORKDIR /root/
