@@ -82,8 +82,3 @@ bash /root/fix_imports.sh "/root/wine"
 ## A dependency is missing for gnutls
 cd "/root/wine/lib"
 ln -s "libidn.12.dylib" "libidn.11.dylib"
-
-## Workaround for the bug https://github.com/PhoenicisOrg/phoenicis-winebuild/issues/47
-cd "/root/wine/lib"
-rm "libncurses.6.dylib"
-

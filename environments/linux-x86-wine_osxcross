@@ -21,10 +21,14 @@ RUN mkdir -p /root/osxcross/target/macports
 RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 
 # RUN osxcross-macports -32 fakeinstall -v pulseaudio
+
+# We need use an older ncurse version TERMINFO is not set to /opt/local/share/terminfo to avoid
+# terminals database is inaccessible error
+RUN env MACOSX_DEPLOYMENT_TARGET=10.8 osxcross-macports -32 install ncurses
+
 RUN osxcross-macports -32 install -v wine-devel
 RUN osxcross-macports -32 install gnutls-dev
 # RUN env MACOSX_DEPLOYMENT_TARGET=10.12 osxcross-macports install MoltenVK
-
 
 ### Vulkan
 WORKDIR /root/
@@ -58,8 +62,9 @@ COPY darwin/install_vkd3d.sh /root/
 COPY darwin/fix_imports.sh /root/
 
 ## MS Hook Prologue support
-COPY ms_hook_prologue/*.patch /root/
-COPY ms_hook_prologue/install_clang_ms_hook_prologue_support.sh /root/
+RUN MKDIR /root/ms_hook_prologue
+COPY ms_hook_prologue/*.patch /root/ms_hook_prologue/
+COPY ms_hook_prologue/install_clang_ms_hook_prologue_support.sh /root/ms_hook_prologue/
 # RUN bash /root/install_clang_ms_hook_prologue_support.sh
 
 ## Removing preinstalled wine libs to prevent conflict
