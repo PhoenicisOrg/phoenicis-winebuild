@@ -69,22 +69,22 @@ RUN make
 RUN make install
 
 WORKDIR /root/gmp32
-RUN ../gmp-6.1.2/configure --prefix=/usr/cross-freebsd --enable-shared --enable-static --enable-fft --enable-cxx --host=i386-pc-freebsd$VERSION
+RUN ../gmp-6.1.2/configure --prefix=/usr/cross-freebsd-32 --enable-shared --enable-static --enable-fft --enable-cxx --host=i386-pc-freebsd$VERSION
 RUN make
 RUN make install
 
 WORKDIR /root/mpfr32
-RUN ../mpfr-4.0.1/configure --prefix=/usr/cross-freebsd --with-gnu-ld --with-gmp=/usr/cross-freebsd --enable-static --enable-shared --host=i386-pc-freebsd$VERSION
+RUN ../mpfr-4.0.1/configure --prefix=/usr/cross-freebsd-32 --with-gnu-ld --with-gmp=/usr/cross-freebsd --enable-static --enable-shared --host=i386-pc-freebsd$VERSION
 RUN make
 RUN make install
 
 WORKDIR /root/mpc32
-RUN ../mpc-1.1.0/configure --prefix=/usr/cross-freebsd --with-gnu-ld --with-gmp=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --enable-static --enable-shared --host=i386-pc-freebsd$VERSION
+RUN ../mpc-1.1.0/configure --prefix=/usr/cross-freebsd-32 --with-gnu-ld --with-gmp=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --enable-static --enable-shared --host=i386-pc-freebsd$VERSION
 RUN make
 RUN make install
 
 WORKDIR /root/gcc32
-RUN../gcc-$GCCVERSION/configure --without-headers --with-gnu-as --with-gnu-ld --enable-languages=c,c++ --disable-nls --enable-libssp --enable-gold --enable-ld --target=i386-pc-freebsd$VERSION --prefix=/usr/cross-freebsd --with-gmp=/usr/cross-freebsd --with-mpc=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --disable-libgomp
+RUN../gcc-$GCCVERSION/configure --without-headers --with-gnu-as --with-gnu-ld --enable-languages=c,c++ --disable-nls --enable-libssp --enable-gold --enable-ld --target=i386-pc-freebsd$VERSION --prefix=/usr/cross-freebsd --with-gmp=/usr/cross-freebsd-32 --with-mpc=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --disable-libgomp
 LD_LIBRARY_PATH=/usr/cross-freebsd/lib make
 make install
 
