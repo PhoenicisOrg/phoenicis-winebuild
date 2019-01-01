@@ -7,7 +7,7 @@ RUN echo 'deb-src http://deb.debian.org/debian stretch-updates main' >> /etc/apt
 RUN dpkg --add-architecture i386
 
 RUN apt-get update
-RUN apt-get -y install wget git build-essential m4 xz-utils libisl-dev libisl-dev:i386
+RUN apt-get -y install wget git build-essential m4 xz-utils libisl-dev libisl-dev:i386 gcc-multilib g++-6-multilib
 
 ENV VERSION=12
 ENV GCCVERSION=6.5.0
@@ -16,11 +16,12 @@ COPY freebsd/SDK/freebsd$VERSION.sdk.32.tar.xz  /root
 COPY freebsd/SDK/symlink.sh /root
 COPY freebsd/SDK/symlink32.sh /root
 COPY freebsd/installdeps.sh /root
-COPY freebsd/build.sh /root
 COPY freebsd/extractSDK.sh /root
 
 WORKDIR /root
 RUN ./extractSDK.sh
+RUN ./symlink.sh
+RUN ./symlink32.sh
 
 RUN wget https://ftp.gnu.org/gnu/binutils/binutils-2.31.tar.xz
 RUN tar -xf binutils-2.31.tar.xz
@@ -33,24 +34,24 @@ RUN tar -xf mpc-1.1.0.tar.gz
 RUN wget https://ftp.gnu.org/gnu/gcc/gcc-$GCCVERSION/gcc-$GCCVERSION.tar.gz
 RUN tar -xf gcc-$GCCVERSION.tar.gz
 
-RUN mkdir binutils32 binutils64 gmp32 gmp64 mpfr32 mpfr64 mpc32 mpc64 gcc32 gcc64
+RUN mkdir binutils32 binutils64 gmp mpfr mpc gcc32 gcc64
 
 WORKDIR /root/binutils64
 RUN ../binutils-2.31/configure --enable-libssp --enable-gold --enable-ld --target=x86_64-pc-freebsd$VERSION --prefix=/usr/cross-freebsd
 RUN make
 RUN make install
 
-WORKDIR /root/gmp64
+WORKDIR /root/gmp
 RUN ../gmp-6.1.2/configure --prefix=/usr/cross-freebsd --enable-shared --enable-static --enable-fft --enable-cxx --host=x86_64-pc-freebsd$VERSION
 RUN make
 RUN make install
 
-WORKDIR /root/mpfr64
+WORKDIR /root/mpfr
 RUN ../mpfr-4.0.1/configure --prefix=/usr/cross-freebsd --with-gnu-ld --with-gmp=/usr/cross-freebsd --enable-static --enable-shared --host=x86_64-pc-freebsd$VERSION
 RUN make
 RUN make install
 
-WORKDIR /root/mpc64
+WORKDIR /root/mpc
 RUN ../mpc-1.1.0/configure --prefix=/usr/cross-freebsd --with-gnu-ld --with-gmp=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --enable-static --enable-shared --host=x86_64-pc-freebsd$VERSION
 RUN make
 RUN make install
@@ -68,27 +69,10 @@ RUN ../binutils-2.31/configure --enable-libssp --enable-gold --enable-ld --targe
 RUN make
 RUN make install
 
-WORKDIR /root/gmp32
-RUN ../gmp-6.1.2/configure --prefix=/usr/cross-freebsd-32 --enable-shared --enable-static --enable-fft --enable-cxx --host=i386-pc-freebsd$VERSION
-RUN make
-RUN make install
-
-WORKDIR /root/mpfr32
-RUN ../mpfr-4.0.1/configure --prefix=/usr/cross-freebsd-32 --with-gnu-ld --with-gmp=/usr/cross-freebsd --enable-static --enable-shared --host=i386-pc-freebsd$VERSION
-RUN make
-RUN make install
-
-WORKDIR /root/mpc32
-RUN ../mpc-1.1.0/configure --prefix=/usr/cross-freebsd-32 --with-gnu-ld --with-gmp=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --enable-static --enable-shared --host=i386-pc-freebsd$VERSION
-RUN make
-RUN make install
-
 WORKDIR /root/gcc32
-RUN ../gcc-$GCCVERSION/configure --without-headers --with-gnu-as --with-gnu-ld --enable-languages=c,c++ --disable-nls --enable-libssp --enable-gold --enable-ld --target=i386-pc-freebsd$VERSION --prefix=/usr/cross-freebsd --with-gmp=/usr/cross-freebsd-32 --with-mpc=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --disable-libgomp
+RUN ../gcc-$GCCVERSION/configure --without-headers --with-gnu-as --with-gnu-ld --enable-languages=c,c++ --disable-nls --enable-libssp --enable-gold --enable-ld --target=i386-pc-freebsd$VERSION --prefix=/usr/cross-freebsd --with-gmp=/usr/cross-freebsd --with-mpc=/usr/cross-freebsd --with-mpfr=/usr/cross-freebsd --disable-libgomp
 RUN env LD_LIBRARY_PATH=/usr/cross-freebsd/lib make
 RUN make install
 
 WORKDIR /root
 RUN ./installdeps32.sh
-
-
