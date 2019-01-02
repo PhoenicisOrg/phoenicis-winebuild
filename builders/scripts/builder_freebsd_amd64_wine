@@ -18,7 +18,7 @@ export PATH=${PATH}:/usr/cross-freebsd/bin
 export LD_LIBRARY_PATH=/usr/cross-freebsd/lib
 
 #### 64bits
-export CC="-O3"
+export CFLAGS="-O3"
 
 cd "/root/wine-git/wine64-build/"
 echo "[STAGE 4/9] Configure 64 bits"
@@ -27,7 +27,7 @@ echo "[STAGE 5/9] Make 64 bits"
 make -j 4 || exit 6
 
 #### 32bits
-export CC="-03"
+export CFLAGS="-03"
 
 cd "/root/wine-git/wine32-build/"
 echo "[STAGE 6/9] Configure 32 bits"
