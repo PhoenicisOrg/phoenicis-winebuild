@@ -1,0 +1,13 @@
+diff --git a/dlls/secur32/schannel_macosx.c b/dlls/secur32/schannel_macosx.c
+index bd080dcb41..db7707fa2b 100644
+--- a/dlls/secur32/schannel_macosx.c
++++ b/dlls/secur32/schannel_macosx.c
+@@ -724,7 +724,7 @@ static const struct {
+     {SP_PROT_SSL2_CLIENT,   kSSLProtocol2}
+ };
+
+-static DWORD supported_protocols;
++DWORD supported_protocols;
+
+ DWORD schan_imp_enabled_protocols(void)
+ {

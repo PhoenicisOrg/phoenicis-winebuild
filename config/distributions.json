@@ -47,6 +47,8 @@
         "template": "proton.AddProtonIncludes"
       }
     ],
-    "patches": []
+    "patches": [
+      "secur32-make_supported_protocols_non_static"
+    ]
   }
 ]
