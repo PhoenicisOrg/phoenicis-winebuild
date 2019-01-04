@@ -1,0 +1,24 @@
+diff --git a/dlls/secur32/schannel.c b/dlls/secur32/schannel.c
+index 3c9f85418f..3ed370c589 100644
+--- a/dlls/secur32/schannel.c
++++ b/dlls/secur32/schannel.c
+@@ -37,8 +37,8 @@
+
+ WINE_DEFAULT_DEBUG_CHANNEL(secur32);
+
+-#if defined(SONAME_LIBGNUTLS) || defined (HAVE_SECURITY_SECURITY_H)
+
++#if defined(SONAME_LIBGNUTLS) && !defined(HAVE_SECURITY_SECURITY_H)
+ BOOL schan_imp_create_session(schan_imp_session *session, schan_credentials *cred)
+ {
+     if (have_gnutls26) return schan_imp_create_session_gnutls26(session, cred);
+@@ -130,7 +130,9 @@ DWORD schan_imp_enabled_protocols(void)
+     if (have_gnutls26) return schan_imp_enabled_protocols_gnutls26();
+     return schan_imp_enabled_protocols_gnutls30();
+ }
++#endif
+
++#if defined(SONAME_LIBGNUTLS) || defined (HAVE_SECURITY_SECURITY_H)
+ #define SCHAN_INVALID_HANDLE ~0UL
+
+ enum schan_handle_type
