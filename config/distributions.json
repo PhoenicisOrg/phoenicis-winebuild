@@ -49,7 +49,7 @@
     ],
     "patches": [
       {
-        "name": "secur32-make_supported_protocols_non_static",
+        "name": "secur32-proton-fix-build-on-macos",
         "operatingSystems": ["darwin"]
       }
     ]
