@@ -19,6 +19,7 @@ class Container:
         self.environment = environment
         self._logfile = None
         self._output_callback = lambda line: print(line, end='')
+        self.containerEnvironmentVariables = {}
         self.with_docker_client(DockerClient.from_env())
 
     def with_output_callback(self, output_callback):
@@ -36,6 +37,9 @@ class Container:
     def start(self):
         self.container = self.docker_client.client.containers.run(self.environment.full_name(), detach=True,
                                                                   stdin_open=True, tty=True)
+
+    def env(self, key, value):
+        self.containerEnvironmentVariables[key] = value
 
     def run(self, command, workdir=None):
         buffer = LineBuffer()
@@ -60,8 +64,15 @@ class Container:
 
         try:
             resp = self.docker_client.api_client.exec_create(
-                self.container.id, command, stdout=True, stderr=True, stdin=False, tty=False,
-                privileged=True, user='', environment=None,
+                self.container.id,
+                command,
+                stdout=True,
+                stderr=True,
+                stdin=False,
+                tty=False,
+                privileged=True,
+                user='',
+                environment=self.containerEnvironmentVariables,
                 workdir=workdir
             )
             exec_output = self.docker_client.api_client.exec_start(
