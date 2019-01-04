@@ -10,4 +10,4 @@ class AddProtonIncludes(AbstractHook):
 
     def patch(self, container, operating_system, arch, version, distribution):
         container.run(["git", "clone", "--progress", "https://github.com/ValveSoftware/Proton/", "/root/proton"])
-        container.run(["export", "C_INCLUDE_PATH=/root/proton/contrib/include"])
+        container.env("C_INCLUDE_PATH", "/root/proton/contrib/include")
