@@ -37,5 +37,12 @@
       }
     ],
     "patches": []
+  },
+  {
+    "name": "proton",
+    "extends": "",
+    "source": "https://github.com/ValveSoftware/wine",
+    "hooks": [],
+    "patches": []
   }
 ]
