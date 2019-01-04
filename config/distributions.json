@@ -42,7 +42,11 @@
     "name": "proton",
     "extends": "",
     "source": "https://github.com/ValveSoftware/wine",
-    "hooks": [],
+    "hooks": [
+      {
+        "template": "proton.AddProtonIncludes"
+      }
+    ],
     "patches": []
   }
 ]
