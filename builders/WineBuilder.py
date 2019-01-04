@@ -6,6 +6,7 @@ from hooks import AbstractHook
 
 from typing import List
 
+
 class WineBuilder:
     def __init__(self, container: Container, patches=None, hooks=None):
         self.container = container
@@ -19,14 +20,15 @@ class WineBuilder:
 
         self._apply_hooks("after-git", operating_system, arch, version, distribution)
 
-        self._apply_patches()
+        self._apply_patches(operating_system)
 
     def _apply_hooks(self, event, operating_system, arch, version, distribution):
         for hook in self.hooks:
             if hook.event() == event:
                 hook.patch(self.container, operating_system, arch, version, distribution)
 
-    def build(self, operating_system, arch, version, distribution="upstream", repository="https://github.com/wine-mirror/wine"):
+    def build(self, operating_system, arch, version, distribution="upstream",
+              repository="https://github.com/wine-mirror/wine"):
         script = "builders/scripts/builder_%s_%s_wine" % (operating_system, arch)
         self.prepare(operating_system, arch, version, distribution, repository)
         self.container.run_script(script)
@@ -39,9 +41,13 @@ class WineBuilder:
             run(["tar", "xf", tmp_directory + "/archive.tar.gz", "-C", tmp_directory])
             run(["tar", "-C", tmp_directory + "/wine", "-czvf", local_file, "./"])
 
-    def _apply_patches(self):
+    def _apply_patches(self, operating_system):
         for patch in self.patches:
-            self._apply_patch(patch)
+            if type(patch) == str:
+                self._apply_patch(patch)
+            if type(patch == dict):
+                if operating_system in patch["operatingSystems"]:
+                    self._apply_patch(patch["name"])
 
     def _apply_patch(self, patch):
         self.container.run(["mkdir", "-p", "/root/patches"])

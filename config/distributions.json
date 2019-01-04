@@ -48,7 +48,10 @@
       }
     ],
     "patches": [
-      "secur32-make_supported_protocols_non_static"
+      {
+        "name": "secur32-make_supported_protocols_non_static",
+        "operatingSystems": ["darwin"]
+      }
     ]
   }
 ]
