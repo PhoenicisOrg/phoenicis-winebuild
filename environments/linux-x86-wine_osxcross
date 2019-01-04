@@ -86,3 +86,7 @@ COPY ms_hook_prologue/install_clang_ms_hook_prologue_support.sh /root/ms_hook_pr
 ## Removing preinstalled wine libs to prevent conflict
 RUN rm /root/osxcross/target/macports/pkgs/opt/local/lib/libwine.*
 RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/lib/wine
+
+## SDL 2
+# FIXME: Install 64bits and combine
+RUN env MACOSX_DEPLOYMENT_TARGET=10.6 osxcross-macports -32 install libsdl2
