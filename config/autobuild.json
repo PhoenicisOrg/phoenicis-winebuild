@@ -1,0 +1,7 @@
+{
+  "watched": [{
+    "distribution": ["upstream", "staging"],
+    "operatingSystem": ["linux", "darwin"],
+    "arch": ["x86", "amd64"]
+  }]
+}
