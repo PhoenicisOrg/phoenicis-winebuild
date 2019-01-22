@@ -24,7 +24,6 @@ Phoenicis Winebuild can:
 
 Ensure that your current user belongs to the docker group. You might need to restart your session
 
-
 ### macOS user
 -   Install Docker
 -   Install [homebrew](https://brew.sh/)
