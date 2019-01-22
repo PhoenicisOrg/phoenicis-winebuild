@@ -26,10 +26,10 @@ Ensure that your current user belongs to the docker group. You might need to res
 
 
 ### macOS user
-- Install Docker
-- Install [homebrew](https://brew.sh/)
-- brew install Python3
-- pip3 install docker
+-   Install Docker
+-   Install [homebrew](https://brew.sh/)
+-   brew install Python3
+-   pip3 install docker
 
 ### OSX targeted builds
 
