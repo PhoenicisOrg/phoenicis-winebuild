@@ -26,7 +26,7 @@ Ensure that your current user belongs to the docker group. You might need to res
 
 ### OSX targeted builds
 
-You need to extract Mac OS 10.8 SDK from XCode 4, compress it into a .tar.xz file and place it to darwin/SDK directory  
+You need to extract Mac OS 10.11 SDK from XCode 9, compress it into a .tar.xz file and place it to darwin/SDK directory  
 
 ## How to use
 
