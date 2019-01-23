@@ -24,16 +24,26 @@ Phoenicis Winebuild can:
 
 Ensure that your current user belongs to the docker group. You might need to restart your session
 
+### macOS user
+-   Install Docker
+-   Install [homebrew](https://brew.sh/)
+-   brew install Python3
+-   pip3 install docker
+
 ### OSX targeted builds
 
-You need to extract Mac OS 10.8 SDK from XCode 4, compress it into a .tar.xz file and place it to darwin/SDK directory  
+You need to extract Mac OS 10.11 SDK from XCode 9, compress it into a .tar.xz file and place it to darwin/SDK directory  
 
 ## How to use
 
-### Basic usage
+### Basic Usage Linux
 
 After setup, run examples/interactive_builder.py
    PYTHONPATH="$PWD" python examples/interactive_builder.py  
+   
+### Basic Usage macOS
+After setup, run examples/interactive_builder.py
+   PYTHONPATH="$PWD" python3 examples/interactive_builder.py  
 
 ### Key concepts
 
