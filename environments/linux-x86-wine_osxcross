@@ -20,17 +20,17 @@ ENV MACOSX_DEPLOYMENT_TARGET="10.11"
 RUN mkdir -p /root/osxcross/target/macports
 RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 
-# RUN osxcross-macports -32 fakeinstall -v pulseaudio
+RUN osxcross-macports -universal fakeinstall -v pulseaudio
 
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
 # This will prevent wine-devel from installing it
-RUN env osxcross-macports fakeinstall ncurses
+RUN env osxcross-macports -universal fakeinstall ncurses
 
-RUN osxcross-macports -32 install -v wine-devel
-RUN osxcross-macports -32 install gnutls-dev
+RUN osxcross-macports -universal install -v wine-devel
+RUN osxcross-macports -universal install gnutls
 # RUN env MACOSX_DEPLOYMENT_TARGET=10.12 osxcross-macports install MoltenVK
 
-### NCurses
+### NCurses Source code
 # We need to build manually ncurses so that TERMINFO is not set to /opt/local/share/terminfo to avoid
 # terminals database is inaccessible error
 RUN mkdir /root/ncurses
@@ -40,11 +40,26 @@ RUN tar -xvf  ncurses-6.1.tar.gz
 WORKDIR /root/ncurses/ncurses-6.1
 ENV FRAMEWORK="10.11"
 RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
+
+### NCurses 32Bit
+RUN mkdir /root/osxcross/target/macports/pkgs/opt/local/lib32
 ENV CC_OSX="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
 RUN env CC="$CC_OSX" ./configure --host i386-apple-darwin15 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
 RUN env CC="$CC_OSX" make -j 4
 RUN env CC="$CC_OSX" make install
 RUN rm "/root/osxcross/target/bin/strip"
+RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib /root/osxcross/target/macports/pkgs/opt/local/lib32/
+
+### NCurses 64Bit
+RUN ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
+RUN env CC="$CC_OSX" make clean
+RUN mkdir /root/osxcross/target/macports/pkgs/opt/local/lib64
+ENV CC_OSX="clang -O3 -target x86_64-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+RUN env CC="$CC_OSX" ./configure --host x86_64-apple-darwin15 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
+RUN env CC="$CC_OSX" make -j 4
+RUN env CC="$CC_OSX" make install
+RUN rm "/root/osxcross/target/bin/strip"
+RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/
 
 ### Vulkan
 WORKDIR /root/
