@@ -61,6 +61,9 @@ RUN env CC="$CC_OSX" make install
 RUN rm "/root/osxcross/target/bin/strip"
 RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/
 
+### Merge the NCurses into a single file
+RUN x86_64-apple-darwin15-lipo /root/osxcross/target/macports/pkgs/opt/local/lib32/libncurses.6.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/libncurses.6.dylib -output /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib -create
+
 ### Vulkan
 WORKDIR /root/
 RUN wget https://sdk.lunarg.com/sdk/download/1.1.92.1/mac/vulkansdk-macos-1.1.92.1.tar.gz
