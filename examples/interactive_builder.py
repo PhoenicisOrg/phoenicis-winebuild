@@ -17,7 +17,7 @@ version = input_from_choices([version["name"] for version in WineVersionFetcher(
 
 arch = input_from_choices(["x86", "amd64"], "Choose an architecture: ")
 os = input_from_choices(["linux", "darwin"], "Choose an OS: ")
-distribution = input_from_choices(["upstream", "staging"], "Choose a distribution: ")
+distribution = input_from_choices(["upstream", "staging", "cx", "dos_support", "proton"], "Choose a distribution: ")
 
 builder = PhoenicisWinePackageCreator()
 
