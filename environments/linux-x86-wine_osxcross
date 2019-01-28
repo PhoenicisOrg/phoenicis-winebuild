@@ -30,6 +30,10 @@ RUN osxcross-macports -universal install -v wine-devel
 RUN osxcross-macports -universal install gnutls
 # RUN env MACOSX_DEPLOYMENT_TARGET=10.12 osxcross-macports install MoltenVK
 
+# Lets make folders to keep compiled libs inside
+RUN mkdir /root/osxcross/target/macports/pkgs/opt/local/lib32
+RUN mkdir /root/osxcross/target/macports/pkgs/opt/local/lib64
+
 ### NCurses Source code
 # We need to build manually ncurses so that TERMINFO is not set to /opt/local/share/terminfo to avoid
 # terminals database is inaccessible error
@@ -39,10 +43,9 @@ RUN wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.1.tar.gz
 RUN tar -xvf  ncurses-6.1.tar.gz
 WORKDIR /root/ncurses/ncurses-6.1
 ENV FRAMEWORK="10.11"
-RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
 
 ### NCurses 32Bit
-RUN mkdir /root/osxcross/target/macports/pkgs/opt/local/lib32
+RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
 ENV CC_OSX="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
 RUN env CC="$CC_OSX" ./configure --host i386-apple-darwin15 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
 RUN env CC="$CC_OSX" make -j 4
@@ -51,9 +54,8 @@ RUN rm "/root/osxcross/target/bin/strip"
 RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib /root/osxcross/target/macports/pkgs/opt/local/lib32/
 
 ### NCurses 64Bit
-RUN ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
 RUN env CC="$CC_OSX" make clean
-RUN mkdir /root/osxcross/target/macports/pkgs/opt/local/lib64
+RUN ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
 ENV CC_OSX="clang -O3 -target x86_64-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
 RUN env CC="$CC_OSX" ./configure --host x86_64-apple-darwin15 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
 RUN env CC="$CC_OSX" make -j 4
@@ -63,6 +65,39 @@ RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib /roo
 
 ### Merge the NCurses into a single file
 RUN x86_64-apple-darwin15-lipo /root/osxcross/target/macports/pkgs/opt/local/lib32/libncurses.6.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/libncurses.6.dylib -output /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib -create
+
+### SDL2 Source code
+# We need to build manually SDL2 as macports does not have a universal version for download but we need one.
+RUN mkdir /root/sdl2
+WORKDIR /root/sdl2
+RUN wget https://www.libsdl.org/release/SDL2-2.0.9.tar.gz
+RUN tar -xvf  SDL2-2.0.9.tar.gz
+WORKDIR /root/sdl2/SDL2-2.0.9
+ENV FRAMEWORK="10.11"
+
+### SDL2 32Bit
+RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
+ENV CC_OSX="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+RUN env CC="$CC_OSX" ./configure --host i386-apple-darwin15  --prefix="/root/osxcross/target/macports/pkgs/opt/local"
+RUN env CC="$CC_OSX" make -j 4
+RUN env CC="$CC_OSX" make install-hdrs
+RUN env CC="$CC_OSX" make install-lib
+RUN rm "/root/osxcross/target/bin/strip"
+RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libSDL2-2.0.0.dylib /root/osxcross/target/macports/pkgs/opt/local/lib32/
+
+### SDL2 64Bit
+RUN ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
+RUN env CC="$CC_OSX" make clean
+ENV CC_OSX="clang -O3 -target x86_64-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+RUN env CC="$CC_OSX" ./configure --host x86_64-apple-darwin15 --prefix="/root/osxcross/target/macports/pkgs/opt/local"
+RUN env CC="$CC_OSX" make -j 4
+RUN env CC="$CC_OSX" make install-hdrs
+RUN env CC="$CC_OSX" make install-lib
+RUN rm "/root/osxcross/target/bin/strip"
+RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libSDL2-2.0.0.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/
+
+### Merge the SDL2 into a single file
+RUN x86_64-apple-darwin15-lipo /root/osxcross/target/macports/pkgs/opt/local/lib32/libSDL2-2.0.0.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/libSDL2-2.0.0.dylib -output /root/osxcross/target/macports/pkgs/opt/local/lib/libSDL2-2.0.0.dylib -create
 
 ### Vulkan
 WORKDIR /root/
@@ -104,7 +139,3 @@ COPY ms_hook_prologue/install_clang_ms_hook_prologue_support.sh /root/ms_hook_pr
 ## Removing preinstalled wine libs to prevent conflict
 RUN rm /root/osxcross/target/macports/pkgs/opt/local/lib/libwine.*
 RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/lib/wine
-
-## SDL 2
-# FIXME: Install 64bits and combine
-RUN env MACOSX_DEPLOYMENT_TARGET=10.6 osxcross-macports -32 install libsdl2
