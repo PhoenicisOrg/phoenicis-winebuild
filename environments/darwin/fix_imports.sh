@@ -44,3 +44,6 @@ for lib in *.dylib; do fix_imports "$lib"; done
 
 cd "$1/lib/wine" || exit 2
 for lib in *.so; do fix_imports "$lib"; done
+
+cd "$1/lib64/wine" || exit 2
+for lib in *.so; do fix_imports "$lib"; done
