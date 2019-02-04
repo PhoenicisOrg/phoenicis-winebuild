@@ -53,6 +53,7 @@ make install DESTDIR="/root/wine" || exit 7
 
 ## Copying libs
 cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
+rm /root/wine/lib/libpython2.7.dylib
 
 ## Fixing imports
 echo "[STAGE 8/8] Fixing imports"
