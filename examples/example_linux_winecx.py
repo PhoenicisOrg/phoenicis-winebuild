@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from wine.WineVersionFetcher import WineVersionFetcher
 from packagers.PhoenicisWinePackageCreator import PhoenicisWinePackageCreator
 
 builder = PhoenicisWinePackageCreator()
