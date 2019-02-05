@@ -114,27 +114,12 @@ You have two example python files (example_linux.py and example_darwin.py). If y
 #### Examples
 
     #!/usr/bin/env python
-    from core.Container import Container
-    from core.Environment import Environment
-    from builders.WineBuilder import WineBuilder
+    from packagers.PhoenicisWinePackageCreator import PhoenicisWinePackageCreator
 
-    ## Creates an environment that is suitable to compile darwin-x86 versiuon of wine
-    environment = Environment("wine", "darwin", "x86")
-    ## Build the environment
-    environment.build()
-
-    ## Starts a new container inside our environment
-    container = Container(environment)
-    container.start()
-
-    ## Creates a builder inside our container
-    builder = WineBuilder(container)
-
-    ## Builds wine 3.0.3 with the script builders/builder_darwin_x86_wine
-    builder.build("darwin", "x86", "wine-3.0.3")
-
-    ## Archive the compiled binaries into wine-3.0.3-darwin.tar.gz
-    builder.archive("wine-3.0.3-darwin.tar.gz")
+    builder = PhoenicisWinePackageCreator()
+    
+    ## Builds wine 4.0 x86 for darwin aka macOS
+    builder.build("upstream", "wine-4.0", "darwin", "x86")
 
 ## Troubleshooting
 
