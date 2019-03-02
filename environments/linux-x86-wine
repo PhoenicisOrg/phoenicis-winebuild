@@ -31,3 +31,14 @@ RUN mkdir -p /root/ossv4
 WORKDIR /root/ossv4
 RUN wget http://deb.debian.org/debian/pool/main/o/oss4/oss4-dev_4.2-build2010-5_all.deb
 RUN dpkg -i *.deb
+
+#Faudio
+RUN sudo apt-get install cmake
+RUN mkdir -p /root/faudio
+WORKDIR /root/faudio
+RUN git clone https://github.com/FNA-XNA/FAudio
+RUN mkdir -p /root/faudio/build
+WORKDIR /root/faudio/build
+RUN cmake /root/faudio/FAudio
+RUN make
+RUN make install
