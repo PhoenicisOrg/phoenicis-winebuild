@@ -10,7 +10,6 @@ RUN apt-get -y install libkrb5-dev opencl-dev libpcap-dev libsane-dev libv4l-dev
 RUN apt-get -y install git
 
 # Wine Staging
-RUN apt-get -y install libsdl2-dev
 RUN apt-get -y install gtk3.0-dev libgtk-3-dev libva-dev
 RUN apt-get -y install libavcodec-dev
 
