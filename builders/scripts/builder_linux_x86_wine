@@ -5,7 +5,7 @@ export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/lib/"
 
 cd "/root/wine-git"
 echo "[STAGE 1/4] Configure"
-./configure --prefix="/" || exit 1
+./configure --prefix="/" LFFLAGS="-L/usr/local/lib" || exit 1
 
 echo "[STAGE 2/4] Make"
 numberOfSteps="$(make __builddeps__ --no-print-directory -nrRk 2> /dev/null|wc -l)"
