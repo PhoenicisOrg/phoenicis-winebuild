@@ -1,0 +1,115 @@
+#!/bin/bash
+
+fetch_lib() {
+    cp -d "$1" "/root/runtime/lib/"
+}
+
+mkdir -p /root/runtime/lib
+
+cd "/usr/lib/i386-linux-gnu/"
+fetch_lib libcrypto*.so*
+fetch_lib libpangocairo*.so*
+fetch_lib libxcb-sync*.so*
+fetch_lib libp11-kit*.so*
+fetch_lib libicuio*.so*
+fetch_lib libidn*.so*
+fetch_lib libtheoraenc*.so*
+fetch_lib libgnutl*.so*
+fetch_lib libgstfft*.so*
+fetch_lib libtheora*.so*
+fetch_lib libogg*.so*
+fetch_lib libpcre16*.so*
+fetch_lib libgsttag*.so*
+fetch_lib libgstallocators*.so*
+fetch_lib libgstcheck*.so*
+fetch_lib libpangoxft*.so*
+fetch_lib libfreetype*.so*
+fetch_lib libgstreamer*.so*
+fetch_lib libicui18n*.so*
+fetch_lib libpangoft2*.so*
+fetch_lib libgstcontroller*.so*
+fetch_lib libcairo-script-interpreter*.so*
+fetch_lib libicuuc*.so*
+fetch_lib libfontconfig*.so*
+cp /usr/local/lib/libFAudio*.so* "/root/runtime/lib/"
+fetch_lib libgnutls*.so*
+fetch_lib libpango*.so*
+fetch_lib libgstbase*.so*
+fetch_lib libltdl*.so*
+fetch_lib libp11-kit*.so*
+fetch_lib libpcre*.so*
+fetch_lib libvorbisenc*.so*
+fetch_lib libgstrtsp*.so*
+fetch_lib libgettext*.so*
+fetch_lib libgstriff*.so*
+fetch_lib libharfbuzz*.so*
+fetch_lib libgstcontroller*.so*
+fetch_lib libgdbm*.so*
+fetch_lib libgstrtp*.so*
+fetch_lib libpcap*.so*
+fetch_lib libpcre*.so*
+fetch_lib libgstnet*.so*
+fetch_lib libicutu*.so*
+fetch_lib libpng*.so*
+fetch_lib libidn*.so*
+fetch_lib libgmodule*.so*
+fetch_lib libvorbisenc*.so*
+fetch_lib libxml*.so*
+fetch_lib libcairo-gobject*.so*
+fetch_lib libgirepository*.so*
+fetch_lib libunistring*.so*
+fetch_lib libgraphite*.so*
+fetch_lib libicutest*.so*
+cp /usr/lib/libSDL2*.so* "/root/runtime/lib/"
+fetch_lib libtheoradec*.so*
+fetch_lib libtasn1*.so*
+fetch_lib libtiff*.so*
+fetch_lib libgraphite*.so*
+fetch_lib libgstvideo*.so*
+fetch_lib liborc*.so*
+fetch_lib libopenal*.so*
+fetch_lib libSM*.so*
+fetch_lib libpangoxft*.so*
+fetch_lib libnettle*.so*
+fetch_lib liblcms2*.so*
+fetch_lib libcurses*.so*
+fetch_lib libffi*.so*
+fetch_lib libOSMesa*.so*
+fetch_lib libXmu*.so*
+fetch_lib libpixman*.so*
+fetch_lib libXmuu*.so*
+fetch_lib libicutu*.so*
+fetch_lib libogg*.so*
+fetch_lib libexslt*.so*
+fetch_lib libform*.so*
+fetch_lib libicudata*.so*
+fetch_lib libhogweed*.so*
+fetch_lib libgstrtp*.so*
+fetch_lib libssl*.so*
+fetch_lib libgstbase*.so*
+fetch_lib liblcms2*.so*
+fetch_lib libopus*.so*
+fetch_lib libpango*.so*
+fetch_lib libncurses*.so*
+fetch_lib libjpeg*.so*
+fetch_lib libsqlite3*.so*
+
+
+
+## Copying libs
+cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/runtime/lib"
+rm /root/runtime/lib/libpython2.7.dylib
+
+## Fixing imports
+bash /root/fix_imports.sh "/root/runtime"
+
+## A dependency is missing for gnutls
+cd "/root/runtime/lib"
+ln -s "libidn.12.dylib" "libidn.11.dylib"
+
+## To make package smaller, we are only going to keep i386 part of the libraries
+for file in *.dylib; do
+  [ ! -L "$file" ] && i386-apple-darwin15-lipo -extract i386 "$file" -o "$file" 2> /dev/null
+done
+
+echo "[END]"
