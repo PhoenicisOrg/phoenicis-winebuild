@@ -45,7 +45,6 @@ RUN make
 RUN make install
 
 # Faudio
-RUN apt-get -y install libsdl2-mixer
 RUN apt-get update
 RUN apt-get -y install cmake
 RUN mkdir -p /root/faudio
