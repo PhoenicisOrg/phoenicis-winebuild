@@ -40,6 +40,6 @@ WORKDIR /root/faudio
 RUN git clone https://github.com/FNA-XNA/FAudio
 RUN mkdir -p /root/faudio/build
 WORKDIR /root/faudio/build
-RUN cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr /root/faudio/FAudio
+RUN cmake /root/faudio/FAudio
 RUN make
 RUN make install
