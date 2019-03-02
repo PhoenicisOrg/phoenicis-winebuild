@@ -29,7 +29,7 @@ RUN dpkg -i *.deb
 #OSSv4
 RUN mkdir -p /root/ossv4
 WORKDIR /root/ossv4
-RUN wget http://deb.debian.org/debian/pool/main/o/oss4/oss4-dev_4.2-build2010-5_all.deb
+RUN wget http://deb.debian.org/debian/pool/main/o/oss4/oss4-dev_4.2-build2010-2_all.deb
 RUN dpkg -i *.deb
 
 # SDL (for FAudio)
