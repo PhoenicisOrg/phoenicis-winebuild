@@ -1,4 +1,7 @@
 #!/bin/bash
+ln -s "/root/osxcross/target/bin/i386-apple-darwin15-install_name_tool" "/root/osxcross/target/bin/install_name_tool"
+
+
 mkdir -p /root/runtime/lib
 cd "/root/runtime/lib/"
 
