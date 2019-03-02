@@ -82,6 +82,7 @@ RUN env CC="$CC_OSX" ./configure --host i386-apple-darwin15  --prefix="/root/osx
 RUN env CC="$CC_OSX" make -j 4
 RUN env CC="$CC_OSX" make install-hdrs
 RUN env CC="$CC_OSX" make install-lib
+RUN env CC="$CC_OSX" make install-data
 RUN rm "/root/osxcross/target/bin/strip"
 RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libSDL2-2.0.0.dylib /root/osxcross/target/macports/pkgs/opt/local/lib32/
 
@@ -93,6 +94,7 @@ RUN env CC="$CC_OSX" ./configure --host x86_64-apple-darwin15 --prefix="/root/os
 RUN env CC="$CC_OSX" make -j 4
 RUN env CC="$CC_OSX" make install-hdrs
 RUN env CC="$CC_OSX" make install-lib
+RUN env CC="$CC_OSX" make install-data
 RUN rm "/root/osxcross/target/bin/strip"
 RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libSDL2-2.0.0.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/
 
@@ -136,6 +138,32 @@ COPY ms_hook_prologue/*.patch /root/ms_hook_prologue/
 COPY ms_hook_prologue/install_clang_ms_hook_prologue_support.sh /root/ms_hook_prologue/
 # RUN bash /root/install_clang_ms_hook_prologue_support.sh
 
+# Faudio
+RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ld" "/root/osxcross/target/bin/ld"
+RUN apt-get -y install cmake
+RUN mkdir -p /root/faudio
+WORKDIR /root/faudio
+RUN git clone https://github.com/FNA-XNA/FAudio
+RUN mkdir -p /root/faudio/build64
+RUN mkdir -p /root/faudio/build32
+RUN mkdir -p /root/faudio/build
+WORKDIR /root/faudio/build64
+RUN env SDL2_DIR=/root/osxcross/target/macports/pkgs/opt/local/lib/cmake/SDL2 env CFLAGS="-O3 -target x86_64-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX10.11.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/" cmake /root/faudio/FAudio -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang -DBUILD_CPP=OFF -DCMAKE_OSX_SYSROOT=/root/osxcross/target/SDK/MacOSX10.11.sdk  -DCMAKE_SYSTEM_NAME=Darwin -DCMAKE_FIND_ROOT_PATH=/root/osxcross/target/macports/pkgs/opt/local/
+RUN make
+RUN make install DESTDIR=install/
+RUN cp install/usr/local/include/* /root/osxcross/target/macports/pkgs/opt/local/include
+
+WORKDIR /root/faudio/build32
+RUN env SDL2_DIR=/root/osxcross/target/macports/pkgs/opt/local/lib/cmake/SDL2 env CFLAGS="-O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX10.11.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/" cmake /root/faudio/FAudio -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang -DBUILD_CPP=OFF -DCMAKE_OSX_SYSROOT=/root/osxcross/target/SDK/MacOSX10.11.sdk  -DCMAKE_SYSTEM_NAME=Darwin -DCMAKE_FIND_ROOT_PATH=/root/osxcross/target/macports/pkgs/opt/local/
+RUN make
+WORKDIR /root/faudio/build
+RUN x86_64-apple-darwin15-lipo ../build32/libFAudio.0.19.03.dylib ../build64/libFAudio.0.19.03.dylib -output libFAudio.0.19.03.dylib -create
+RUN ln -s libFAudio.0.19.03.dylib libFAudio.dylib
+RUN ln -s libFAudio.0.19.03.dylib libFAudio.0.dylib
+RUN cp -d *.dylib /root/osxcross/target/macports/pkgs/opt/local/lib
+RUN rm "/root/osxcross/target/bin/ld"
+
 ## Removing preinstalled wine libs to prevent conflict
 RUN rm /root/osxcross/target/macports/pkgs/opt/local/lib/libwine.*
 RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/lib/wine
+
