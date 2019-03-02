@@ -21,6 +21,7 @@ RUN apt-get -y install libavcodec-dev
 # VKD3D
 RUN mkdir -p /root/vkd3d-64
 WORKDIR /root/vkd3d-64
+RUN wget http://cdn-fastly.deb.debian.org/debian/pool/main/v/vulkan/libvulkan1_1.1.70+dfsg1-1~bpo9+1_amd64.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-3_amd64.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-3_amd64.deb
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-3_amd64.deb
@@ -71,6 +72,7 @@ RUN echo apt-get -y install libvulkan-dev:i386 >> /root/install_32bits_dependenc
 # VKD3D
 RUN mkdir -p /root/vkd3d-32
 WORKDIR /root/vkd3d-32
+RUN wget http://cdn-fastly.deb.debian.org/debian/pool/main/v/vulkan/libvulkan1_1.1.70+dfsg1-1~bpo9+1_i386.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-3_i386.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-3_i386.deb
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-3_i386.deb
