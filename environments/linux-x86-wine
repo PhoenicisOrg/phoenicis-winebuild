@@ -33,12 +33,13 @@ RUN wget http://deb.debian.org/debian/pool/main/o/oss4/oss4-dev_4.2-build2010-5_
 RUN dpkg -i *.deb
 
 #Faudio
-RUN sudo apt-get install cmake
+RUN apt-get update
+RUN apt-get -y install cmake
 RUN mkdir -p /root/faudio
 WORKDIR /root/faudio
 RUN git clone https://github.com/FNA-XNA/FAudio
 RUN mkdir -p /root/faudio/build
 WORKDIR /root/faudio/build
-RUN cmake /root/faudio/FAudio
+RUN cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr /root/faudio/FAudio
 RUN make
 RUN make install
