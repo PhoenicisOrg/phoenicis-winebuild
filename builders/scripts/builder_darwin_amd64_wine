@@ -14,8 +14,6 @@ echo '#!/bin/bash' > winebuild
 echo "$PWD/winebuild.real -m32 \"\$@\"" >> winebuild
 chmod +x winebuild
 
-
-
 ####### Build wine
 ### Environment preparation
 mkdir -p "/root/wine-git/wine64-build/"
@@ -73,12 +71,20 @@ make install DESTDIR="/root/wine" || exit 10
 ## Copying libs
 echo "[STAGE 10/11] Copying libs"
 cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/wine/lib"
-echo "[END]"
+rm /root/wine/lib/libpython2.7.dylib
 
 ## Fixing imports
 echo "[STAGE 11/11] Fixing imports"
 bash /root/fix_imports.sh "/root/wine"
 
+## Make symlinks in /lib64 since wine64 only checks there
+cd "/root/wine/lib64"
+ln -s ../lib/*.dylib .
+
 ## A dependency is missing for gnutls
 cd "/root/wine/lib"
 ln -s "libidn.12.dylib" "libidn.11.dylib"
+cd "/root/wine/lib64"
+ln -s "../lib/libidn.12.dylib" "libidn.11.dylib"
+
+echo "[END]"
