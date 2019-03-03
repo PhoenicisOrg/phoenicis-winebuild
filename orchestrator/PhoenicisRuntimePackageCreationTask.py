@@ -15,7 +15,7 @@ class PhoenicisRuntimePackageCreationTask(Task):
         Task.__init__(self)
 
     def description(self):
-        return "Phoenicis Wine Runtime Package Creation: %s / %s" % (self.os, self.arch)
+        return "Phoenicis Wine Runtime Package Creation: %s / %s" % (self.operatingSystem, self.arch)
 
     def argument(self):
         return {
@@ -33,7 +33,7 @@ class PhoenicisRuntimePackageCreationTask(Task):
         self._progress = progress
 
     def handle(self):
-        self.phoencisRuntimePackager.build(self.distribution, self.version, self.os, self.arch)
+        self.phoencisRuntimePackager.build(self.operatingSystem, self.arch)
 
     def _building_hook(self, line):
         self.builder_stage_reader.feed(line)
