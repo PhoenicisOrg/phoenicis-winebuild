@@ -93,6 +93,17 @@ fetch_lib libpango*.so*
 fetch_lib libncurses*.so*
 fetch_lib libjpeg*.so*
 fetch_lib libsqlite3*.so*
+fetch_lib libavcodec*.so*
+fetch_lib libavutil*.so*
+fetch_lib libvk3d*.so*
+fetch_lib libgphoto2*.so*
+fetch_lib libmpg123*.so*
+fetch_lib libexif*.so*
+fetch_lib libOpenCL*.so*
+fetch_lib libpulse*.so*
+fetch_lib libFLAC*.so*
+fetch_lib libsasl2*.so*
+fetch_lib libheimbase*.so*
 
 
 echo "[END]"
