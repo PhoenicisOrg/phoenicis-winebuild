@@ -35,7 +35,7 @@ class PhoenicisRuntimeWinePackageCreator:
             container.start()
             builder = RuntimeBuilder(container)
             builder.build(operating_system, arch)
-            builder.archive(runtime_path + "/runtime-%-%.tar.gz" % (operating_system, arch))
+            builder.archive(runtime_path + ("/runtime-%s-%s.tar.gz" % (operating_system, arch)))
             builder.checksum()
         finally:
             print("Cleaning container")
