@@ -13,3 +13,4 @@ builder = RuntimeBuilder(container)
 builder.build("linux", "x86")
 builder.archive("runtime.tar.gz")
 
+container.clean()

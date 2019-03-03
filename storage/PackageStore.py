@@ -17,6 +17,14 @@ class PackageStore:
         except KeyError:
             return os.path.join(os.path.dirname(__file__), "../dist/logs")
 
+    @staticmethod
+    def get_runtimes_path():
+        try:
+            return os.environ["RUNTIME_PATH"]
+        except KeyError:
+            return os.path.join(os.path.dirname(__file__), "../dist/runtimes")
+
+
     def fetch_distributions(self):
         try:
             return os.listdir(self.get_binaries_path())
