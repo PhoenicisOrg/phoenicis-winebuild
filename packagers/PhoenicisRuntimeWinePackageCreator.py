@@ -14,7 +14,7 @@ class PhoenicisRuntimeWinePackageCreator:
         self._output_callback = output_callback
         return self
 
-    def build(self, distribution, version, operating_system, arch):
+    def build(self, operating_system, arch):
         runtime_path = PackageStore.get_runtimes_path()
         pathlib.Path(runtime_path).mkdir(parents=True, exist_ok=True)
 
