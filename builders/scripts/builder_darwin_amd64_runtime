@@ -1,0 +1,17 @@
+#!/bin/bash
+
+mkdir -p /root/runtime/lib
+cd "/root/runtime/lib/"
+
+## Copying libs
+cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/runtime/lib"
+rm /root/runtime/lib/libpython2.7.dylib
+
+## Fixing imports
+bash /root/fix_imports.sh "/root/runtime"
+
+## A dependency is missing for gnutls
+cd "/root/runtime/lib"
+ln -s "libidn.12.dylib" "libidn.11.dylib"
+
+echo "[END]"
