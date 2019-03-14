@@ -77,14 +77,12 @@ rm /root/wine/lib/libpython2.7.dylib
 echo "[STAGE 11/11] Fixing imports"
 bash /root/fix_imports.sh "/root/wine"
 
-## Make symlinks in /lib64 since wine64 only checks there
-cd "/root/wine/lib64"
-ln -s ../lib/*.dylib .
-
 ## A dependency is missing for gnutls
 cd "/root/wine/lib"
 ln -s "libidn.12.dylib" "libidn.11.dylib"
+
+## Make symlinks in /lib64 since wine64 only checks there
 cd "/root/wine/lib64"
-ln -s "../lib/libidn.12.dylib" "libidn.11.dylib"
+ln -s ../lib/*.dylib .
 
 echo "[END]"
