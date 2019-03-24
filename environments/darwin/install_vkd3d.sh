@@ -4,8 +4,8 @@ git clone "https://source.winehq.org/git/vkd3d.git/" "/root/vkd3d"
 cd "/root/vkd3d"
 git checkout -f "vkd3d-1.1"
 
-export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vulkansdk-macos-1.1.92.1/macOS/include/:/root/SPIRV-Headers/include/:/root/SPIRV-Headers/include/spirv/"
-export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib:/root/vulkansdk-macos-1.1.92.1/macOS/lib/"
+export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vulkansdk-macos-1.1.101.0/macOS/include/:/root/SPIRV-Headers/include/:/root/SPIRV-Headers/include/spirv/"
+export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib:/root/vulkansdk-macos-1.1.101.0/macOS/lib/"
 export PATH="/root/wine-tools/tools/widl/:$PATH"
 
 ./autogen.sh || exit 1
