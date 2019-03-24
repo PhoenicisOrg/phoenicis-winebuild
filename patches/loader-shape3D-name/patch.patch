@@ -1,0 +1,18 @@
+diff --git a/loader/wine_info.plist.in b/loader/wine_info.plist.in
+index 6495b8f90f..b4f2f9861a 100644
+--- a/loader/wine_info.plist.in
++++ b/loader/wine_info.plist.in
+@@ -9,11 +9,11 @@
+     <key>CFBundleExecutable</key>
+     <string>wine</string>
+     <key>CFBundleIdentifier</key>
+-    <string>org.winehq.wine</string>
++    <string>org.portmyapps.shape3dx</string>
+     <key>CFBundleInfoDictionaryVersion</key>
+     <string>6.0</string>
+     <key>CFBundleName</key>
+-    <string>Wine</string>
++    <string>Shape3D X</string>
+     <key>CFBundlePackageType</key>
+     <string>APPL</string>
+     <key>CFBundleShortVersionString</key>
