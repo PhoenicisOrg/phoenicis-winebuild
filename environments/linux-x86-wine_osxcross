@@ -27,7 +27,7 @@ RUN osxcross-macports -universal fakeinstall -v pulseaudio
 RUN env osxcross-macports -universal fakeinstall ncurses
 
 RUN osxcross-macports -universal install -v wine-devel
-RUN osxcross-macports -universal install gnutls
+# RUN osxcross-macports -universal install gnutls
 # RUN env MACOSX_DEPLOYMENT_TARGET=10.12 osxcross-macports install MoltenVK
 
 # Lets make folders to keep compiled libs inside
