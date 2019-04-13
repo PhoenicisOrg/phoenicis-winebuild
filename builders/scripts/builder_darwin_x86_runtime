@@ -15,7 +15,7 @@ bash /root/fix_imports.sh "/root/runtime"
 
 ## A dependency is missing for gnutls
 cd "/root/runtime/lib"
-ln -s "libidn.12.dylib" "libidn.11.dylib"
+# ln -s "libidn.12.dylib" "libidn.11.dylib"
 
 ## To make package smaller, we are only going to keep i386 part of the libraries
 for file in *.dylib; do

@@ -61,7 +61,7 @@ bash /root/fix_imports.sh "/root/wine"
 
 ## A dependency is missing for gnutls
 cd "/root/wine/lib"
-ln -s "libidn.12.dylib" "libidn.11.dylib"
+# ln -s "libidn.12.dylib" "libidn.11.dylib"
 
 ## To make package smaller, we are only going to keep i386 part of the libraries
 cd "/root/wine/lib/"

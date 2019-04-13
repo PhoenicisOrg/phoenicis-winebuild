@@ -12,6 +12,6 @@ bash /root/fix_imports.sh "/root/runtime"
 
 ## A dependency is missing for gnutls
 cd "/root/runtime/lib"
-ln -s "libidn.12.dylib" "libidn.11.dylib"
+# ln -s "libidn.12.dylib" "libidn.11.dylib"
 
 echo "[END]"

@@ -79,7 +79,7 @@ bash /root/fix_imports.sh "/root/wine"
 
 ## A dependency is missing for gnutls
 cd "/root/wine/lib"
-ln -s "libidn.12.dylib" "libidn.11.dylib"
+# ln -s "libidn.12.dylib" "libidn.11.dylib"
 
 ## Make symlinks in /lib64 since wine64 only checks there
 cd "/root/wine/lib64"
