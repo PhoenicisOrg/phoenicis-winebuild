@@ -61,6 +61,7 @@ RUN make install
 
 #### 32 bits
 RUN echo "#/bin/bash" > /root/install_32bits_dependencies.sh
+RUN echo apt-get update >> /root/install_32bits_dependencies.sh
 RUN echo apt-get -y remove gir1.2-ibus-1.0:amd64 libsane-dev:amd64 >> /root/install_32bits_dependencies.sh
 RUN echo apt-get -y build-dep wine >> /root/install_32bits_dependencies.sh
 # Wine Staging
