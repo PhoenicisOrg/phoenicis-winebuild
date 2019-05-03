@@ -26,7 +26,7 @@ cp -d libpangoft2*.so* "/root/runtime/lib/"
 cp -d libgstcontroller*.so* "/root/runtime/lib/"
 cp -d libcairo-script-interpreter*.so* "/root/runtime/lib/"
 cp -d libicuuc*.so* "/root/runtime/lib/"
-cp -d libfontconfig*.so* "/root/runtime/lib/"
+# cp -d libfontconfig*.so* "/root/runtime/lib/" cannot find the right config file
 cp /usr/local/lib/libFAudio*.so* "/root/runtime/lib/"
 cp -d libgnutls*.so* "/root/runtime/lib/"
 cp -d libpango*.so* "/root/runtime/lib/"
