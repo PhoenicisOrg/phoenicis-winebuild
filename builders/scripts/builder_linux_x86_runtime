@@ -1,109 +1,105 @@
 #!/bin/bash
 
-fetch_lib() {
-    cp -d "$1" "/root/runtime/lib/"
-}
-
 mkdir -p /root/runtime/lib
 
 cd "/usr/lib/i386-linux-gnu/"
-fetch_lib libcrypto*.so*
-fetch_lib libpangocairo*.so*
-fetch_lib libxcb-sync*.so*
-fetch_lib libp11-kit*.so*
-fetch_lib libicuio*.so*
-fetch_lib libidn*.so*
-fetch_lib libtheoraenc*.so*
-fetch_lib libgnutl*.so*
-fetch_lib libgstfft*.so*
-fetch_lib libtheora*.so*
-fetch_lib libogg*.so*
-fetch_lib libpcre16*.so*
-fetch_lib libgsttag*.so*
-fetch_lib libgstallocators*.so*
-fetch_lib libgstcheck*.so*
-fetch_lib libpangoxft*.so*
-fetch_lib libfreetype*.so*
-fetch_lib libgstreamer*.so*
-fetch_lib libicui18n*.so*
-fetch_lib libpangoft2*.so*
-fetch_lib libgstcontroller*.so*
-fetch_lib libcairo-script-interpreter*.so*
-fetch_lib libicuuc*.so*
-fetch_lib libfontconfig*.so*
+cp -d libcrypto*.so* "/root/runtime/lib/"
+cp -d libpangocairo*.so* "/root/runtime/lib/"
+cp -d libxcb-sync*.so* "/root/runtime/lib/"
+cp -d libp11-kit*.so* "/root/runtime/lib/"
+cp -d libicuio*.so* "/root/runtime/lib/"
+cp -d libidn*.so* "/root/runtime/lib/"
+cp -d libtheoraenc*.so* "/root/runtime/lib/"
+cp -d libgnutl*.so* "/root/runtime/lib/"
+cp -d libgstfft*.so* "/root/runtime/lib/"
+cp -d libtheora*.so* "/root/runtime/lib/"
+cp -d libogg*.so* "/root/runtime/lib/"
+cp -d libpcre16*.so* "/root/runtime/lib/"
+cp -d libgsttag*.so* "/root/runtime/lib/"
+cp -d libgstallocators*.so* "/root/runtime/lib/"
+cp -d libgstcheck*.so* "/root/runtime/lib/"
+cp -d libpangoxft*.so* "/root/runtime/lib/"
+cp -d libfreetype*.so* "/root/runtime/lib/"
+cp -d libgstreamer*.so* "/root/runtime/lib/"
+cp -d libicui18n*.so* "/root/runtime/lib/"
+cp -d libpangoft2*.so* "/root/runtime/lib/"
+cp -d libgstcontroller*.so* "/root/runtime/lib/"
+cp -d libcairo-script-interpreter*.so* "/root/runtime/lib/"
+cp -d libicuuc*.so* "/root/runtime/lib/"
+cp -d libfontconfig*.so* "/root/runtime/lib/"
 cp /usr/local/lib/libFAudio*.so* "/root/runtime/lib/"
-fetch_lib libgnutls*.so*
-fetch_lib libpango*.so*
-fetch_lib libgstbase*.so*
-fetch_lib libltdl*.so*
-fetch_lib libp11-kit*.so*
-fetch_lib libpcre*.so*
-fetch_lib libvorbisenc*.so*
-fetch_lib libgstrtsp*.so*
-fetch_lib libgettext*.so*
-fetch_lib libgstriff*.so*
-fetch_lib libharfbuzz*.so*
-fetch_lib libgstcontroller*.so*
-fetch_lib libgdbm*.so*
-fetch_lib libgstrtp*.so*
-fetch_lib libpcap*.so*
-fetch_lib libpcre*.so*
-fetch_lib libgstnet*.so*
-fetch_lib libicutu*.so*
-fetch_lib libpng*.so*
-fetch_lib libidn*.so*
-fetch_lib libgmodule*.so*
-fetch_lib libvorbisenc*.so*
-fetch_lib libxml*.so*
-fetch_lib libcairo-gobject*.so*
-fetch_lib libgirepository*.so*
-fetch_lib libunistring*.so*
-fetch_lib libgraphite*.so*
-fetch_lib libicutest*.so*
+cp -d libgnutls*.so* "/root/runtime/lib/"
+cp -d libpango*.so* "/root/runtime/lib/"
+cp -d libgstbase*.so* "/root/runtime/lib/"
+cp -d libltdl*.so* "/root/runtime/lib/"
+cp -d libp11-kit*.so* "/root/runtime/lib/"
+cp -d libpcre*.so* "/root/runtime/lib/"
+cp -d libvorbisenc*.so* "/root/runtime/lib/"
+cp -d libgstrtsp*.so* "/root/runtime/lib/"
+cp -d libgettext*.so* "/root/runtime/lib/"
+cp -d libgstriff*.so* "/root/runtime/lib/"
+cp -d libharfbuzz*.so* "/root/runtime/lib/"
+cp -d libgstcontroller*.so* "/root/runtime/lib/"
+cp -d libgdbm*.so* "/root/runtime/lib/"
+cp -d libgstrtp*.so* "/root/runtime/lib/"
+cp -d libpcap*.so* "/root/runtime/lib/"
+cp -d libpcre*.so* "/root/runtime/lib/"
+cp -d libgstnet*.so* "/root/runtime/lib/"
+cp -d libicutu*.so* "/root/runtime/lib/"
+cp -d libpng*.so* "/root/runtime/lib/"
+cp -d libidn*.so* "/root/runtime/lib/"
+cp -d libgmodule*.so* "/root/runtime/lib/"
+cp -d libvorbisenc*.so* "/root/runtime/lib/"
+cp -d libxml*.so* "/root/runtime/lib/"
+cp -d libcairo-gobject*.so* "/root/runtime/lib/"
+cp -d libgirepository*.so* "/root/runtime/lib/"
+cp -d libunistring*.so* "/root/runtime/lib/"
+cp -d libgraphite*.so* "/root/runtime/lib/"
+cp -d libicutest*.so* "/root/runtime/lib/"
 cp /usr/lib/libSDL2*.so* "/root/runtime/lib/"
-fetch_lib libtheoradec*.so*
-fetch_lib libtasn1*.so*
-fetch_lib libtiff*.so*
-fetch_lib libgraphite*.so*
-fetch_lib libgstvideo*.so*
-fetch_lib liborc*.so*
-fetch_lib libopenal*.so*
-fetch_lib libSM*.so*
-fetch_lib libpangoxft*.so*
-fetch_lib libnettle*.so*
-fetch_lib liblcms2*.so*
-fetch_lib libcurses*.so*
-fetch_lib libffi*.so*
-fetch_lib libOSMesa*.so*
-fetch_lib libXmu*.so*
-fetch_lib libpixman*.so*
-fetch_lib libXmuu*.so*
-fetch_lib libicutu*.so*
-fetch_lib libogg*.so*
-fetch_lib libexslt*.so*
-fetch_lib libform*.so*
-fetch_lib libicudata*.so*
-fetch_lib libhogweed*.so*
-fetch_lib libgstrtp*.so*
-fetch_lib libssl*.so*
-fetch_lib libgstbase*.so*
-fetch_lib liblcms2*.so*
-fetch_lib libopus*.so*
-fetch_lib libpango*.so*
-fetch_lib libncurses*.so*
-fetch_lib libjpeg*.so*
-fetch_lib libsqlite3*.so*
-fetch_lib libavcodec*.so*
-fetch_lib libavutil*.so*
-fetch_lib libvk3d*.so*
-fetch_lib libgphoto2*.so*
-fetch_lib libmpg123*.so*
-fetch_lib libexif*.so*
-fetch_lib libOpenCL*.so*
-fetch_lib libpulse*.so*
-fetch_lib libFLAC*.so*
-fetch_lib libsasl2*.so*
-fetch_lib libheimbase*.so*
+cp -d libtheoradec*.so* "/root/runtime/lib/"
+cp -d libtasn1*.so* "/root/runtime/lib/"
+cp -d libtiff*.so* "/root/runtime/lib/"
+cp -d libgraphite*.so* "/root/runtime/lib/"
+cp -d libgstvideo*.so* "/root/runtime/lib/"
+cp -d liborc*.so* "/root/runtime/lib/"
+cp -d libopenal*.so* "/root/runtime/lib/"
+cp -d libSM*.so* "/root/runtime/lib/"
+cp -d libpangoxft*.so* "/root/runtime/lib/"
+cp -d libnettle*.so* "/root/runtime/lib/"
+cp -d liblcms2*.so* "/root/runtime/lib/"
+cp -d libcurses*.so* "/root/runtime/lib/"
+cp -d libffi*.so* "/root/runtime/lib/"
+cp -d libOSMesa*.so* "/root/runtime/lib/"
+cp -d libXmu*.so* "/root/runtime/lib/"
+cp -d libpixman*.so* "/root/runtime/lib/"
+cp -d libXmuu*.so* "/root/runtime/lib/"
+cp -d libicutu*.so* "/root/runtime/lib/"
+cp -d libogg*.so* "/root/runtime/lib/"
+cp -d libexslt*.so* "/root/runtime/lib/"
+cp -d libform*.so* "/root/runtime/lib/"
+cp -d libicudata*.so* "/root/runtime/lib/"
+cp -d libhogweed*.so* "/root/runtime/lib/"
+cp -d libgstrtp*.so* "/root/runtime/lib/"
+cp -d libssl*.so* "/root/runtime/lib/"
+cp -d libgstbase*.so* "/root/runtime/lib/"
+cp -d liblcms2*.so* "/root/runtime/lib/"
+cp -d libopus*.so* "/root/runtime/lib/"
+cp -d libpango*.so* "/root/runtime/lib/"
+cp -d libncurses*.so* "/root/runtime/lib/"
+cp -d libjpeg*.so* "/root/runtime/lib/"
+cp -d libsqlite3*.so* "/root/runtime/lib/"
+cp -d libavcodec*.so* "/root/runtime/lib/"
+cp -d libavutil*.so* "/root/runtime/lib/"
+cp -d libvkd3d*.so* "/root/runtime/lib/"
+cp -d libgphoto2*.so* "/root/runtime/lib/"
+cp -d libmpg123*.so* "/root/runtime/lib/"
+cp -d libexif*.so* "/root/runtime/lib/"
+cp -d libOpenCL*.so* "/root/runtime/lib/"
+cp -d libpulse*.so* "/root/runtime/lib/"
+cp -d libFLAC*.so* "/root/runtime/lib/"
+cp -d libsasl2*.so* "/root/runtime/lib/"
+#cp -d libheimbase*.so*  "/root/runtime/lib/" Fails currently
 
 
 echo "[END]"
