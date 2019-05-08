@@ -27,11 +27,12 @@ class WineVersionFetcher:
             version_name = tag
             version_number = re.search(regex, tag).group(2)
 
-            versions.append({
-                "name": version_name,
-                "number": version_number,
-                "major": self._fetch_major(version_number)
-            })
+            if version_number is not None:
+                versions.append({
+                    "name": version_name,
+                    "number": version_number,
+                    "major": self._fetch_major(version_number)
+                })
 
         if majors is None:
             return versions
