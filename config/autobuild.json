@@ -1,6 +1,6 @@
 {
   "watched": [{
-    "distribution": ["upstream", "staging", "proton"],
+    "distribution": ["upstream", "staging"],
     "operatingSystem": ["linux", "darwin"],
     "arch": ["x86", "amd64"]
   }]
