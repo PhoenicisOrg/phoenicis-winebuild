@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-import threading, uuid, datetime
+import threading, uuid, datetime, traceback
 
 
 class Task(threading.Thread, ABC):
@@ -51,7 +51,7 @@ class Task(threading.Thread, ABC):
                 for event in self._on_finish_events:
                     event()
             except Exception as e:
-                print(e)
+                traceback.print_tb(e)
                 self.status = "ERROR"
                 for event in self._on_error_events:
                     event()
