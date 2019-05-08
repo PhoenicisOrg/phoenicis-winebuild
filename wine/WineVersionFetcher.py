@@ -26,10 +26,10 @@ class WineVersionFetcher:
         for tag in tags:
             version_name = tag
 
-            regex = re.search(regex, tag)
+            regex_compiled = re.search(regex, tag)
 
-            if regex is not None:
-                version_number = regex.group(2)
+            if regex_compiled is not None:
+                version_number = regex_compiled.group(2)
 
                 if version_number is not None:
                     versions.append({
