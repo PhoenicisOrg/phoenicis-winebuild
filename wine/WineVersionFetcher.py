@@ -1,14 +1,18 @@
 import re
 
+from core.ConfigurationReader import ConfigurationReader
 from core.Process import run_and_return
 
 
 class WineVersionFetcher:
-    def __init__(self, winecx=False):
-        if winecx:
-            self.repository_url = "https://github.com/PhoenicisOrg/winecx"
-        else:
-            self.repository_url = "git://source.winehq.org/git/wine.git"
+    def __init__(self, distribution="upstream"):
+        self.repository_url = self.fetch_distribution(distribution)["source"]
+
+    def fetch_distribution(self, distribution_name):
+        distributions = ConfigurationReader().read("distributions")
+        for distribution in distributions:
+            if distribution["name"] == distribution_name:
+                return distribution
 
     def fetch_git_tags(self):
         git_tags = run_and_return(["git", "ls-remote", "--tags", "--refs", self.repository_url]).decode("UTF-8")
@@ -17,7 +21,7 @@ class WineVersionFetcher:
     def fetch_versions(self, majors=None):
         versions = []
         tags = self.fetch_git_tags()
-        regex = '(wine|winecx)-(.+)'
+        regex = '(wine|winecx|proton)-(.+)'
 
         for tag in tags:
             version_name = tag
@@ -29,7 +33,7 @@ class WineVersionFetcher:
                 "major": self._fetch_major(version_number)
             })
 
-        if (majors is None):
+        if majors is None:
             return versions
         else:
             return [version for version in versions if version["major"] in majors]

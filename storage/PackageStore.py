@@ -32,10 +32,8 @@ class PackageStore:
             return []
 
     def fetch_missing_versions(self, distribution):
-        if distribution.startswith("cx-"):
-            all_wine_versions = WineVersionFetcher(winecx=True).fetch_versions(majors=[18, 19, 20, 21])
-        else:
-            all_wine_versions = WineVersionFetcher().fetch_versions(majors=[2, 3, 4, 5]) # FIXME: Put inside a configuration file
+        # FIXME: The right distribution data should be passed instead of concatenating / parsing
+        all_wine_versions = WineVersionFetcher(distribution.split("-")[0]).fetch_versions(majors=[2, 3, 4, 5]) # FIXME: Put inside a configuration file
 
         built_versions = self.fetch_versions(distribution)
         missing_versions = []
