@@ -1,4 +1,4 @@
-import pathlib
+import pathlib, datetime
 
 from builders.RuntimeBuilder import RuntimeBuilder
 from core.Container import Container
@@ -35,7 +35,7 @@ class PhoenicisRuntimeWinePackageCreator:
             container.start()
             builder = RuntimeBuilder(container)
             builder.build(operating_system, arch)
-            builder.archive(runtime_path + ("/runtime-%s-%s.tar.gz" % (operating_system, arch)))
+            builder.archive(runtime_path + ("/runtime-%s-%s-%s.tar.gz" % (operating_system, arch, datetime.datetime.now().strftime("%Y%m%d%H%M"))))
             builder.checksum()
         finally:
             print("Cleaning container")
