@@ -7,6 +7,9 @@ from core.Process import run_and_return
 class WineVersionFetcher:
     def __init__(self, distribution="upstream"):
         self.repository_url = self.fetch_distribution(distribution)["source"]
+        print("-- AUTOBUILD")
+        print(self.repository_url)
+        print(distribution)
 
     def fetch_distribution(self, distribution_name):
         distributions = ConfigurationReader().read("distributions")
