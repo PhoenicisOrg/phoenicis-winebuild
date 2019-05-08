@@ -24,6 +24,7 @@ class WineVersionFetcher:
     def fetch_versions(self, majors=None):
         versions = []
         tags = self.fetch_git_tags()
+        print(tags)
         regex = '(wine|winecx|proton)-(.+)'
 
         for tag in tags:
