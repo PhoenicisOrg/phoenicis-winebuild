@@ -50,8 +50,7 @@ class Task(threading.Thread, ABC):
                 self.status = "DONE"
                 for event in self._on_finish_events:
                     event()
-            except Exception as e:
-                traceback.print_tb(e)
+            except:
                 self.status = "ERROR"
                 for event in self._on_error_events:
                     event()
