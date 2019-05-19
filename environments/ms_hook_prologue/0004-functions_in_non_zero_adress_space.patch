@@ -1,0 +1,1080 @@
+From 47ff67b78de3ed4cc9760f192d68646a15ff19ee Mon Sep 17 00:00:00 2001
+From: Alexander Richardson <arichardson.kde@gmail.com>
+Date: Thu, 23 Aug 2018 09:25:17 +0000
+Subject: [PATCH] Allow creating llvm::Function in non-zero address spaces
+
+Most users won't have to worry about this as all of the
+'getOrInsertFunction' functions on Module will default to the program
+address space.
+
+An overload has been added to Function::Create to abstract away the
+details for most callers.
+
+This is based on https://reviews.llvm.org/D37054 but without the changes to
+make passing a Module to Function::Create() mandatory. I have also added
+some more tests and fixed the LLParser to accept call instructions for
+types in the program address space.
+
+Reviewed By: bjope
+
+Differential Revision: https://reviews.llvm.org/D47541
+
+git-svn-id: https://llvm.org/svn/llvm-project/llvm/trunk@340519 91177308-0d34-0410-b5e6-96231b3b80d8
+---
+ docs/LangRef.rst                              |  25 ++--
+ include/llvm/IR/Function.h                    |  18 ++-
+ include/llvm/IR/GlobalValue.h                 |   1 +
+ lib/AsmParser/LLParser.cpp                    | 127 +++++++++---------
+ lib/AsmParser/LLParser.h                      |  14 +-
+ lib/Bitcode/Reader/BitcodeReader.cpp          |  10 +-
+ lib/Bitcode/Writer/BitcodeWriter.cpp          |   4 +-
+ lib/IR/AsmWriter.cpp                          |  30 +++++
+ lib/IR/AutoUpgrade.cpp                        |   4 +-
+ lib/IR/Function.cpp                           |  20 ++-
+ lib/IR/Globals.cpp                            |   5 +
+ lib/IR/Module.cpp                             |   8 +-
+ .../Instrumentation/DataFlowSanitizer.cpp     |   7 +-
+ lib/Transforms/Utils/CloneFunction.cpp        |   4 +-
+ lib/Transforms/Utils/CloneModule.cpp          |   9 +-
+ lib/Transforms/Utils/CodeExtractor.cpp        |   7 +-
+ .../call-nonzero-program-addrspace-2.ll       |  21 ++-
+ .../call-nonzero-program-addrspace.ll         |  24 +++-
+ .../invoke-nonzero-program-addrspace.ll       |  22 ++-
+ .../function-address-space-fwd-decl.ll        |  39 ++++++
+ .../function-default-address-spaces.ll        |  35 +++++
+ .../function-nonzero-address-spaces-types.ll  |  23 ++++
+ .../function-nonzero-address-spaces.ll        |  29 ++++
+ 23 files changed, 368 insertions(+), 118 deletions(-)
+ create mode 100644 test/Bitcode/function-address-space-fwd-decl.ll
+ create mode 100644 test/Bitcode/function-default-address-spaces.ll
+ create mode 100644 test/Bitcode/function-nonzero-address-spaces-types.ll
+ create mode 100644 test/Bitcode/function-nonzero-address-spaces.ll
+
+diff --git a/docs/LangRef.rst b/docs/LangRef.rst
+index 1f540d923689..b370e63998a1 100644
+--- a/docs/LangRef.rst
++++ b/docs/LangRef.rst
+@@ -719,7 +719,7 @@ an optional ``unnamed_addr`` attribute, a return type, an optional
+ :ref:`parameter attribute <paramattrs>` for the return type, a function
+ name, a (possibly empty) argument list (each with optional :ref:`parameter
+ attributes <paramattrs>`), optional :ref:`function attributes <fnattrs>`,
+-an optional section, an optional alignment,
++an optional address space, an optional section, an optional alignment,
+ an optional :ref:`comdat <langref_comdats>`,
+ an optional :ref:`garbage collector name <gc>`, an optional :ref:`prefix <prefixdata>`,
+ an optional :ref:`prologue <prologuedata>`,
+@@ -731,8 +731,8 @@ LLVM function declarations consist of the "``declare``" keyword, an
+ optional :ref:`linkage type <linkage>`, an optional :ref:`visibility style
+ <visibility>`, an optional :ref:`DLL storage class <dllstorageclass>`, an
+ optional :ref:`calling convention <callingconv>`, an optional ``unnamed_addr``
+-or ``local_unnamed_addr`` attribute, a return type, an optional :ref:`parameter
+-attribute <paramattrs>` for the return type, a function name, a possibly
++or ``local_unnamed_addr`` attribute, an optional address space, a return type,
++an optional :ref:`parameter attribute <paramattrs>` for the return type, a function name, a possibly
+ empty list of arguments, an optional alignment, an optional :ref:`garbage
+ collector name <gc>`, an optional :ref:`prefix <prefixdata>`, and an optional
+ :ref:`prologue <prologuedata>`.
+@@ -769,13 +769,16 @@ be significant and two identical functions can be merged.
+ If the ``local_unnamed_addr`` attribute is given, the address is known to
+ not be significant within the module.
+
++If an explicit address space is not given, it will default to the program
++address space from the :ref:`datalayout string<langref_datalayout>`.
++
+ Syntax::
+
+     define [linkage] [PreemptionSpecifier] [visibility] [DLLStorageClass]
+            [cconv] [ret attrs]
+            <ResultType> @<FunctionName> ([argument list])
+-           [(unnamed_addr|local_unnamed_addr)] [fn Attrs] [section "name"]
+-           [comdat [($name)]] [align N] [gc] [prefix Constant]
++           [(unnamed_addr|local_unnamed_addr)] [AddrSpace] [fn Attrs]
++           [section "name"] [comdat [($name)]] [align N] [gc] [prefix Constant]
+            [prologue Constant] [personality Constant] (!name !N)* { ... }
+
+ The argument list is a comma separated sequence of arguments where each
+@@ -6452,7 +6455,7 @@ Syntax:
+
+ ::
+
+-      <result> = invoke [cconv] [ret attrs] <ty>|<fnty> <fnptrval>(<function args>) [fn attrs]
++      <result> = invoke [cconv] [ret attrs] [addrspace(<num>)] [<ty>|<fnty> <fnptrval>(<function args>) [fn attrs]
+                     [operand bundles] to label <normal label> unwind label <exception label>
+
+ Overview:
+@@ -6488,6 +6491,9 @@ This instruction requires several arguments:
+ #. The optional :ref:`Parameter Attributes <paramattrs>` list for return
+    values. Only '``zeroext``', '``signext``', and '``inreg``' attributes
+    are valid here.
++#. The optional addrspace attribute can be used to indicate the adress space
++   of the called function. If it is not specified, the program address space
++   from the :ref:`datalayout string<langref_datalayout>` will be used.
+ #. '``ty``': the type of the call instruction itself which is also the
+    type of the return value. Functions that return no value are marked
+    ``void``.
+@@ -9503,8 +9509,8 @@ Syntax:
+
+ ::
+
+-      <result> = [tail | musttail | notail ] call [fast-math flags] [cconv] [ret attrs] <ty>|<fnty> <fnptrval>(<function args>) [fn attrs]
+-                   [ operand bundles ]
++      <result> = [tail | musttail | notail ] call [fast-math flags] [cconv] [ret attrs] [addrspace(<num>)]
++                 [<ty>|<fnty> <fnptrval>(<function args>) [fn attrs] [ operand bundles ]
+
+ Overview:
+ """""""""
+@@ -9575,6 +9581,9 @@ This instruction requires several arguments:
+ #. The optional :ref:`Parameter Attributes <paramattrs>` list for return
+    values. Only '``zeroext``', '``signext``', and '``inreg``' attributes
+    are valid here.
++#. The optional addrspace attribute can be used to indicate the adress space
++   of the called function. If it is not specified, the program address space
++   from the :ref:`datalayout string<langref_datalayout>` will be used.
+ #. '``ty``': the type of the call instruction itself which is also the
+    type of the return value. Functions that return no value are marked
+    ``void``.
+diff --git a/include/llvm/IR/Function.h b/include/llvm/IR/Function.h
+index c8d6b0776fbf..63629763a690 100644
+--- a/include/llvm/IR/Function.h
++++ b/include/llvm/IR/Function.h
+@@ -120,7 +120,7 @@ class Function : public GlobalObject, public ilist_node<Function> {
+   /// function is automatically inserted into the end of the function list for
+   /// the module.
+   ///
+-  Function(FunctionType *Ty, LinkageTypes Linkage,
++  Function(FunctionType *Ty, LinkageTypes Linkage, unsigned AddrSpace,
+            const Twine &N = "", Module *M = nullptr);
+
+ public:
+@@ -133,11 +133,25 @@ class Function : public GlobalObject, public ilist_node<Function> {
+   // FunctionT->getFunction().
+   const Function &getFunction() const { return *this; }
+
++  static Function *Create(FunctionType *Ty, LinkageTypes Linkage,
++                          unsigned AddrSpace, const Twine &N = "",
++                          Module *M = nullptr) {
++    return new Function(Ty, Linkage, AddrSpace, N, M);
++  }
++
++  // TODO: remove this once all users have been updated to pass an AddrSpace
+   static Function *Create(FunctionType *Ty, LinkageTypes Linkage,
+                           const Twine &N = "", Module *M = nullptr) {
+-    return new Function(Ty, Linkage, N, M);
++    return new Function(Ty, Linkage, static_cast<unsigned>(-1), N, M);
+   }
+
++  /// Creates a new function and attaches it to a module.
++  ///
++  /// Places the function in the program address space as specified
++  /// by the module's data layout.
++  static Function *Create(FunctionType *Ty, LinkageTypes Linkage,
++                          const Twine &N, Module &M);
++
+   // Provide fast operand accessors.
+   DECLARE_TRANSPARENT_OPERAND_ACCESSORS(Value);
+
+diff --git a/include/llvm/IR/GlobalValue.h b/include/llvm/IR/GlobalValue.h
+index 9d9f4f65a6b5..c07d4051c803 100644
+--- a/include/llvm/IR/GlobalValue.h
++++ b/include/llvm/IR/GlobalValue.h
+@@ -189,6 +189,7 @@ class GlobalValue : public Constant {
+   GlobalValue(const GlobalValue &) = delete;
+
+   unsigned getAlignment() const;
++  unsigned getAddressSpace() const;
+
+   enum class UnnamedAddr {
+     None,
+diff --git a/lib/AsmParser/LLParser.cpp b/lib/AsmParser/LLParser.cpp
+index c156a60ffa79..be44fd04324f 100644
+--- a/lib/AsmParser/LLParser.cpp
++++ b/lib/AsmParser/LLParser.cpp
+@@ -1317,7 +1317,8 @@ bool LLParser::ParseFnAttributeValuePairs(AttrBuilder &B,
+ static inline GlobalValue *createGlobalFwdRef(Module *M, PointerType *PTy,
+                                               const std::string &Name) {
+   if (auto *FT = dyn_cast<FunctionType>(PTy->getElementType()))
+-    return Function::Create(FT, GlobalValue::ExternalWeakLinkage, Name, M);
++    return Function::Create(FT, GlobalValue::ExternalWeakLinkage,
++                            PTy->getAddressSpace(), Name, M);
+   else
+     return new GlobalVariable(*M, PTy->getElementType(), false,
+                               GlobalValue::ExternalWeakLinkage, nullptr, Name,
+@@ -1325,11 +1326,33 @@ static inline GlobalValue *createGlobalFwdRef(Module *M, PointerType *PTy,
+                               PTy->getAddressSpace());
+ }
+
++Value *LLParser::checkValidVariableType(LocTy Loc, const Twine &Name, Type *Ty,
++                                        Value *Val, bool IsCall) {
++  if (Val->getType() == Ty)
++    return Val;
++  // For calls we also accept variables in the program address space.
++  Type *SuggestedTy = Ty;
++  if (IsCall && isa<PointerType>(Ty)) {
++    Type *TyInProgAS = cast<PointerType>(Ty)->getElementType()->getPointerTo(
++        M->getDataLayout().getProgramAddressSpace());
++    SuggestedTy = TyInProgAS;
++    if (Val->getType() == TyInProgAS)
++      return Val;
++  }
++  if (Ty->isLabelTy())
++    Error(Loc, "'" + Name + "' is not a basic block");
++  else
++    Error(Loc, "'" + Name + "' defined with type '" +
++                   getTypeString(Val->getType()) + "' but expected '" +
++                   getTypeString(SuggestedTy) + "'");
++  return nullptr;
++}
++
+ /// GetGlobalVal - Get a value with the specified name or ID, creating a
+ /// forward reference record if needed.  This can return null if the value
+ /// exists but does not have the right type.
+ GlobalValue *LLParser::GetGlobalVal(const std::string &Name, Type *Ty,
+-                                    LocTy Loc) {
++                                    LocTy Loc, bool IsCall) {
+   PointerType *PTy = dyn_cast<PointerType>(Ty);
+   if (!PTy) {
+     Error(Loc, "global variable reference must have pointer type");
+@@ -1349,12 +1372,9 @@ GlobalValue *LLParser::GetGlobalVal(const std::string &Name, Type *Ty,
+   }
+
+   // If we have the value in the symbol table or fwd-ref table, return it.
+-  if (Val) {
+-    if (Val->getType() == Ty) return Val;
+-    Error(Loc, "'@" + Name + "' defined with type '" +
+-          getTypeString(Val->getType()) + "'");
+-    return nullptr;
+-  }
++  if (Val)
++    return cast_or_null<GlobalValue>(
++        checkValidVariableType(Loc, "@" + Name, Ty, Val, IsCall));
+
+   // Otherwise, create a new forward reference for this value and remember it.
+   GlobalValue *FwdVal = createGlobalFwdRef(M, PTy, Name);
+@@ -1362,7 +1382,8 @@ GlobalValue *LLParser::GetGlobalVal(const std::string &Name, Type *Ty,
+   return FwdVal;
+ }
+
+-GlobalValue *LLParser::GetGlobalVal(unsigned ID, Type *Ty, LocTy Loc) {
++GlobalValue *LLParser::GetGlobalVal(unsigned ID, Type *Ty, LocTy Loc,
++                                    bool IsCall) {
+   PointerType *PTy = dyn_cast<PointerType>(Ty);
+   if (!PTy) {
+     Error(Loc, "global variable reference must have pointer type");
+@@ -1380,12 +1401,9 @@ GlobalValue *LLParser::GetGlobalVal(unsigned ID, Type *Ty, LocTy Loc) {
+   }
+
+   // If we have the value in the symbol table or fwd-ref table, return it.
+-  if (Val) {
+-    if (Val->getType() == Ty) return Val;
+-    Error(Loc, "'@" + Twine(ID) + "' defined with type '" +
+-          getTypeString(Val->getType()) + "'");
+-    return nullptr;
+-  }
++  if (Val)
++    return cast_or_null<GlobalValue>(
++        checkValidVariableType(Loc, "@" + Twine(ID), Ty, Val, IsCall));
+
+   // Otherwise, create a new forward reference for this value and remember it.
+   GlobalValue *FwdVal = createGlobalFwdRef(M, PTy, "");
+@@ -1500,8 +1518,8 @@ bool LLParser::ParseOptionalThreadLocal(GlobalVariable::ThreadLocalMode &TLM) {
+ /// ParseOptionalAddrSpace
+ ///   := /*empty*/
+ ///   := 'addrspace' '(' uint32 ')'
+-bool LLParser::ParseOptionalAddrSpace(unsigned &AddrSpace) {
+-  AddrSpace = 0;
++bool LLParser::ParseOptionalAddrSpace(unsigned &AddrSpace, unsigned DefaultAS) {
++  AddrSpace = DefaultAS;
+   if (!EatIfPresent(lltok::kw_addrspace))
+     return false;
+   return ParseToken(lltok::lparen, "expected '(' in address space") ||
+@@ -2741,19 +2759,6 @@ bool LLParser::PerFunctionState::FinishFunction() {
+   return false;
+ }
+
+-static bool isValidVariableType(Module *M, Type *Ty, Value *Val, bool IsCall) {
+-  if (Val->getType() == Ty)
+-    return true;
+-  // For calls we also accept variables in the program address space
+-  if (IsCall && isa<PointerType>(Ty)) {
+-    Type *TyInProgAS = cast<PointerType>(Ty)->getElementType()->getPointerTo(
+-        M->getDataLayout().getProgramAddressSpace());
+-    if (Val->getType() == TyInProgAS)
+-      return true;
+-  }
+-  return false;
+-}
+-
+ /// GetVal - Get a value with the specified name or ID, creating a
+ /// forward reference record if needed.  This can return null if the value
+ /// exists but does not have the right type.
+@@ -2771,16 +2776,8 @@ Value *LLParser::PerFunctionState::GetVal(const std::string &Name, Type *Ty,
+   }
+
+   // If we have the value in the symbol table or fwd-ref table, return it.
+-  if (Val) {
+-    if (isValidVariableType(P.M, Ty, Val, IsCall))
+-      return Val;
+-    if (Ty->isLabelTy())
+-      P.Error(Loc, "'%" + Name + "' is not a basic block");
+-    else
+-      P.Error(Loc, "'%" + Name + "' defined with type '" +
+-              getTypeString(Val->getType()) + "'");
+-    return nullptr;
+-  }
++  if (Val)
++    return P.checkValidVariableType(Loc, "%" + Name, Ty, Val, IsCall);
+
+   // Don't make placeholders with invalid type.
+   if (!Ty->isFirstClassType()) {
+@@ -2814,16 +2811,8 @@ Value *LLParser::PerFunctionState::GetVal(unsigned ID, Type *Ty, LocTy Loc,
+   }
+
+   // If we have the value in the symbol table or fwd-ref table, return it.
+-  if (Val) {
+-    if (isValidVariableType(P.M, Ty, Val, IsCall))
+-      return Val;
+-    if (Ty->isLabelTy())
+-      P.Error(Loc, "'%" + Twine(ID) + "' is not a basic block");
+-    else
+-      P.Error(Loc, "'%" + Twine(ID) + "' defined with type '" +
+-              getTypeString(Val->getType()) + "'");
+-    return nullptr;
+-  }
++  if (Val)
++    return P.checkValidVariableType(Loc, "%" + Twine(ID), Ty, Val, IsCall);
+
+   if (!Ty->isFirstClassType()) {
+     P.Error(Loc, "invalid use of a non-first-class type");
+@@ -4940,10 +4929,10 @@ bool LLParser::ConvertValIDToValue(Type *Ty, ValID &ID, Value *&V,
+     return false;
+   }
+   case ValID::t_GlobalName:
+-    V = GetGlobalVal(ID.StrVal, Ty, ID.Loc);
++    V = GetGlobalVal(ID.StrVal, Ty, ID.Loc, IsCall);
+     return V == nullptr;
+   case ValID::t_GlobalID:
+-    V = GetGlobalVal(ID.UIntVal, Ty, ID.Loc);
++    V = GetGlobalVal(ID.UIntVal, Ty, ID.Loc, IsCall);
+     return V == nullptr;
+   case ValID::t_APSInt:
+     if (!Ty->isIntegerTy())
+@@ -5086,8 +5075,8 @@ bool LLParser::ParseTypeAndBasicBlock(BasicBlock *&BB, LocTy &Loc,
+ /// FunctionHeader
+ ///   ::= OptionalLinkage OptionalPreemptionSpecifier OptionalVisibility
+ ///       OptionalCallingConv OptRetAttrs OptUnnamedAddr Type GlobalName
+-///       '(' ArgList ')' OptFuncAttrs OptSection OptionalAlign OptGC
+-///       OptionalPrefix OptionalPrologue OptPersonalityFn
++///       '(' ArgList ')' OptAddrSpace OptFuncAttrs OptSection OptionalAlign
++///       OptGC OptionalPrefix OptionalPrologue OptPersonalityFn
+ bool LLParser::ParseFunctionHeader(Function *&Fn, bool isDefine) {
+   // Parse the linkage.
+   LocTy LinkageLoc = Lex.getLoc();
+@@ -5165,6 +5154,7 @@ bool LLParser::ParseFunctionHeader(Function *&Fn, bool isDefine) {
+   unsigned Alignment;
+   std::string GC;
+   GlobalValue::UnnamedAddr UnnamedAddr = GlobalValue::UnnamedAddr::None;
++  unsigned AddrSpace = 0;
+   Constant *Prefix = nullptr;
+   Constant *Prologue = nullptr;
+   Constant *PersonalityFn = nullptr;
+@@ -5172,6 +5162,7 @@ bool LLParser::ParseFunctionHeader(Function *&Fn, bool isDefine) {
+
+   if (ParseArgumentList(ArgList, isVarArg) ||
+       ParseOptionalUnnamedAddr(UnnamedAddr) ||
++      ParseOptionalProgramAddrSpace(AddrSpace) ||
+       ParseFnAttributeValuePairs(FuncAttrs, FwdRefAttrGrps, false,
+                                  BuiltinLoc) ||
+       (EatIfPresent(lltok::kw_section) &&
+@@ -5216,7 +5207,7 @@ bool LLParser::ParseFunctionHeader(Function *&Fn, bool isDefine) {
+
+   FunctionType *FT =
+     FunctionType::get(RetType, ParamTypeList, isVarArg);
+-  PointerType *PFT = PointerType::getUnqual(FT);
++  PointerType *PFT = PointerType::get(FT, AddrSpace);
+
+   Fn = nullptr;
+   if (!FunctionName.empty()) {
+@@ -5230,8 +5221,9 @@ bool LLParser::ParseFunctionHeader(Function *&Fn, bool isDefine) {
+                      "function as global value!");
+       if (Fn->getType() != PFT)
+         return Error(FRVI->second.second, "invalid forward reference to "
+-                     "function '" + FunctionName + "' with wrong type!");
+-
++                     "function '" + FunctionName + "' with wrong type: "
++                     "expected '" + getTypeString(PFT) + "' but was '" +
++                     getTypeString(Fn->getType()) + "'");
+       ForwardRefVals.erase(FRVI);
+     } else if ((Fn = M->getFunction(FunctionName))) {
+       // Reject redefinitions.
+@@ -5249,16 +5241,21 @@ bool LLParser::ParseFunctionHeader(Function *&Fn, bool isDefine) {
+       Fn = cast<Function>(I->second.first);
+       if (Fn->getType() != PFT)
+         return Error(NameLoc, "type of definition and forward reference of '@" +
+-                     Twine(NumberedVals.size()) + "' disagree");
++                     Twine(NumberedVals.size()) + "' disagree: "
++                     "expected '" + getTypeString(PFT) + "' but was '" +
++                     getTypeString(Fn->getType()) + "'");
+       ForwardRefValIDs.erase(I);
+     }
+   }
+
+   if (!Fn)
+-    Fn = Function::Create(FT, GlobalValue::ExternalLinkage, FunctionName, M);
++    Fn = Function::Create(FT, GlobalValue::ExternalLinkage, AddrSpace,
++                          FunctionName, M);
+   else // Move the forward-reference to the correct spot in the module.
+     M->getFunctionList().splice(M->end(), M->getFunctionList(), Fn);
+
++  assert(Fn->getAddressSpace() == AddrSpace && "Created function in wrong AS");
++
+   if (FunctionName.empty())
+     NumberedVals.push_back(Fn);
+
+@@ -5777,6 +5774,7 @@ bool LLParser::ParseInvoke(Instruction *&Inst, PerFunctionState &PFS) {
+   std::vector<unsigned> FwdRefAttrGrps;
+   LocTy NoBuiltinLoc;
+   unsigned CC;
++  unsigned InvokeAddrSpace;
+   Type *RetType = nullptr;
+   LocTy RetTypeLoc;
+   ValID CalleeID;
+@@ -5785,6 +5783,7 @@ bool LLParser::ParseInvoke(Instruction *&Inst, PerFunctionState &PFS) {
+
+   BasicBlock *NormalBB, *UnwindBB;
+   if (ParseOptionalCallingConv(CC) || ParseOptionalReturnAttrs(RetAttrs) ||
++      ParseOptionalProgramAddrSpace(InvokeAddrSpace) ||
+       ParseType(RetType, RetTypeLoc, true /*void allowed*/) ||
+       ParseValID(CalleeID) || ParseParameterList(ArgList, PFS) ||
+       ParseFnAttributeValuePairs(FnAttrs, FwdRefAttrGrps, false,
+@@ -5816,8 +5815,8 @@ bool LLParser::ParseInvoke(Instruction *&Inst, PerFunctionState &PFS) {
+
+   // Look up the callee.
+   Value *Callee;
+-  if (ConvertValIDToValue(PointerType::getUnqual(Ty), CalleeID, Callee, &PFS,
+-                          /*IsCall=*/true))
++  if (ConvertValIDToValue(PointerType::get(Ty, InvokeAddrSpace), CalleeID,
++                          Callee, &PFS, /*IsCall=*/true))
+     return true;
+
+   // Set up the Attribute for the function.
+@@ -6360,6 +6359,7 @@ bool LLParser::ParseCall(Instruction *&Inst, PerFunctionState &PFS,
+   AttrBuilder RetAttrs, FnAttrs;
+   std::vector<unsigned> FwdRefAttrGrps;
+   LocTy BuiltinLoc;
++  unsigned CallAddrSpace;
+   unsigned CC;
+   Type *RetType = nullptr;
+   LocTy RetTypeLoc;
+@@ -6376,6 +6376,7 @@ bool LLParser::ParseCall(Instruction *&Inst, PerFunctionState &PFS,
+   FastMathFlags FMF = EatFastMathFlagsIfPresent();
+
+   if (ParseOptionalCallingConv(CC) || ParseOptionalReturnAttrs(RetAttrs) ||
++      ParseOptionalProgramAddrSpace(CallAddrSpace) ||
+       ParseType(RetType, RetTypeLoc, true /*void allowed*/) ||
+       ParseValID(CalleeID) ||
+       ParseParameterList(ArgList, PFS, TCK == CallInst::TCK_MustTail,
+@@ -6408,8 +6409,8 @@ bool LLParser::ParseCall(Instruction *&Inst, PerFunctionState &PFS,
+
+   // Look up the callee.
+   Value *Callee;
+-  if (ConvertValIDToValue(PointerType::getUnqual(Ty), CalleeID, Callee, &PFS,
+-                          /*IsCall=*/true))
++  if (ConvertValIDToValue(PointerType::get(Ty, CallAddrSpace), CalleeID, Callee,
++                          &PFS, /*IsCall=*/true))
+     return true;
+
+   // Set up the Attribute for the function.
+diff --git a/lib/AsmParser/LLParser.h b/lib/AsmParser/LLParser.h
+index 811f96418fa5..cec1a8e8f7eb 100644
+--- a/lib/AsmParser/LLParser.h
++++ b/lib/AsmParser/LLParser.h
+@@ -202,8 +202,9 @@ namespace llvm {
+     /// GetGlobalVal - Get a value with the specified name or ID, creating a
+     /// forward reference record if needed.  This can return null if the value
+     /// exists but does not have the right type.
+-    GlobalValue *GetGlobalVal(const std::string &Name, Type *Ty, LocTy Loc);
+-    GlobalValue *GetGlobalVal(unsigned ID, Type *Ty, LocTy Loc);
++    GlobalValue *GetGlobalVal(const std::string &N, Type *Ty, LocTy Loc,
++                              bool IsCall);
++    GlobalValue *GetGlobalVal(unsigned ID, Type *Ty, LocTy Loc, bool IsCall);
+
+     /// Get a Comdat with the specified name, creating a forward reference
+     /// record if needed.
+@@ -267,7 +268,11 @@ namespace llvm {
+     bool ParseTLSModel(GlobalVariable::ThreadLocalMode &TLM);
+     bool ParseOptionalThreadLocal(GlobalVariable::ThreadLocalMode &TLM);
+     bool ParseOptionalUnnamedAddr(GlobalVariable::UnnamedAddr &UnnamedAddr);
+-    bool ParseOptionalAddrSpace(unsigned &AddrSpace);
++    bool ParseOptionalAddrSpace(unsigned &AddrSpace, unsigned DefaultAS = 0);
++    bool ParseOptionalProgramAddrSpace(unsigned &AddrSpace) {
++      return ParseOptionalAddrSpace(
++          AddrSpace, M->getDataLayout().getProgramAddressSpace());
++    };
+     bool ParseOptionalParamAttrs(AttrBuilder &B);
+     bool ParseOptionalReturnAttrs(AttrBuilder &B);
+     bool ParseOptionalLinkage(unsigned &Res, bool &HasLinkage,
+@@ -448,6 +453,9 @@ namespace llvm {
+     bool ConvertValIDToValue(Type *Ty, ValID &ID, Value *&V,
+                              PerFunctionState *PFS, bool IsCall);
+
++    Value *checkValidVariableType(LocTy Loc, const Twine &Name, Type *Ty,
++                                  Value *Val, bool IsCall);
++
+     bool parseConstantValue(Type *Ty, Constant *&C);
+     bool ParseValue(Type *Ty, Value *&V, PerFunctionState *PFS);
+     bool ParseValue(Type *Ty, Value *&V, PerFunctionState &PFS) {
+diff --git a/lib/Bitcode/Reader/BitcodeReader.cpp b/lib/Bitcode/Reader/BitcodeReader.cpp
+index c45b441238bc..48a959707339 100644
+--- a/lib/Bitcode/Reader/BitcodeReader.cpp
++++ b/lib/Bitcode/Reader/BitcodeReader.cpp
+@@ -2938,7 +2938,7 @@ Error BitcodeReader::parseGlobalVarRecord(ArrayRef<uint64_t> Record) {
+ Error BitcodeReader::parseFunctionRecord(ArrayRef<uint64_t> Record) {
+   // v1: [type, callingconv, isproto, linkage, paramattr, alignment, section,
+   // visibility, gc, unnamed_addr, prologuedata, dllstorageclass, comdat,
+-  // prefixdata,  personalityfn, preemption specifier] (name in VST)
++  // prefixdata,  personalityfn, preemption specifier, addrspace] (name in VST)
+   // v2: [strtab_offset, strtab_size, v1]
+   StringRef Name;
+   std::tie(Name, Record) = readNameFromStrtab(Record);
+@@ -2957,8 +2957,12 @@ Error BitcodeReader::parseFunctionRecord(ArrayRef<uint64_t> Record) {
+   if (CC & ~CallingConv::MaxID)
+     return error("Invalid calling convention ID");
+
+-  Function *Func =
+-      Function::Create(FTy, GlobalValue::ExternalLinkage, Name, TheModule);
++  unsigned AddrSpace = TheModule->getDataLayout().getProgramAddressSpace();
++  if (Record.size() > 16)
++    AddrSpace = Record[16];
++
++  Function *Func = Function::Create(FTy, GlobalValue::ExternalLinkage,
++                                    AddrSpace, Name, TheModule);
+
+   Func->setCallingConv(CC);
+   bool isProto = Record[2];
+diff --git a/lib/Bitcode/Writer/BitcodeWriter.cpp b/lib/Bitcode/Writer/BitcodeWriter.cpp
+index 8282703d95d4..c768021a0a46 100644
+--- a/lib/Bitcode/Writer/BitcodeWriter.cpp
++++ b/lib/Bitcode/Writer/BitcodeWriter.cpp
+@@ -1264,7 +1264,7 @@ void ModuleBitcodeWriter::writeModuleInfo() {
+     // FUNCTION:  [strtab offset, strtab size, type, callingconv, isproto,
+     //             linkage, paramattrs, alignment, section, visibility, gc,
+     //             unnamed_addr, prologuedata, dllstorageclass, comdat,
+-    //             prefixdata, personalityfn, DSO_Local]
++    //             prefixdata, personalityfn, DSO_Local, addrspace]
+     Vals.push_back(addToStrtab(F.getName()));
+     Vals.push_back(F.getName().size());
+     Vals.push_back(VE.getTypeID(F.getFunctionType()));
+@@ -1287,6 +1287,8 @@ void ModuleBitcodeWriter::writeModuleInfo() {
+         F.hasPersonalityFn() ? (VE.getValueID(F.getPersonalityFn()) + 1) : 0);
+
+     Vals.push_back(F.isDSOLocal());
++    Vals.push_back(F.getAddressSpace());
++
+     unsigned AbbrevToUse = 0;
+     Stream.EmitRecord(bitc::MODULE_CODE_FUNCTION, Vals, AbbrevToUse);
+     Vals.clear();
+diff --git a/lib/IR/AsmWriter.cpp b/lib/IR/AsmWriter.cpp
+index 27894c50bc99..1de4bac4435e 100644
+--- a/lib/IR/AsmWriter.cpp
++++ b/lib/IR/AsmWriter.cpp
+@@ -3350,6 +3350,13 @@ void AssemblyWriter::printFunction(const Function *F) {
+   StringRef UA = getUnnamedAddrEncoding(F->getUnnamedAddr());
+   if (!UA.empty())
+     Out << ' ' << UA;
++  // We print the function address space if it is non-zero or if we are writing
++  // a module with a non-zero program address space or if there is no valid
++  // Module* so that the file can be parsed without the datalayout string.
++  const Module *Mod = F->getParent();
++  if (F->getAddressSpace() != 0 || !Mod ||
++      Mod->getDataLayout().getProgramAddressSpace() != 0)
++    Out << " addrspace(" << F->getAddressSpace() << ")";
+   if (Attrs.hasAttributes(AttributeList::FunctionIndex))
+     Out << " #" << Machine.getAttributeGroupSlot(Attrs.getFnAttributes());
+   if (F->hasSection()) {
+@@ -3487,6 +3494,23 @@ void AssemblyWriter::printInfoComment(const Value &V) {
+     AnnotationWriter->printInfoComment(V, Out);
+ }
+
++static void maybePrintCallAddrSpace(const Value *Operand, const Instruction *I,
++                                    raw_ostream &Out) {
++  // We print the address space of the call if it is non-zero.
++  unsigned CallAddrSpace = Operand->getType()->getPointerAddressSpace();
++  bool PrintAddrSpace = CallAddrSpace != 0;
++  if (!PrintAddrSpace) {
++    const Module *Mod = getModuleFromVal(I);
++    // We also print it if it is zero but not equal to the program address space
++    // or if we can't find a valid Module* to make it possible to parse
++    // the resulting file even without a datalayout string.
++    if (!Mod || Mod->getDataLayout().getProgramAddressSpace() != 0)
++      PrintAddrSpace = true;
++  }
++  if (PrintAddrSpace)
++    Out << " addrspace(" << CallAddrSpace << ")";
++}
++
+ // This member is called for each Instruction in a function..
+ void AssemblyWriter::printInstruction(const Instruction &I) {
+   if (AnnotationWriter) AnnotationWriter->emitInstructionAnnot(&I, Out);
+@@ -3684,6 +3708,9 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
+     if (PAL.hasAttributes(AttributeList::ReturnIndex))
+       Out << ' ' << PAL.getAsString(AttributeList::ReturnIndex);
+
++    // Only print addrspace(N) if necessary:
++    maybePrintCallAddrSpace(Operand, &I, Out);
++
+     // If possible, print out the short form of the call instruction.  We can
+     // only do this if the first argument is a pointer to a nonvararg function,
+     // and if the return type is not a pointer to a function.
+@@ -3726,6 +3753,9 @@ void AssemblyWriter::printInstruction(const Instruction &I) {
+     if (PAL.hasAttributes(AttributeList::ReturnIndex))
+       Out << ' ' << PAL.getAsString(AttributeList::ReturnIndex);
+
++    // Only print addrspace(N) if necessary:
++    maybePrintCallAddrSpace(Operand, &I, Out);
++
+     // If possible, print out the short form of the invoke instruction. We can
+     // only do this if the first argument is a pointer to a nonvararg function,
+     // and if the return type is not a pointer to a function.
+diff --git a/lib/IR/AutoUpgrade.cpp b/lib/IR/AutoUpgrade.cpp
+index 1864ad29b30b..06db01fc196e 100644
+--- a/lib/IR/AutoUpgrade.cpp
++++ b/lib/IR/AutoUpgrade.cpp
+@@ -464,7 +464,7 @@ static bool UpgradeIntrinsicFunction1(Function *F, Function *&NewFn) {
+       // the end of the name. Change name from llvm.arm.neon.vclz.* to
+       //  llvm.ctlz.*
+       FunctionType* fType = FunctionType::get(F->getReturnType(), args, false);
+-      NewFn = Function::Create(fType, F->getLinkage(),
++      NewFn = Function::Create(fType, F->getLinkage(), F->getAddressSpace(),
+                                "llvm.ctlz." + Name.substr(14), F->getParent());
+       return true;
+     }
+@@ -480,7 +480,7 @@ static bool UpgradeIntrinsicFunction1(Function *F, Function *&NewFn) {
+       // Can't use Intrinsic::getDeclaration here as the return types might
+       // then only be structurally equal.
+       FunctionType* fType = FunctionType::get(F->getReturnType(), Tys, false);
+-      NewFn = Function::Create(fType, F->getLinkage(),
++      NewFn = Function::Create(fType, F->getLinkage(), F->getAddressSpace(),
+                                "llvm." + Name + ".p0i8", F->getParent());
+       return true;
+     }
+diff --git a/lib/IR/Function.cpp b/lib/IR/Function.cpp
+index 72090f5bac3e..36ba8d0721f3 100644
+--- a/lib/IR/Function.cpp
++++ b/lib/IR/Function.cpp
+@@ -203,6 +203,11 @@ unsigned Function::getInstructionCount() {
+   return NumInstrs;
+ }
+
++Function *Function::Create(FunctionType *Ty, LinkageTypes Linkage,
++                           const Twine &N, Module &M) {
++  return Create(Ty, Linkage, M.getDataLayout().getProgramAddressSpace(), N, &M);
++}
++
+ void Function::removeFromParent() {
+   getParent()->getFunctionList().remove(getIterator());
+ }
+@@ -215,10 +220,19 @@ void Function::eraseFromParent() {
+ // Function Implementation
+ //===----------------------------------------------------------------------===//
+
+-Function::Function(FunctionType *Ty, LinkageTypes Linkage, const Twine &name,
+-                   Module *ParentModule)
++static unsigned computeAddrSpace(unsigned AddrSpace, Module *M) {
++  // If AS == -1 and we are passed a valid module pointer we place the function
++  // in the program address space. Otherwise we default to AS0.
++  if (AddrSpace == static_cast<unsigned>(-1))
++    return M ? M->getDataLayout().getProgramAddressSpace() : 0;
++  return AddrSpace;
++}
++
++Function::Function(FunctionType *Ty, LinkageTypes Linkage, unsigned AddrSpace,
++                   const Twine &name, Module *ParentModule)
+     : GlobalObject(Ty, Value::FunctionVal,
+-                   OperandTraits<Function>::op_begin(this), 0, Linkage, name),
++                   OperandTraits<Function>::op_begin(this), 0, Linkage, name,
++                   computeAddrSpace(AddrSpace, ParentModule)),
+       NumArgs(Ty->getNumParams()) {
+   assert(FunctionType::isValidReturnType(getReturnType()) &&
+          "invalid return type");
+diff --git a/lib/IR/Globals.cpp b/lib/IR/Globals.cpp
+index 20b2334a626f..3f57b1dbfa88 100644
+--- a/lib/IR/Globals.cpp
++++ b/lib/IR/Globals.cpp
+@@ -108,6 +108,11 @@ unsigned GlobalValue::getAlignment() const {
+   return cast<GlobalObject>(this)->getAlignment();
+ }
+
++unsigned GlobalValue::getAddressSpace() const {
++  PointerType *PtrTy = getType();
++  return PtrTy->getAddressSpace();
++}
++
+ void GlobalObject::setAlignment(unsigned Align) {
+   assert((Align & (Align-1)) == 0 && "Alignment is not a power of 2!");
+   assert(Align <= MaximumAlignment &&
+diff --git a/lib/IR/Module.cpp b/lib/IR/Module.cpp
+index f18024063533..882ab106a370 100644
+--- a/lib/IR/Module.cpp
++++ b/lib/IR/Module.cpp
+@@ -145,7 +145,8 @@ Constant *Module::getOrInsertFunction(StringRef Name, FunctionType *Ty,
+   GlobalValue *F = getNamedValue(Name);
+   if (!F) {
+     // Nope, add it
+-    Function *New = Function::Create(Ty, GlobalVariable::ExternalLinkage, Name);
++    Function *New = Function::Create(Ty, GlobalVariable::ExternalLinkage,
++                                     DL.getProgramAddressSpace(), Name);
+     if (!New->isIntrinsic())       // Intrinsics get attrs set on construction
+       New->setAttributes(AttributeList);
+     FunctionList.push_back(New);
+@@ -154,8 +155,9 @@ Constant *Module::getOrInsertFunction(StringRef Name, FunctionType *Ty,
+
+   // If the function exists but has the wrong type, return a bitcast to the
+   // right type.
+-  if (F->getType() != PointerType::getUnqual(Ty))
+-    return ConstantExpr::getBitCast(F, PointerType::getUnqual(Ty));
++  auto *PTy = PointerType::get(Ty, F->getAddressSpace());
++  if (F->getType() != PTy)
++    return ConstantExpr::getBitCast(F, PTy);
+
+   // Otherwise, we just found the existing function or a prototype.
+   return F;
+diff --git a/lib/Transforms/Instrumentation/DataFlowSanitizer.cpp b/lib/Transforms/Instrumentation/DataFlowSanitizer.cpp
+index bb0e4379d1a8..89b237c391e2 100644
+--- a/lib/Transforms/Instrumentation/DataFlowSanitizer.cpp
++++ b/lib/Transforms/Instrumentation/DataFlowSanitizer.cpp
+@@ -645,8 +645,8 @@ DataFlowSanitizer::buildWrapperFunction(Function *F, StringRef NewFName,
+                                         GlobalValue::LinkageTypes NewFLink,
+                                         FunctionType *NewFT) {
+   FunctionType *FT = F->getFunctionType();
+-  Function *NewF = Function::Create(NewFT, NewFLink, NewFName,
+-                                    F->getParent());
++  Function *NewF = Function::Create(NewFT, NewFLink, F->getAddressSpace(),
++                                    NewFName, F->getParent());
+   NewF->copyAttributesFrom(F);
+   NewF->removeAttributes(
+       AttributeList::ReturnIndex,
+@@ -819,7 +819,8 @@ bool DataFlowSanitizer::runOnModule(Module &M) {
+       // easily identify cases of mismatching ABIs.
+       if (getInstrumentedABI() == IA_Args && !IsZeroArgsVoidRet) {
+         FunctionType *NewFT = getArgsFunctionType(FT);
+-        Function *NewF = Function::Create(NewFT, F.getLinkage(), "", &M);
++        Function *NewF = Function::Create(NewFT, F.getLinkage(),
++                                          F.getAddressSpace(), "", &M);
+         NewF->copyAttributesFrom(&F);
+         NewF->removeAttributes(
+             AttributeList::ReturnIndex,
+diff --git a/lib/Transforms/Utils/CloneFunction.cpp b/lib/Transforms/Utils/CloneFunction.cpp
+index 807360340055..5dbe6e9ac762 100644
+--- a/lib/Transforms/Utils/CloneFunction.cpp
++++ b/lib/Transforms/Utils/CloneFunction.cpp
+@@ -235,8 +235,8 @@ Function *llvm::CloneFunction(Function *F, ValueToValueMapTy &VMap,
+                                     ArgTypes, F->getFunctionType()->isVarArg());
+
+   // Create the new function...
+-  Function *NewF =
+-      Function::Create(FTy, F->getLinkage(), F->getName(), F->getParent());
++  Function *NewF = Function::Create(FTy, F->getLinkage(), F->getAddressSpace(),
++                                    F->getName(), F->getParent());
+
+   // Loop over the arguments, copying the names of the mapped arguments over...
+   Function::arg_iterator DestI = NewF->arg_begin();
+diff --git a/lib/Transforms/Utils/CloneModule.cpp b/lib/Transforms/Utils/CloneModule.cpp
+index c7d68bab8170..659993aa5478 100644
+--- a/lib/Transforms/Utils/CloneModule.cpp
++++ b/lib/Transforms/Utils/CloneModule.cpp
+@@ -74,8 +74,9 @@ std::unique_ptr<Module> llvm::CloneModule(
+
+   // Loop over the functions in the module, making external functions as before
+   for (const Function &I : M) {
+-    Function *NF = Function::Create(cast<FunctionType>(I.getValueType()),
+-                                    I.getLinkage(), I.getName(), New.get());
++    Function *NF =
++        Function::Create(cast<FunctionType>(I.getValueType()), I.getLinkage(),
++                         I.getAddressSpace(), I.getName(), New.get());
+     NF->copyAttributesFrom(&I);
+     VMap[&I] = NF;
+   }
+@@ -91,8 +92,8 @@ std::unique_ptr<Module> llvm::CloneModule(
+       GlobalValue *GV;
+       if (I->getValueType()->isFunctionTy())
+         GV = Function::Create(cast<FunctionType>(I->getValueType()),
+-                              GlobalValue::ExternalLinkage, I->getName(),
+-                              New.get());
++                              GlobalValue::ExternalLinkage,
++                              I->getAddressSpace(), I->getName(), New.get());
+       else
+         GV = new GlobalVariable(
+             *New, I->getValueType(), false, GlobalValue::ExternalLinkage,
+diff --git a/lib/Transforms/Utils/CodeExtractor.cpp b/lib/Transforms/Utils/CodeExtractor.cpp
+index eeb5d2bf5eb7..d9f39bd17491 100644
+--- a/lib/Transforms/Utils/CodeExtractor.cpp
++++ b/lib/Transforms/Utils/CodeExtractor.cpp
+@@ -670,10 +670,9 @@ Function *CodeExtractor::constructFunction(const ValueSet &inputs,
+                                     AllowVarArgs && oldFunction->isVarArg());
+
+   // Create the new function
+-  Function *newFunction = Function::Create(funcType,
+-                                           GlobalValue::InternalLinkage,
+-                                           oldFunction->getName() + "_" +
+-                                           header->getName(), M);
++  Function *newFunction = Function::Create(
++      funcType, GlobalValue::InternalLinkage, oldFunction->getAddressSpace(),
++      oldFunction->getName() + "_" + header->getName(), M);
+   // If the old function is no-throw, so is the new one.
+   if (oldFunction->doesNotThrow())
+     newFunction->setDoesNotThrow();
+diff --git a/test/Assembler/call-nonzero-program-addrspace-2.ll b/test/Assembler/call-nonzero-program-addrspace-2.ll
+index ed8546c61c87..cde546e0cebc 100644
+--- a/test/Assembler/call-nonzero-program-addrspace-2.ll
++++ b/test/Assembler/call-nonzero-program-addrspace-2.ll
+@@ -1,11 +1,22 @@
+-; RUN: llvm-as %s -data-layout=P200 -o /dev/null
+ ; RUN: not llvm-as %s -o /dev/null 2>&1 | FileCheck %s
++; RUN: llvm-as %s -data-layout=P42 -o - | llvm-dis - -o - | FileCheck %s -check-prefix PROGAS42
+
+ ; Check that numbered variables in a nonzero program address space 200 can be used in a call instruction
+
+-define i8 @test_unnamed(i8(i32)*, i8(i32) addrspace(200)*) {
+-  %first = call i8 %0(i32 0) ; this is fine
+-  %second = call i8 %1(i32 0) ; this is also fine if it's the program AS
+-  ; CHECK: call-nonzero-program-addrspace-2.ll:[[@LINE-1]]:21: error: '%1' defined with type 'i8 (i32) addrspace(200)*'
++define i8 @test_unnamed(i8(i32)*, i8(i32) addrspace(42)*) {
++  ; Calls with explicit address spaces are fine:
++  call addrspace(0) i8 %0(i32 0)
++  call addrspace(42) i8 %1(i32 0)
++  ; this call is fine if the program address space is 42
++  call i8 %1(i32 0)
++  ; CHECK: call-nonzero-program-addrspace-2.ll:[[@LINE-1]]:11: error: '%1' defined with type 'i8 (i32) addrspace(42)*' but expected 'i8 (i32)*'
+   ret i8 0
+ }
++
++; PROGAS42:       target datalayout = "P42"
++; PROGAS42:       define i8 @test_unnamed(i8 (i32)*, i8 (i32) addrspace(42)*) addrspace(42) {
++; PROGAS42-NEXT:    %3 = call addrspace(0) i8 %0(i32 0)
++; PROGAS42-NEXT:    %4 = call addrspace(42) i8 %1(i32 0)
++; PROGAS42-NEXT:    %5 = call addrspace(42) i8 %1(i32 0)
++; PROGAS42-NEXT:    ret i8 0
++; PROGAS42-NEXT:  }
+diff --git a/test/Assembler/call-nonzero-program-addrspace.ll b/test/Assembler/call-nonzero-program-addrspace.ll
+index 1d1a224212dd..111ef0ccefe9 100644
+--- a/test/Assembler/call-nonzero-program-addrspace.ll
++++ b/test/Assembler/call-nonzero-program-addrspace.ll
+@@ -1,13 +1,23 @@
+-; RUN: llvm-as %s -data-layout=P200 -o /dev/null
+ ; RUN: not llvm-as %s -o /dev/null 2>&1 | FileCheck %s
++; RUN: llvm-as %s -data-layout=P42 -o - | llvm-dis - -o - | FileCheck %s -check-prefix PROGAS42
+
+-; Check that variables in a nonzero program address space 200 can be used in a call instruction
++; Check that variables in a nonzero program address space 42 can be used in a call instruction
+
+-define i8 @test(i8(i32)* %fnptr0, i8(i32) addrspace(200)* %fnptr200) {
+-  %first = call i8 %fnptr0(i32 0) ; this is fine
+-  %second = call i8 %fnptr200(i32 0) ; this is also fine if it's the program AS
+-  ; CHECK: call-nonzero-program-addrspace.ll:[[@LINE-1]]:21: error: '%fnptr200' defined with type 'i8 (i32) addrspace(200)*'
++define i8 @test(i8(i32)* %fnptr0, i8(i32) addrspace(42)* %fnptr42) {
++  %explicit_as_0 = call addrspace(0) i8 %fnptr0(i32 0)
++  %explicit_as_42 = call addrspace(42) i8 %fnptr42(i32 0)
++  ; Calling %fnptr42 without an explicit addrspace() in the call instruction is only okay if the program AS is 42
++  %call_no_as = call i8 %fnptr42(i32 0)
++  ; CHECK: call-nonzero-program-addrspace.ll:[[@LINE-1]]:25: error: '%fnptr42' defined with type 'i8 (i32) addrspace(42)*' but expected 'i8 (i32)*'
+   ret i8 0
+ }
+
+-declare i32 @__gxx_personality_v0(...)
++; PROGAS42:       target datalayout = "P42"
++; PROGAS42:       define i8 @test(i8 (i32)* %fnptr0, i8 (i32) addrspace(42)* %fnptr42) addrspace(42) {
++; Print addrspace(0) since the program address space is non-zero:
++; PROGAS42-NEXT:    %explicit_as_0 = call addrspace(0) i8 %fnptr0(i32 0)
++; Also print addrspace(42) since we always print non-zero addrspace:
++; PROGAS42-NEXT:    %explicit_as_42 = call addrspace(42) i8 %fnptr42(i32 0)
++; PROGAS42-NEXT:    %call_no_as = call addrspace(42) i8 %fnptr42(i32 0)
++; PROGAS42-NEXT:    ret i8 0
++; PROGAS42-NEXT:  }
+diff --git a/test/Assembler/invoke-nonzero-program-addrspace.ll b/test/Assembler/invoke-nonzero-program-addrspace.ll
+index 443884590d6c..a3f70aec30d0 100644
+--- a/test/Assembler/invoke-nonzero-program-addrspace.ll
++++ b/test/Assembler/invoke-nonzero-program-addrspace.ll
+@@ -1,12 +1,15 @@
+-; RUN: llvm-as %s -data-layout=P200 -o /dev/null
+ ; RUN: not llvm-as %s -o /dev/null 2>&1 | FileCheck %s
++; RUN: llvm-as %s -data-layout=P200 -o - | llvm-dis - -o - | FileCheck %s -check-prefix PROGAS200
++
+
+ ; Check that variables in a nonzero program address space 200 can be used in a invoke instruction
+
+-define i8 @test_invoke(i8(i32)* %fnptr0, i8(i32) addrspace(200)* %fnptr200) personality i32 (...)* @__gxx_personality_v0 {
+-  %first = invoke i8 %fnptr0(i32 0) to label %ok unwind label %lpad ; this is fine
+-  %second = invoke i8 %fnptr200(i32 0) to label %ok unwind label %lpad ; this is also fine if it's the program AS
+-  ; CHECK: invoke-nonzero-program-addrspace.ll:[[@LINE-1]]:23: error: '%fnptr200' defined with type 'i8 (i32) addrspace(200)*'
++define i8 @test_invoke(i8(i32)* %fnptr0, i8(i32) addrspace(200)* %fnptr200) personality i32 (...) addrspace(200)* @__gxx_personality_v0 {
++  %explicit_as_0 = invoke addrspace(0) i8 %fnptr0(i32 0) to label %ok unwind label %lpad
++  %explicit_as_42 = invoke addrspace(200) i8 %fnptr200(i32 0) to label %ok unwind label %lpad
++  ; The following is only okay if the program address space is 200:
++  %no_as = invoke i8 %fnptr200(i32 0) to label %ok unwind label %lpad
++  ; CHECK: invoke-nonzero-program-addrspace.ll:[[@LINE-1]]:22: error: '%fnptr200' defined with type 'i8 (i32) addrspace(200)*' but expected 'i8 (i32)*'
+ ok:
+   ret i8 0
+ lpad:
+@@ -16,3 +19,12 @@ lpad:
+ }
+
+ declare i32 @__gxx_personality_v0(...)
++
++
++; PROGAS200:  target datalayout = "P200"
++; PROGAS200:  define i8 @test_invoke(i8 (i32)* %fnptr0, i8 (i32) addrspace(200)* %fnptr200) addrspace(200) personality i32 (...) addrspace(200)* @__gxx_personality_v0 {
++; PROGAS200:    %explicit_as_0 = invoke addrspace(0) i8 %fnptr0(i32 0)
++; PROGAS200:    %explicit_as_42 = invoke addrspace(200) i8 %fnptr200(i32 0)
++; PROGAS200:    %no_as = invoke addrspace(200) i8 %fnptr200(i32 0)
++; PROGAS200:    ret i8 0
++; PROGAS200:  }
+diff --git a/test/Bitcode/function-address-space-fwd-decl.ll b/test/Bitcode/function-address-space-fwd-decl.ll
+new file mode 100644
+index 000000000000..f10c2287e4b1
+--- /dev/null
++++ b/test/Bitcode/function-address-space-fwd-decl.ll
+@@ -0,0 +1,39 @@
++; Verify that forward declarations from call instructions work even with non-zero AS
++; RUN: llvm-as %s -o - | llvm-dis - | FileCheck %s
++
++define void @call_named() {
++entry:
++  %0 = tail call addrspace(40) i32 @named(i16* null)
++  ; CHECK: %0 = tail call addrspace(40) i32 @named(i16* null)
++  ret void
++}
++
++define void @call_numbered() {
++entry:
++  %0 = tail call addrspace(40) i32 @0(i16* null)
++  ; CHECK: %0 = tail call addrspace(40) i32 @0(i16* null)
++  ret void
++}
++
++
++define i32 @invoked() personality i8* null {
++entry:
++  %0 = invoke addrspace(40) i32 @foo() to label %l1 unwind label %lpad
++  ; CHECK: invoke addrspace(40) i32 @foo()
++l1:
++  br label %return
++lpad:
++  %1 = landingpad { i8*, i32 }
++    catch i8* null
++    catch i8* null
++  ret i32 0
++return:
++  ret i32 0
++}
++
++declare i32 @foo() addrspace(40)
++; CHECK: declare i32 @foo() addrspace(40)
++declare i32 @named(i16* nocapture) addrspace(40)
++; CHECK: declare i32 @named(i16* nocapture) addrspace(40)
++declare i32 @0(i16*) addrspace(40)
++; CHECK: declare i32 @0(i16*) addrspace(40)
+diff --git a/test/Bitcode/function-default-address-spaces.ll b/test/Bitcode/function-default-address-spaces.ll
+new file mode 100644
+index 000000000000..e008f43501a0
+--- /dev/null
++++ b/test/Bitcode/function-default-address-spaces.ll
+@@ -0,0 +1,35 @@
++; RUN: llvm-as %s  -o - | llvm-dis - | FileCheck %s -check-prefixes CHECK,PROG-AS0
++; RUN: llvm-as -data-layout "P200" %s  -o - | llvm-dis | FileCheck %s -check-prefixes CHECK,PROG-AS200
++; RUN: not llvm-as -data-layout "P123456789" %s -o /dev/null 2>&1 | FileCheck %s -check-prefix BAD-DATALAYOUT
++; BAD-DATALAYOUT: LLVM ERROR: Invalid address space, must be a 24-bit integer
++
++; PROG-AS0-NOT: target datalayout
++; PROG-AS200: target datalayout = "P200"
++
++; Check that a function declaration without an address space (i.e. AS0) does not
++; have the addrspace() attribute printed if it is address space zero and it is
++; equal to the program address space.
++
++; PROG-AS0: define void @no_as() {
++; PROG-AS200: define void @no_as() addrspace(200) {
++define void @no_as() {
++  ret void
++}
++
++; A function with an explicit addrspace should only have the addrspace printed
++; if it is non-zero or if the module has a nonzero datalayout
++; PROG-AS0: define void @explit_as0()  {
++; PROG-AS200: define void @explit_as0() addrspace(0) {
++define void @explit_as0() addrspace(0) {
++  ret void
++}
++
++; CHECK: define void @explit_as200() addrspace(200) {
++define void @explit_as200() addrspace(200) {
++  ret void
++}
++
++; CHECK: define void @explicit_as3() addrspace(3) {
++define void @explicit_as3() addrspace(3) {
++  ret void
++}
+diff --git a/test/Bitcode/function-nonzero-address-spaces-types.ll b/test/Bitcode/function-nonzero-address-spaces-types.ll
+new file mode 100644
+index 000000000000..6ef53e5e47f0
+--- /dev/null
++++ b/test/Bitcode/function-nonzero-address-spaces-types.ll
+@@ -0,0 +1,23 @@
++; Verify that we accept calls to variables in the program AS:
++; RUN: llvm-as -data-layout "P40" %s -o - | llvm-dis - | FileCheck %s
++; CHECK: target datalayout = "P40"
++
++; We should get a sensible error for a non-program address call:
++; RUN: not llvm-as -data-layout "P39" %s -o /dev/null 2>&1 | FileCheck %s -check-prefix ERR-AS39
++; ERR-AS39: error: '%0' defined with type 'i16 (i16) addrspace(40)*' but expected 'i16 (i16) addrspace(39)*'
++
++; And also if we don't set a custom program address space:
++; RUN: not llvm-as %s -o /dev/null 2>&1 | FileCheck %s -check-prefix ERR-AS0
++; ERR-AS0: error: '%0' defined with type 'i16 (i16) addrspace(40)*' but expected 'i16 (i16)*'
++
++%fun1 = type i16 (i16)
++%funptr1 = type %fun1 addrspace(40)*
++
++@fun_ptr = global %funptr1 @fun
++
++define i16 @fun(i16 %arg) addrspace(40) {
++entry:
++  %0 = load %funptr1, %funptr1* @fun_ptr
++  %result = call i16 %0(i16 %arg)
++  ret i16 %result
++}
+diff --git a/test/Bitcode/function-nonzero-address-spaces.ll b/test/Bitcode/function-nonzero-address-spaces.ll
+new file mode 100644
+index 000000000000..54f6735f50ad
+--- /dev/null
++++ b/test/Bitcode/function-nonzero-address-spaces.ll
+@@ -0,0 +1,29 @@
++; Verify that we accept calls to variables in the program AS:
++; RUN: llvm-as -data-layout "P40" %s -o - | llvm-dis - | FileCheck %s
++; CHECK: target datalayout = "P40"
++
++; We should get a sensible error for a non-program address call:
++; RUN: not llvm-as -data-layout "P39" %s -o /dev/null 2>&1 | FileCheck %s -check-prefix ERR-AS39
++; ERR-AS39: error: '%fnptr' defined with type 'void (i16) addrspace(40)*' but expected 'void (i16) addrspace(39)*'
++
++; And also if we don't set a custom program address space:
++; RUN: not llvm-as %s -o /dev/null 2>&1 | FileCheck %s -check-prefix ERR-AS0
++; ERR-AS0: error: '%fnptr' defined with type 'void (i16) addrspace(40)*' but expected 'void (i16)*'
++
++define void @f_named(i16 %n, void (i16) addrspace(40)* %f) addrspace(40) {
++entry:
++  %f.addr = alloca void (i16) addrspace(40)*, align 1
++  store void (i16) addrspace(40)* %f, void (i16) addrspace(40)** %f.addr
++  %fnptr = load void (i16) addrspace(40)*, void (i16) addrspace(40)** %f.addr
++  call void %fnptr(i16 8)
++  ret void
++}
++
++define void @f_numbered(i16 %n, void (i16) addrspace(40)* %f) addrspace(40){
++entry:
++  %f.addr = alloca void (i16) addrspace(40)*, align 1
++  store void (i16) addrspace(40)* %f, void (i16) addrspace(40)** %f.addr
++  %0 = load void (i16) addrspace(40)*, void (i16) addrspace(40)** %f.addr
++  call void %0(i16 8)
++  ret void
++}
