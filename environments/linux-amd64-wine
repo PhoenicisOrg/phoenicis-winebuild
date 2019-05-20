@@ -17,6 +17,7 @@ RUN apt-get -y install libva-dev libkrb5-dev opencl-dev libpcap-dev libsane-dev 
 RUN apt-get -y install gtk3.0-dev libgtk-3-dev libva-dev
 RUN apt-get -y install libvulkan-dev
 RUN apt-get -y install libavcodec-dev
+RUN apt-get -y install libdbus-1-dev fcitx-libs-dev libsamplerate0-dev
 
 # VKD3D
 RUN mkdir -p /root/vkd3d-64
@@ -81,6 +82,8 @@ RUN wget http://cdn-fastly.deb.debian.org/debian/pool/main/v/vulkan/libvulkan-de
 RUN echo dpkg -i /root/vkd3d-32/*.deb >> /root/install_32bits_dependencies.sh
 
 RUN echo apt-get -y install libsane-dev:i386 libpcap0.8-dev:i386 libicu-dev:i386 g++-multilib  libglib2.0-dev:i386 libpulse-dev:i386 libfontconfig1-dev:i386 libopenal-dev:i386 libldap-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 fontconfig:i386 libcups2-dev:i386 libncurses-dev:i386 liblcms2-dev:i386 libxcomposite-dev:i386 libosmesa-dev:i386 libmpg123-dev:i386 libxslt-dev:i386 libxml2-dev:i386 libgnutls28-dev:i386 libfreetype6-dev:i386 libva-dev:i386 opencl-dev:i386  libv4l-dev:i386 libgphoto2-dev:i386 libtiff-dev:i386 libudev-dev:i386 libcapi20-dev:i386 >> /root/install_32bits_dependencies.sh
+
+RUN echo apt-get -y install libwayland-dev:i386 libwayland-egl1-mesa:i386 libxcursor-dev:i386 libxi-dev:i396 libxrandr-dev:i386 libxinerama-dev:i386 libglu1-mesa-dev:i386 libdbus-1-dev:i386 fcitx-libs-dev:i386 libsamplerate0-dev:i386 >> /root/install_32bits_dependencies.sh
 
 #SDL (for FAudio)
 RUN echo "cd /root/sdl2/SDL2-2.0.9/" >> /root/install_32bits_dependencies.sh
