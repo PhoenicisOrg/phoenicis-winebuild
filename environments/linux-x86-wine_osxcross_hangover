@@ -11,7 +11,7 @@ RUN apt-get -y install git llvm clang wget
 RUN cd /root
 RUN git clone https://github.com/tpoechtrager/osxcross /root/osxcross
 
-COPY darwin/SDK/MacOSX10.8.sdk.tar.xz /root/osxcross/tarballs/
+COPY darwin/SDK/MacOSX10.11.sdk.tar.xz /root/osxcross/tarballs/
 
 RUN cd /root/osxcross && UNATTENDED=1 ./build.sh
 
@@ -21,8 +21,8 @@ ENV MACOSX_DEPLOYMENT_TARGET="10.8"
 RUN mkdir -p /root/osxcross/target/macports
 RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 
-RUN osxcross-macports -32 fakeinstall -v pulseaudio
-RUN osxcross-macports -32 install -v wine-devel
-RUN osxcross-macports -32 install gnutls-dev
+RUN osxcross-macports -64 fakeinstall -v pulseaudio
+RUN osxcross-macports -64 install -v wine-devel
+RUN osxcross-macports -64 install gnutls-dev
 
 RUN apt-get -y install gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
