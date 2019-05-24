@@ -2,7 +2,7 @@
 # This script is adapted from wine-staging work
 # It compiles a compiler that support ms_hook_prologue attribute
 
-mkdir -p "/root/clang_ms_hook_prologue/"
+# mkdir -p "/root/clang_ms_hook_prologue/"
 cd "/root/clang_ms_hook_prologue/"
 apt-get -y install devscripts wget
 
@@ -37,4 +37,4 @@ cd llvm-toolchain-3.8-3.8.1
 cat ../*.patch | patch -p1
 mk-build-deps -i -r -t "apt-get -y" debian/control
 DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b -j3
-exit 2
+exit 0
