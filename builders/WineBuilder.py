@@ -56,7 +56,7 @@ class WineBuilder:
 
         if "git" in patch:
             patchGit = patch["git"]
-            gitPatchDirectory = "/root/patches/%s" % patchGit["name"]
+            gitPatchDirectory = "/root/patches/%s" % patch["name"]
             gitCloneCommand = "git clone %s %s" % (patchGit["git"]["url"], gitPatchDirectory)
             gitCheckoutCommand = "git checkout -f %s" % patchGit["git"]["branch"]
 
