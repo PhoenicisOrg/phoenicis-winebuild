@@ -63,7 +63,7 @@
     "hooks": [],
     "patches": [
       {
-        "name": "secur32-proton-fix-build-on-macos",
+        "name": "sims2",
         "git": {
           "url": "https://github.com/lah7/sims-2-wine-patches",
           "branch": "master",
