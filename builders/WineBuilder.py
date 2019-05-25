@@ -57,8 +57,8 @@ class WineBuilder:
         if "git" in patch:
             patchGit = patch["git"]
             gitPatchDirectory = "/root/patches/%s" % patch["name"]
-            gitCloneCommand = "git clone %s %s" % (patchGit["git"]["url"], gitPatchDirectory)
-            gitCheckoutCommand = "git checkout -f %s" % patchGit["git"]["branch"]
+            gitCloneCommand = "git clone %s %s" % (patchGit["url"], gitPatchDirectory)
+            gitCheckoutCommand = "git checkout -f %s" % patchGit["branch"]
 
             self.container.run(["sh", "-c", gitCloneCommand], workdir="/root/wine-git")
             self.container.run(["sh", "-c", gitCheckoutCommand], workdir=gitPatchDirectory)
