@@ -17,7 +17,6 @@ chmod +x winebuild
 ####### Build wine
 ### Environment preparation
 mkdir -p "/root/wine-git/wine32-build/"
-mkdir -p "/root/wine-git/wine64-build/"
 export FRAMEWORK="10.11"
 
 ## Some tools are not directly found by wine
@@ -32,45 +31,24 @@ ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-install_name_tool" "/root
 export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vkd3d/include/"
 export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib"
 
-#### 64bits
-export CC="clang-7 -O3 -target x86_64-apple-darwin15 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks"
-## This hack will allow winegcc to use the right compiler
-echo '$CC "$@"' > "/root/osxcross/target/bin/x86_64-apple-darwin15-gcc"
-chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin15-gcc"
-
-####### Install VKD3D
-echo "[STAGE 3/11] Installing vkd3d"
-bash "/root/install_vkd3d.sh" "$VKD3D" || exit 4
-
-export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vkd3d/include/"
-export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib"
-
-cd "/root/wine-git/wine64-build/"
-echo "[STAGE 4/11] Configure 64 bits"
-../configure --enable-win64 --host x86_64-apple-darwin15 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks" || exit 5
-echo "[STAGE 5/11] Make 64 bits"
-make -j 4 || exit 6
-
 #### 32bits
 export CC="clang-7 -mwine32 -O3 -target i386-apple-darwin15 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks"
 ## This hack will allow winegcc to use the right compiler
+echo '$CC "$@"' > "/root/osxcross/target/bin/x86_64-apple-darwin15-gcc"
+chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin15-gcc"
 echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin15-gcc"
 chmod +x "/root/osxcross/target/bin/i386-apple-darwin15-gcc"
 
 cd "/root/wine-git/wine32-build/"
 echo "[STAGE 6/11] Configure 32 bits"
-../configure --with-wine64=/root/wine-git/wine64-build --host i386-apple-darwin15 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib" || exit 7
+../configure --host i386-apple-darwin15 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib" || exit 4
 
 echo "[STAGE 7/11] Make 32 bits"
-make -j 4 || exit 8
-
-echo "[STAGE 8/11] Make install 64 bits"
-cd "/root/wine-git/wine64-build/"
-make install DESTDIR="/root/wine" || exit 9
+make -j 4 || exit 5
 
 echo "[STAGE 9/11] Make install 32 bits"
 cd "/root/wine-git/wine32-build/"
-make install DESTDIR="/root/wine" || exit 10
+make install DESTDIR="/root/wine" || exit 6
 
 ## Copying libs
 echo "[STAGE 10/11] Copying libs"
@@ -197,9 +175,5 @@ rm libxslt.dylib
 ## Fixing imports
 echo "[STAGE 11/11] Fixing imports"
 bash /root/fix_imports.sh "/root/wine"
-
-## Make symlinks in /lib64 since wine64 only checks there
-cd "/root/wine/lib64"
-ln -s ../lib/*.dylib .
 
 echo "[END]"
