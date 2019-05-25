@@ -50,7 +50,29 @@
     "patches": [
       {
         "name": "secur32-proton-fix-build-on-macos",
-        "operatingSystems": ["darwin"]
+        "operatingSystems": [
+          "darwin"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "sims2",
+    "extends": "",
+    "source": "https://github.com/wine-mirror/wine",
+    "hooks": [],
+    "patches": [
+      {
+        "name": "secur32-proton-fix-build-on-macos",
+        "git": {
+          "url": "https://github.com/lah7/sims-2-wine-patches",
+          "branch": "master",
+          "directory": "patches"
+        },
+        "operatingSystems": [
+          "darwin",
+          "linux"
+        ]
       }
     ]
   }

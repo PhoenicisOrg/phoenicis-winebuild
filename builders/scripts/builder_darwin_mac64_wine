@@ -32,7 +32,7 @@ export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/r
 export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib"
 
 #### 32bits
-export CC="clang-7 -mwine32 -O3 -target x86_64-apple-darwin15 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks"
+export CC="clang-7 -mwine32 -O3 -target i386-apple-darwin15 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks"
 ## This hack will allow winegcc to use the right compiler
 echo '$CC "$@"' > "/root/osxcross/target/bin/x86_64-apple-darwin15-gcc"
 chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin15-gcc"
