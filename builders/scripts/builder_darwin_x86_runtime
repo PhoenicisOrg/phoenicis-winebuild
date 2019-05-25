@@ -2,7 +2,6 @@
 ln -s "/root/osxcross/target/bin/i386-apple-darwin15-install_name_tool" "/root/osxcross/target/bin/install_name_tool"
 ln -s "/root/osxcross/target/bin/i386-apple-darwin15-otool" "/root/osxcross/target/bin/otool"
 
-
 mkdir -p /root/runtime/lib
 cd "/root/runtime/lib/"
 
@@ -10,12 +9,125 @@ cd "/root/runtime/lib/"
 cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/runtime/lib"
 rm /root/runtime/lib/libpython2.7.dylib
 
+## Remove all the XQuartz files, not needed and shrink file size!
+cd "/root/runtime/lib"
+rm libGL.1.dylib
+rm libGL.dylib
+rm libGLESv1_CM.1.dylib
+rm libGLESv1_CM.dylib
+rm libGLESv2.2.dylib
+rm libGLESv2.dylib
+rm libGLU.1.dylib
+rm libGLU.dylib
+rm libICE.6.dylib
+rm libICE.dylib
+rm libOSMesa.8.dylib
+rm libOSMesa.dylib
+rm libSM.6.dylib
+rm libSM.dylib
+rm libX11-xcb.1.dylib
+rm libX11-xcb.dylib
+rm libX11.6.dylib
+rm libX11.dylib
+rm libXau.6.dylib
+rm libXau.dylib
+rm libXcomposite.1.dylib
+rm libXcomposite.dylib
+rm libXcursor.1.dylib
+rm libXcursor.dylib
+rm libXdamage.1.dylib
+rm libXdamage.dylib
+rm libXdmcp.6.dylib
+rm libXdmcp.dylib
+rm libXext.6.dylib
+rm libXext.dylib
+rm libXfixes.3.dylib
+rm libXfixes.dylib
+rm libXft.2.dylib
+rm libXft.dylib
+rm libXi.6.dylib
+rm libXi.dylib
+rm libXinerama.1.dylib
+rm libXinerama.dylib
+rm libXmu.6.dylib
+rm libXmu.dylib
+rm libXmuu.1.dylib
+rm libXmuu.dylib
+rm libXrandr.2.dylib
+rm libXrandr.dylib
+rm libXrender.1.dylib
+rm libXrender.dylib
+rm libXt.6.dylib
+rm libXt.dylib
+rm libXv.1.dylib
+rm libXv.dylib
+rm libXxf86vm.1.dylib
+rm libXxf86vm.dylib
+rm libcairo-gobject.2.dylib
+rm libcairo-gobject.dylib
+rm libcairo-script-interpreter.2.dylib
+rm libcairo-script-interpreter.dylib
+rm libcairo.2.dylib
+rm libcairo.dylib
+rm libglapi.0.dylib
+rm libglapi.dylib
+rm libpixman-1.0.dylib
+rm libpixman-1.dylib
+rm libxcb-composite.0.dylib
+rm libxcb-composite.dylib
+rm libxcb-damage.0.dylib
+rm libxcb-damage.dylib
+rm libxcb-dpms.0.dylib
+rm libxcb-dpms.dylib
+rm libxcb-dri2.0.dylib
+rm libxcb-dri2.dylib
+rm libxcb-dri3.0.dylib
+rm libxcb-dri3.dylib
+rm libxcb-glx.0.dylib
+rm libxcb-glx.dylib
+rm libxcb-present.0.dylib
+rm libxcb-present.dylib
+rm libxcb-randr.0.dylib
+rm libxcb-randr.dylib
+rm libxcb-record.0.dylib
+rm libxcb-record.dylib
+rm libxcb-render.0.dylib
+rm libxcb-render.dylib
+rm libxcb-res.0.dylib
+rm libxcb-res.dylib
+rm libxcb-screensaver.0.dylib
+rm libxcb-screensaver.dylib
+rm libxcb-shape.0.dylib
+rm libxcb-shape.dylib
+rm libxcb-shm.0.dylib
+rm libxcb-shm.dylib
+rm libxcb-sync.1.dylib
+rm libxcb-sync.dylib
+rm libxcb-util.1.dylib
+rm libxcb-util.dylib
+rm libxcb-xf86dri.0.dylib
+rm libxcb-xf86dri.dylib
+rm libxcb-xfixes.0.dylib
+rm libxcb-xfixes.dylib
+rm libxcb-xinerama.0.dylib
+rm libxcb-xinerama.dylib
+rm libxcb-xinput.0.dylib
+rm libxcb-xinput.dylib
+rm libxcb-xkb.1.dylib
+rm libxcb-xkb.dylib
+rm libxcb-xtest.0.dylib
+rm libxcb-xtest.dylib
+rm libxcb-xv.0.dylib
+rm libxcb-xv.dylib
+rm libxcb-xvmc.0.dylib
+rm libxcb-xvmc.dylib
+rm libxcb.1.dylib
+rm libxcb.dylib
+rm libxslt.1.dylib
+rm libxslt.dylib
+
 ## Fixing imports
 bash /root/fix_imports.sh "/root/runtime"
-
-## A dependency is missing for gnutls
-cd "/root/runtime/lib"
-ln -s "libidn.12.dylib" "libidn.11.dylib"
 
 ## To make package smaller, we are only going to keep i386 part of the libraries
 for file in *.dylib; do
