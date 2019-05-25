@@ -27,12 +27,8 @@ class PhoenicisWinePackageCreator:
 
         # FIXME: Put more abstraction here:
         if operating_system == "darwin":
-            if arch == "mac64":
-                environment = "wine_osxcross"
-                env_arch = "amd64"
-            else:
-                environment = "wine_osxcross"
-                env_arch = "x86"
+            environment = "wine_osxcross"
+            env_arch = "amd64"
         else:
             environment = "wine"
             env_arch = arch
