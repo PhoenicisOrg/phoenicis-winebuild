@@ -1,4 +1,4 @@
-import pathlib
+import pathlib, traceback
 
 from builders.WineBuilder import WineBuilder
 from core.ConfigurationReader import ConfigurationReader
@@ -57,6 +57,8 @@ class PhoenicisWinePackageCreator:
             builder.build(operating_system, arch, version, distribution, distribution_parameters["source"])
             builder.archive(PackageStore.get_binaries_path() + "/" + directory + "/" + filename + ".tar.gz")
             builder.checksum()
+        except:
+            traceback.print_exc()
         finally:
             print("Cleaning container")
             container.clean()
