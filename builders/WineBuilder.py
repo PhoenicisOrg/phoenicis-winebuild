@@ -44,15 +44,28 @@ class WineBuilder:
     def _apply_patches(self, operating_system):
         for patch in self.patches:
             if type(patch) == str:
-                self._apply_patch(patch)
+                self._apply_patch({
+                    "name": patch["name"]
+                })
             if type(patch == dict):
                 if operating_system in patch["operatingSystems"]:
-                    self._apply_patch(patch["name"])
+                    self._apply_patch(patch)
 
     def _apply_patch(self, patch):
         self.container.run(["mkdir", "-p", "/root/patches"])
-        self.container.put_directory("patches/" + patch, "/root/patches/" + patch)
-        self.container.run(["sh", "-c", "git apply --3way /root/patches/" + patch + "/*.patch"], workdir="/root/wine-git")
+
+        if "git" in patch:
+            patchGit = patch["git"]
+            gitPatchDirectory = "/root/patches/%s" % patchGit["name"]
+            gitCloneCommand = "git clone %s %s" % (patchGit["git"]["url"], gitPatchDirectory)
+            gitCheckoutCommand = "git checkout -f %s" % patchGit["git"]["branch"]
+
+            self.container.run(["sh", "-c", gitCloneCommand], workdir="/root/wine-git")
+            self.container.run(["sh", "-c", gitCheckoutCommand], workdir=gitPatchDirectory)
+            self.container.run(["sh", "-c", "git apply --3way " + gitPatchDirectory + "/" + patchGit["directory"] +"/*.patch"], workdir="/root/wine-git")
+        else:
+            self.container.put_directory("patches/" + patch["name"], "/root/patches/" + patch["name"])
+            self.container.run(["sh", "-c", "git apply --3way /root/patches/" + patch["name"] + "/*.patch"], workdir="/root/wine-git")
 
     def checksum(self):
         if self._local_archive is not None:
