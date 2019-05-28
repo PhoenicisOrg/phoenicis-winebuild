@@ -6,7 +6,7 @@ git checkout -f "$@"
 
 export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vulkansdk-macos-${MOLTENVK}/macOS/include/:/root/SPIRV-Headers/include/:/root/SPIRV-Headers/include/spirv/"
 export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib:/root/vulkansdk-macos-${MOLTENVK}/macOS/lib/"
-export PATH="/root/wine-tools/tools/widl/:$PATH"
+export PATH="/root/wine-tools64/tools/widl/:$PATH"
 
 ./autogen.sh || exit 1
 ./configure --host x86_64-apple-darwin15 --prefix="/" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks" || exit 2

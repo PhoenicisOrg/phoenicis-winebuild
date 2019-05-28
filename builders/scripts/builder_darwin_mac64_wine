@@ -8,6 +8,8 @@ cd "/root/wine-tools"
 
 echo "[STAGE 2/11] Make tools"
 make __tooldeps__ -j 4 || exit 3
+## Make a copy before adding the wrapper to add -m32
+cp -a "/root/wine-tools" "/root/wine-tools64" || exit 4
 cd "tools/winebuild"
 mv "winebuild" "winebuild.real"
 echo '#!/bin/bash' > winebuild
@@ -28,10 +30,6 @@ ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-ar" "/root/osxcross/targe
 ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-as" "/root/osxcross/target/bin/as"
 ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-install_name_tool" "/root/osxcross/target/bin/install_name_tool"
 
-#### Wine
-export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vkd3d/include/"
-export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib"
-
 #### 64bits
 export CC="clang-7 -O3 -target x86_64-apple-darwin15 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks"
 ## This hack will allow winegcc to use the right compiler
@@ -47,7 +45,7 @@ export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib"
 
 cd "/root/wine-git/wine64-build/"
 echo "[STAGE 4/11] Configure 64 bits"
-../configure --enable-win64 --host x86_64-apple-darwin15 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks" || exit 5
+../configure --enable-win64 --host x86_64-apple-darwin15 --prefix="/" --with-wine-tools="/root/wine-tools64" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks" || exit 5
 echo "[STAGE 5/11] Make 64 bits"
 make -j 4 || exit 6
 

@@ -154,3 +154,5 @@ RUN rm "/root/osxcross/target/bin/ld"
 RUN rm /root/osxcross/target/macports/pkgs/opt/local/lib/libwine.*
 RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/lib/wine
 RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/include/wine/
+
+RUN apt-get -y install gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
