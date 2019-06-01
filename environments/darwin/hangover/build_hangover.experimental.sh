@@ -169,3 +169,5 @@ mkdir -p x86_64-windows-user/qemu_host_dll64
 mkdir -p x86_64-windows-user/qemu_guest_dll32
 mkdir -p x86_64-windows-user/qemu_host_dll32
 
+
+cp /usr/lib/gcc/i686-w64-mingw32/6.3-win32/libgcc_s_sjlj-1.dll x86_64-windows-user/qemu_guest_dll32
