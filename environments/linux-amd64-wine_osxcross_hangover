@@ -51,3 +51,14 @@ WORKDIR /root/hangover/build/libxslt64
 RUN ../../libxslt/configure --host=x86_64-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-plugins --without-crypto --prefix=/root/hangover-build/x86_64-w64-mingw32 PATH=/root/hangover-build/x86_64-w64-mingw32/bin:$PATH PKG_CONFIG_PATH=/root/hangover-build/x86_64-w64-mingw32/lib/pkgconfig
 RUN make -j 4
 RUN make install
+
+WORKDIR /root/hangover/
+ADD darwin/hangover/mingw-w64/winreg.h
+RUN cp winreg.h /usr/share/mingw-w64/include/winreg.h
+
+WORKDIR /root/hangover/
+ADD darwin/hangover/0002-hangover.patch
+RUN patch -p1 < 0002-hangover.patch
+
+ADD darwin/hangover/Makefile.macoscross
+RUN make -f Makefile.macoscross

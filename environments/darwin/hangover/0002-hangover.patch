@@ -1,0 +1,500 @@
+diff --git a/dlls/advapi32/Makefile b/dlls/advapi32/Makefile
+index 02a6ba3c..8d51c163 100644
+--- a/dlls/advapi32/Makefile
++++ b/dlls/advapi32/Makefile
+@@ -2,8 +2,8 @@ DESTDIR?=../..
+ SRCDIR?=build_from_build_dllsXX_YYY
+ CURRENT_DLL=DLL_ADVAPI32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -D_WIN32_WINNT=0x0600 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15 -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: advapi32.dll qemu_advapi32.dll.so
+diff --git a/dlls/advpack/Makefile b/dlls/advpack/Makefile
+index 02a4b82a..55076c35 100644
+--- a/dlls/advpack/Makefile
++++ b/dlls/advpack/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_ADVPACK
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -D_WIN32_WINNT=0x0600 -DSECURITY_WIN32 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-tools/tools/winebuild -b x86_64-apple-darwin15  -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: advpack.dll qemu_advpack.dll.so
+diff --git a/dlls/bcrypt/Makefile b/dlls/bcrypt/Makefile
+index 6d6062c1..0d0b8143 100644
+--- a/dlls/bcrypt/Makefile
++++ b/dlls/bcrypt/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_BCRYPT
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15   -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: bcrypt.dll qemu_bcrypt.dll.so
+diff --git a/dlls/cabinet/Makefile b/dlls/cabinet/Makefile
+index 3be8a30b..d29347d0 100644
+--- a/dlls/cabinet/Makefile
++++ b/dlls/cabinet/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_CABINET
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15   -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: cabinet.dll qemu_cabinet.dll.so
+diff --git a/dlls/crypt32/Makefile b/dlls/crypt32/Makefile
+index 8420a5b7..8262f7c9 100644
+--- a/dlls/crypt32/Makefile
++++ b/dlls/crypt32/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_CRYPT32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT) -DCERT_CHAIN_PARA_HAS_EXTRA_FIELDS
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: crypt32.dll qemu_crypt32.dll.so
+diff --git a/dlls/d3d11/Makefile b/dlls/d3d11/Makefile
+index 0fd597bc..c19e6dac 100644
+--- a/dlls/d3d11/Makefile
++++ b/dlls/d3d11/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_D3D11
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: d3d11.dll qemu_d3d11.dll.so
+diff --git a/dlls/d3d9/Makefile b/dlls/d3d9/Makefile
+index 86ef4797..63ff116d 100644
+--- a/dlls/d3d9/Makefile
++++ b/dlls/d3d9/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_D3D9
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-tools/tools/winebuild -b x86_64-apple-darwin15  -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: d3d9.dll qemu_d3d9.dll.so
+diff --git a/dlls/ddraw/Makefile b/dlls/ddraw/Makefile
+index eae1ffe5..cc352644 100644
+--- a/dlls/ddraw/Makefile
++++ b/dlls/ddraw/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_DDRAW
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: ddraw.dll qemu_ddraw.dll.so
+diff --git a/dlls/dinput/Makefile b/dlls/dinput/Makefile
+index d298c29e..90d0898a 100644
+--- a/dlls/dinput/Makefile
++++ b/dlls/dinput/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_DINPUT
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: dinput.dll qemu_dinput.dll.so
+diff --git a/dlls/dsound/Makefile b/dlls/dsound/Makefile
+index 22ed574c..aff81490 100644
+--- a/dlls/dsound/Makefile
++++ b/dlls/dsound/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_DSOUND
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -D_WIN32_WINNT=0x0600 -DSECURITY_WIN32 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: dsound.dll qemu_dsound.dll.so
+diff --git a/dlls/dxgi/Makefile b/dlls/dxgi/Makefile
+index f68f2954..54dd2b29 100644
+--- a/dlls/dxgi/Makefile
++++ b/dlls/dxgi/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_DXGI
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: dxgi.dll qemu_dxgi.dll.so
+diff --git a/dlls/gdi32/Makefile b/dlls/gdi32/Makefile
+index 21ff54fc..f2edd561 100644
+--- a/dlls/gdi32/Makefile
++++ b/dlls/gdi32/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_GDI32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: gdi32.dll qemu_gdi32.dll.so
+diff --git a/dlls/imm32/Makefile b/dlls/imm32/Makefile
+index 6ad542f9..da6937c6 100644
+--- a/dlls/imm32/Makefile
++++ b/dlls/imm32/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_IMM32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: imm32.dll qemu_imm32.dll.so
+diff --git a/dlls/iphlpapi/Makefile b/dlls/iphlpapi/Makefile
+index 312844f2..1d8b02a7 100644
+--- a/dlls/iphlpapi/Makefile
++++ b/dlls/iphlpapi/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_IPHLPAPI
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -D_WIN32_WINNT=0x0600 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT) -DNTDDI_VERSION=0x06020000
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: iphlpapi.dll qemu_iphlpapi.dll.so
+diff --git a/dlls/kernel32/Makefile b/dlls/kernel32/Makefile
+index 8be4c2da..170cf32f 100644
+--- a/dlls/kernel32/Makefile
++++ b/dlls/kernel32/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_KERNEL32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -D_WIN32_WINNT=0x0603 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: kernel32.dll qemu_kernel32.dll.so
+diff --git a/dlls/mmdevapi/Makefile b/dlls/mmdevapi/Makefile
+index 704cfbf8..c2ed1be4 100644
+--- a/dlls/mmdevapi/Makefile
++++ b/dlls/mmdevapi/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_MMDEVAPI
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT) -DCONST_VTABLE -D_WIN32_WINNT=0x0602
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: mmdevapi.dll qemu_mmdevapi.dll.so
+diff --git a/dlls/msvcr100/Makefile b/dlls/msvcr100/Makefile
+index 13db54d3..e6203e15 100644
+--- a/dlls/msvcr100/Makefile
++++ b/dlls/msvcr100/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_MSVCR100
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT) -D_MSVCR_VER=100
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: msvcr100.dll qemu_msvcr100.dll.so
+diff --git a/dlls/msvcr80/Makefile b/dlls/msvcr80/Makefile
+index 47970160..48fd162e 100644
+--- a/dlls/msvcr80/Makefile
++++ b/dlls/msvcr80/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_MSVCR80
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT) -D_MSVCR_VER=80
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: msvcr80.dll qemu_msvcr80.dll.so
+diff --git a/dlls/msvcrt/Makefile b/dlls/msvcrt/Makefile
+index 723ad785..58113bda 100644
+--- a/dlls/msvcrt/Makefile
++++ b/dlls/msvcrt/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_MSVCRT
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT) -D_MSVCR_VER=0
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15 -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: msvcrt.dll qemu_msvcrt.dll.so
+diff --git a/dlls/ntdll/Makefile b/dlls/ntdll/Makefile
+index c6bf2d94..f7662ec1 100644
+--- a/dlls/ntdll/Makefile
++++ b/dlls/ntdll/Makefile
+@@ -2,10 +2,9 @@ DESTDIR?=../..
+ SRCDIR?=build_from_build_dllsXX_YYY
+ CURRENT_DLL=DLL_NTDLL
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT) -DNTDDI_VERSION=0x06020000
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15 -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+ VPATH=$(SRCDIR)
+-
++WINEGCC=dllgcc
+ all: ntdll.dll qemu_ntdll.dll.so
+ 
+ ntdll.dll: actctx_g.o critsection_g.o error_g.o exception_g.o file_g.o heap_g.o loader_g.o main_g.o misc_g.o nt_g.o ntdll.spec om_g.o path_g.o process_g.o reg_g.o rtl_g.o rtlstr_g.o sec_g.o signal_g.o string_g.o sync_g.o thread_g.o threadpool_g.o time_g.o version_g.o wcstring_g.o
+diff --git a/dlls/opengl32/Makefile b/dlls/opengl32/Makefile
+index d167feda..bd939203 100644
+--- a/dlls/opengl32/Makefile
++++ b/dlls/opengl32/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_OPENGL32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-tools/tools/winebuild -b x86_64-apple-darwin15  -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: opengl32.dll qemu_opengl32.dll.so
+diff --git a/dlls/riched20/Makefile b/dlls/riched20/Makefile
+index 7b5b3d5a..d1f50ef9 100644
+--- a/dlls/riched20/Makefile
++++ b/dlls/riched20/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_RICHED20
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -D_WIN32_WINNT=0x0600 -DSECURITY_WIN32 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=/root/hangover/bin/dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: riched20.dll qemu_riched20.dll.so
+diff --git a/dlls/riched32/Makefile b/dlls/riched32/Makefile
+index 11370530..006a6be8 100644
+--- a/dlls/riched32/Makefile
++++ b/dlls/riched32/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_RICHED32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -D_WIN32_WINNT=0x0600 -DSECURITY_WIN32 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: riched32.dll qemu_riched32.dll.so
+diff --git a/dlls/secur32/Makefile b/dlls/secur32/Makefile
+index 9cb5c977..80b12bd6 100644
+--- a/dlls/secur32/Makefile
++++ b/dlls/secur32/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_SECUR32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -D_WIN32_WINNT=0x0600 -DSECURITY_WIN32 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: secur32.dll qemu_secur32.dll.so
+diff --git a/dlls/user32/Makefile b/dlls/user32/Makefile
+index 6bfebcac..4c157ffc 100644
+--- a/dlls/user32/Makefile
++++ b/dlls/user32/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_USER32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -D_WIN32_WINNT=0x0602 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: user32.dll qemu_user32.dll.so
+diff --git a/dlls/usp10/Makefile b/dlls/usp10/Makefile
+index dd0eaccd..0c8671d9 100644
+--- a/dlls/usp10/Makefile
++++ b/dlls/usp10/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_USP10
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -D_WIN32_WINNT=0x0600 -DSECURITY_WIN32 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: usp10.dll qemu_usp10.dll.so
+diff --git a/dlls/windowscodecs/Makefile b/dlls/windowscodecs/Makefile
+index 87a1d0df..b1c46d50 100644
+--- a/dlls/windowscodecs/Makefile
++++ b/dlls/windowscodecs/Makefile
+@@ -2,8 +2,8 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_WINDOWSCODECS
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT) -DCONST_VTABLE -D_WIN32_WINNT=0x0602
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: windowscodecs.dll qemu_windowscodecs.dll.so
+@@ -24,16 +24,16 @@ dlldata.o: dlldata.c Makefile $(SRCDIR)/Makefile
+ 	$(GUEST_CC)-gcc $< -c -o $@ $(CFLAGS) -DQEMU_DLL_GUEST -DENTRY_PREFIX=WIC_ -DPROXY_DELEGATION -I../../wine-guest32/include -I../../../wine/include -Wno-format
+ 
+ dlldata.c: windowscodecs_wincodec.idl Makefile $(SRCDIR)/Makefile
+-	$(DESTDIR)/build/wine-host/tools/widl/widl --dlldata-only -o dlldata.c windowscodecs_wincodec.idl
++	$(DESTDIR)/build/wine-tools/tools/widl/widl --dlldata-only -o dlldata.c windowscodecs_wincodec.idl
+ 
+ windowscodecs_wincodec_p.o: windowscodecs_wincodec_p.c windowscodecs_wincodec.h Makefile $(SRCDIR)/Makefile
+ 	$(GUEST_CC)-gcc $< -c -o $@ $(CFLAGS) -DQEMU_DLL_GUEST -I../../wine-guest32/include -I../../../wine/include -Wno-format
+ 
+ windowscodecs_wincodec.h: windowscodecs_wincodec.idl Makefile $(SRCDIR)/Makefile
+-	$(DESTDIR)/build/wine-host/tools/widl/widl -o windowscodecs_wincodec.h -b $(GUEST_CC) -I../../wine-guest32/include -I../../../wine/include ../../../dlls/windowscodecs/windowscodecs_wincodec.idl
++	$(DESTDIR)/build/wine-tools/tools/widl/widl -o windowscodecs_wincodec.h -b $(GUEST_CC) -I../../wine-guest32/include -I../../../wine/include ../../../dlls/windowscodecs/windowscodecs_wincodec.idl
+ 
+ windowscodecs_wincodec_p.c: windowscodecs_wincodec.idl Makefile $(SRCDIR)/Makefile
+-	$(DESTDIR)/build/wine-host/tools/widl/widl -o windowscodecs_wincodec_p.c -b $(GUEST_CC) -I../../wine-guest32/include -I../../../wine/include ../../../dlls/windowscodecs/windowscodecs_wincodec.idl
++	$(DESTDIR)/build/wine-tools/tools/widl/widl -o windowscodecs_wincodec_p.c -b $(GUEST_CC) -I../../wine-guest32/include -I../../../wine/include ../../../dlls/windowscodecs/windowscodecs_wincodec.idl
+ 
+ clean:
+ 	rm -rf *o *.dll *.so dlldata.c windowscodecs_wincodec.h windowscodecs_wincodec_p.c
+diff --git a/dlls/winmm/Makefile b/dlls/winmm/Makefile
+index 1b4a0c10..9107a1e7 100644
+--- a/dlls/winmm/Makefile
++++ b/dlls/winmm/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_WINMM
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: winmm.dll qemu_winmm.dll.so
+diff --git a/dlls/winspool.drv/Makefile b/dlls/winspool.drv/Makefile
+index 97d212a2..069ee23a 100644
+--- a/dlls/winspool.drv/Makefile
++++ b/dlls/winspool.drv/Makefile
+@@ -2,7 +2,7 @@
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_WINSPOOL
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+ 
+ VPATH=$(SRCDIR)
+ 
+diff --git a/dlls/ws2_32/Makefile b/dlls/ws2_32/Makefile
+index 536846d6..64aee6cf 100644
+--- a/dlls/ws2_32/Makefile
++++ b/dlls/ws2_32/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_WS2_32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -D_WIN32_WINNT=0x0600 -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: ws2_32.dll qemu_ws2_32.dll.so
+diff --git a/dlls/wsock32/Makefile b/dlls/wsock32/Makefile
+index afc69444..a72cf03b 100644
+--- a/dlls/wsock32/Makefile
++++ b/dlls/wsock32/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_WSOCK32
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: wsock32.dll qemu_wsock32.dll.so
+diff --git a/dlls/xinput1_3/Makefile b/dlls/xinput1_3/Makefile
+index 6617167c..ac3ebca0 100644
+--- a/dlls/xinput1_3/Makefile
++++ b/dlls/xinput1_3/Makefile
+@@ -2,8 +2,8 @@ SRCDIR?=build_from_build_dllsXX_YYY
+ DESTDIR?=../..
+ CURRENT_DLL=DLL_XINPUT1_3
+ CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
+-WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
++WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
++WINEGCC=dllgcc
+ VPATH=$(SRCDIR)
+ 
+ all: xinput1_3.dll qemu_xinput1_3.dll.so
