@@ -46,10 +46,13 @@ class PhoenicisWinePackageCreator:
             PackageStore.get_logs_path() + "/" + directory + "/" + filename + ".log").with_output_callback(self._output_callback)
 
         distribution_parameters = self.fetch_distribution(distribution)
+        suffix = None
+        if "scriptSuffix" in distribution_parameters:
+            suffix = distribution_parameters["scriptSuffix"]
 
         try:
             container.start()
-            builder = WineBuilder(container, distribution_parameters["patches"], self.create_hooks(distribution_parameters["hooks"]))
+            builder = WineBuilder(container, distribution_parameters["patches"], self.create_hooks(distribution_parameters["hooks"]), suffix)
             builder.build(operating_system, arch, version, distribution, distribution_parameters["source"])
             builder.archive(PackageStore.get_binaries_path() + "/" + directory + "/" + filename + ".tar.gz")
             builder.checksum()
