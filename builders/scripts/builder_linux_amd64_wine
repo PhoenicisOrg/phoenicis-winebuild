@@ -10,7 +10,7 @@ mkdir -p "/root/wine-git/wine32-build/"
 ### 64bits build
 echo "[STAGE 1/7] Configure 64 bits"
 cd "/root/wine-git/wine64-build/"
-../configure --enable-win64 --verbose --disable-tests --prefix="/"  LFFLAGS="-L/usr/local/lib"  || exit 4
+../configure --enable-win64 --prefix="/"  LFFLAGS="-L/usr/local/lib"  || exit 4
 
 echo "[STAGE 2/7] Make 64 bits"
 make -j 4 || exit 5
@@ -21,7 +21,7 @@ echo "[STAGE 3/7] Installing 32 bits dependencies"
 /root/install_32bits_dependencies.sh
 echo "[STAGE 4/7] Configure 32 bits"
 cd "/root/wine-git/wine32-build/"
-../configure  --verbose --disable-tests --with-wine64=/root/wine-git/wine64-build --prefix="/" LFFLAGS="-L/usr/local/lib" || exit 6
+../configure --with-wine64=/root/wine-git/wine64-build --prefix="/" LFFLAGS="-L/usr/local/lib" || exit 6
 
 echo "[STAGE 5/7] Make 32 bits"
 make -j 4 || exit 7
