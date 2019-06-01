@@ -8,10 +8,11 @@ from typing import List
 
 
 class WineBuilder:
-    def __init__(self, container: Container, patches=None, hooks=None):
+    def __init__(self, container: Container, patches=None, hooks=None, builder_suffix=None):
         self.container = container
         self.patches = patches or []
         self.hooks: List[AbstractHook] = hooks or []
+        self.builder_suffix = builder_suffix
         self._local_archive = None
 
     def prepare(self, operating_system, arch, version, distribution, repository):
@@ -30,6 +31,10 @@ class WineBuilder:
     def build(self, operating_system, arch, version, distribution="upstream",
               repository="https://github.com/wine-mirror/wine"):
         script = "builders/scripts/builder_%s_%s_wine" % (operating_system, arch)
+
+        if self.builder_suffix is not None:
+            script = script + "_" + self.builder_suffix
+
         self.prepare(operating_system, arch, version, distribution, repository)
         self.container.run_script(script)
         self._apply_hooks("after-build", operating_system, arch, version, distribution)
