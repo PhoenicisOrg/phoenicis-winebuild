@@ -52,7 +52,7 @@ WORKDIR /root/hangover/
 ADD darwin/hangover/mingw-w64/winreg.h /root/hangover/
 RUN cp winreg.h /usr/share/mingw-w64/include/winreg.h
 
-ADD darwin/hangover/0002-hangover.patch /root/hangover/
+ADD darwin/hangover/0002-hangover.patch  /root/hangover/
 RUN patch -p1 < 0002-hangover.patch
 
 ADD darwin/hangover/Makefile.macoscross /root/hangover/
