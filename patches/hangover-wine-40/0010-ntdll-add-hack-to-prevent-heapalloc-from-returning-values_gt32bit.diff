@@ -1,0 +1,81 @@
+From 89265c65e59aecfa85c95ab2056e6e43a5f4abd6 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stefan=20D=C3=B6singer?= <stefan@codeweavers.com>
+Date: Sat, 16 Feb 2019 21:00:31 +0100
+Subject: [PATCH] ntdll: Add a hack to prevent HeapAlloc from returning values
+ > 32 bit.
+
+This can happen if a Wine DLL frees memory allocated before we blocked
+off higher addresses. I wish I could do this with hooking HeapFree some
+day. In theory the HeapFree part should be enough.
+---
+ dlls/ntdll/heap.c     | 13 +++++++++++++
+ dlls/ntdll/ntdll.spec |  1 +
+ 2 files changed, 14 insertions(+)
+
+diff --git a/dlls/ntdll/heap.c b/dlls/ntdll/heap.c
+index bdadc7932d9..f6b54db7a44 100644
+--- a/dlls/ntdll/heap.c
++++ b/dlls/ntdll/heap.c
+@@ -182,6 +182,8 @@ static HEAP *processHeap;  /* main process heap */
+ 
+ static BOOL HEAP_IsRealArena( HEAP *heapPtr, DWORD flags, LPCVOID block, BOOL quiet );
+ 
++static BOOL address_firewall = FALSE;
++
+ /* mark a block of memory as free for debugging purposes */
+ static inline void mark_block_free( void *ptr, SIZE_T size, DWORD flags )
+ {
+@@ -1673,6 +1675,7 @@ void * WINAPI DECLSPEC_HOTPATCH RtlAllocateHeap( HANDLE heap, ULONG flags, SIZE_
+     /* Validate the parameters */
+ 
+     if (!heapPtr) return NULL;
++retry:
+     flags &= HEAP_GENERATE_EXCEPTIONS | HEAP_NO_SERIALIZE | HEAP_ZERO_MEMORY;
+     flags |= heapPtr->flags;
+     rounded_size = ROUND_SIZE(size) + HEAP_TAIL_EXTRA_SIZE( flags );
+@@ -1691,6 +1694,8 @@ void * WINAPI DECLSPEC_HOTPATCH RtlAllocateHeap( HANDLE heap, ULONG flags, SIZE_
+         if (!(flags & HEAP_NO_SERIALIZE)) RtlLeaveCriticalSection( &heapPtr->critSection );
+         if (!ret && (flags & HEAP_GENERATE_EXCEPTIONS)) RtlRaiseStatus( STATUS_NO_MEMORY );
+         TRACE("(%p,%08x,%08lx): returning %p\n", heap, flags, size, ret );
++        if (address_firewall && ((ULONG_PTR)ret) > ~0UL)
++            goto retry;
+         return ret;
+     }
+ 
+@@ -1729,9 +1734,15 @@ void * WINAPI DECLSPEC_HOTPATCH RtlAllocateHeap( HANDLE heap, ULONG flags, SIZE_
+     if (!(flags & HEAP_NO_SERIALIZE)) RtlLeaveCriticalSection( &heapPtr->critSection );
+ 
+     TRACE("(%p,%08x,%08lx): returning %p\n", heap, flags, size, pInUse + 1 );
++    if (address_firewall && ((ULONG_PTR)pInUse)> ~0UL)
++        goto retry;
+     return pInUse + 1;
+ }
+ 
++void WINAPI __wine_RtlSetFirewallHeap(BOOL firewall)
++{
++    address_firewall = firewall;
++}
+ 
+ /***********************************************************************
+  *           RtlFreeHeap   (NTDLL.@)
+@@ -1757,6 +1768,8 @@ BOOLEAN WINAPI DECLSPEC_HOTPATCH RtlFreeHeap( HANDLE heap, ULONG flags, void *pt
+ 
+     if (!ptr) return TRUE;  /* freeing a NULL ptr isn't an error in Win2k */
+ 
++    if (address_firewall && ((ULONG_PTR)ptr) > ~0U) return TRUE;
++
+     heapPtr = HEAP_GetPtr( heap );
+     if (!heapPtr)
+     {
+diff --git a/dlls/ntdll/ntdll.spec b/dlls/ntdll/ntdll.spec
+index 1512bf3fe54..4dba9141180 100644
+--- a/dlls/ntdll/ntdll.spec
++++ b/dlls/ntdll/ntdll.spec
+@@ -1506,6 +1506,7 @@
+ 
+ # Virtual memory
+ @ cdecl __wine_locked_recvmsg(long ptr long)
++@ cdecl __wine_RtlSetFirewallHeap(long)
+ 
+ # Version
+ @ cdecl wine_get_version() NTDLL_wine_get_version

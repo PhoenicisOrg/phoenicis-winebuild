@@ -110,12 +110,20 @@ chmod +x /root/hangover/bin/dllgcc
 
 export PATH="/root/hangover/bin:$PATH"
 
+cd "/root/hangover/build/qemu"
 CC="qemugcc" CXX="qemug++" ../../qemu/configure --disable-bzip2 --disable-libusb --disable-sdl --disable-snappy --disable-virtfs --disable-opengl --python=/usr/bin/python2.7 --disable-xen --disable-lzo --disable-qom-cast-debug --disable-vnc --disable-seccomp --disable-strip --disable-hax --disable-gnutls --disable-nettle --disable-replication --disable-tpm --disable-gtk --disable-gcrypt --disable-linux-aio --disable-system --disable-tools --disable-linux-user --disable-guest-agent --enable-windows-user --disable-fdt --disable-capstone
+make -j4
 
 mkdir -p x86_64-windows-user/qemu_guest_dll64
 mkdir -p x86_64-windows-user/qemu_host_dll64
 mkdir -p x86_64-windows-user/qemu_guest_dll32
 mkdir -p x86_64-windows-user/qemu_host_dll32
 
+cd /root/hangover
+mkdir -p /root/hangover
 make -f Makefile.macoscross
 cp /usr/lib/gcc/i686-w64-mingw32/6.3-win32/libgcc_s_sjlj-1.dll x86_64-windows-user/qemu_guest_dll32
+
+mkdir -p /root/wine/hangover
+cp -a /root/hangover/build/qemu/x86_64-windows-user/qemu_* /root/wine/hangover/
+cp -a /root/hangover/build/qemu/x86_64-windows-user/qemu-x86_64.exe* /root/wine/hangover

@@ -1,0 +1,90 @@
+From d8f66d882deb1df8a8d70867136b699c3fdedbfc Mon Sep 17 00:00:00 2001
+From: Alexandre Julliard <julliard@winehq.org>
+Date: Fri, 25 Jan 2019 13:49:32 +0100
+Subject: [PATCH] ntdll: Implement RtlIsProcessorFeaturePresent().
+
+Signed-off-by: Alexandre Julliard <julliard@winehq.org>
+---
+ dlls/kernel32/cpu.c   | 14 ++------------
+ dlls/ntdll/nt.c       |  8 ++++++++
+ dlls/ntdll/ntdll.spec |  1 +
+ include/winternl.h    |  1 +
+ 4 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/dlls/kernel32/cpu.c b/dlls/kernel32/cpu.c
+index 84385c7a0f5..9445d0bc056 100644
+--- a/dlls/kernel32/cpu.c
++++ b/dlls/kernel32/cpu.c
+@@ -46,8 +46,6 @@
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(reg);
+ 
+-#define SHARED_DATA     ((KSHARED_USER_DATA*)0x7ffe0000)
+-
+ /****************************************************************************
+  *		QueryPerformanceCounter (KERNEL32.@)
+  *
+@@ -200,18 +198,10 @@ VOID WINAPI GetNativeSystemInfo(
+  * 			IsProcessorFeaturePresent	[KERNEL32.@]
+  *
+  * Determine if the cpu supports a given feature.
+- * 
+- * RETURNS
+- *  TRUE, If the processor supports feature,
+- *  FALSE otherwise.
+  */
+-BOOL WINAPI IsProcessorFeaturePresent (
+-	DWORD feature	/* [in] Feature number, (PF_ constants from "winnt.h") */) 
++BOOL WINAPI IsProcessorFeaturePresent ( DWORD feature )
+ {
+-  if (feature < PROCESSOR_FEATURE_MAX)
+-    return SHARED_DATA->ProcessorFeatures[feature];
+-  else
+-    return FALSE;
++    return RtlIsProcessorFeaturePresent( feature );
+ }
+ 
+ /***********************************************************************
+diff --git a/dlls/ntdll/nt.c b/dlls/ntdll/nt.c
+index dcf9123409f..5138da484b7 100644
+--- a/dlls/ntdll/nt.c
++++ b/dlls/ntdll/nt.c
+@@ -2230,6 +2230,14 @@ static NTSTATUS get_firmware_info(SYSTEM_FIRMWARE_TABLE_INFORMATION *sfti, ULONG
+ 
+ #endif
+ 
++/***********************************************************************
++ * RtlIsProcessorFeaturePresent [NTDLL.@]
++ */
++BOOLEAN WINAPI RtlIsProcessorFeaturePresent( UINT feature )
++{
++    return feature < PROCESSOR_FEATURE_MAX && user_shared_data->ProcessorFeatures[feature];
++}
++
+ /******************************************************************************
+  * NtQuerySystemInformation [NTDLL.@]
+  * ZwQuerySystemInformation [NTDLL.@]
+diff --git a/dlls/ntdll/ntdll.spec b/dlls/ntdll/ntdll.spec
+index c2e2fb1c66e..1512bf3fe54 100644
+--- a/dlls/ntdll/ntdll.spec
++++ b/dlls/ntdll/ntdll.spec
+@@ -755,6 +755,7 @@
+ @ stub RtlIsGenericTableEmpty
+ # @ stub RtlIsGenericTableEmptyAvl
+ @ stdcall RtlIsNameLegalDOS8Dot3(ptr ptr ptr)
++@ stdcall RtlIsProcessorFeaturePresent(long)
+ # @ stub RtlIsRangeAvailable
+ @ stdcall RtlIsTextUnicode(ptr long ptr)
+ # @ stub RtlIsThreadWithinLoaderCallout
+diff --git a/include/winternl.h b/include/winternl.h
+index 9c8861334a1..a3adba3bdd1 100644
+--- a/include/winternl.h
++++ b/include/winternl.h
+@@ -2741,6 +2741,7 @@ NTSYSAPI BOOL      WINAPI RtlIsCriticalSectionLocked(RTL_CRITICAL_SECTION *);
+ NTSYSAPI BOOL      WINAPI RtlIsCriticalSectionLockedByThread(RTL_CRITICAL_SECTION *);
+ NTSYSAPI ULONG     WINAPI RtlIsDosDeviceName_U(PCWSTR);
+ NTSYSAPI BOOLEAN   WINAPI RtlIsNameLegalDOS8Dot3(const UNICODE_STRING*,POEM_STRING,PBOOLEAN);
++NTSYSAPI BOOLEAN   WINAPI RtlIsProcessorFeaturePresent(UINT);
+ NTSYSAPI BOOLEAN   WINAPI RtlIsTextUnicode(LPCVOID,INT,INT *);
+ NTSYSAPI BOOLEAN   WINAPI RtlIsValidHandle(const RTL_HANDLE_TABLE *, const RTL_HANDLE *);
+ NTSYSAPI BOOLEAN   WINAPI RtlIsValidIndexHandle(const RTL_HANDLE_TABLE *, ULONG Index, RTL_HANDLE **);

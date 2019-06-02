@@ -1,0 +1,171 @@
+From d872f34e5bd375731391e6fce692ecd864b58b8b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stefan=20D=C3=B6singer?= <stefan@codeweavers.com>
+Date: Fri, 25 Jan 2019 13:44:49 +0100
+Subject: [PATCH] shell32: Add a hack to make the unix shellfolder work in a PE
+ build in hangover.
+
+---
+ dlls/shell32/shell32_main.c  | 18 ++++++++++++++++
+ dlls/shell32/shell32_main.h  | 28 +++++++++++++++++++++++++
+ dlls/shell32/shfldr_unixfs.c | 40 +++++++++++++-----------------------
+ dlls/shell32/trash.c         |  3 +++
+ 4 files changed, 63 insertions(+), 26 deletions(-)
+
+diff --git a/dlls/shell32/shell32_main.c b/dlls/shell32/shell32_main.c
+index a7919660312..a9ffdf41fe1 100644
+--- a/dlls/shell32/shell32_main.c
++++ b/dlls/shell32/shell32_main.c
+@@ -1018,6 +1018,24 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID fImpLoad)
+     switch (fdwReason)
+     {
+     case DLL_PROCESS_ATTACH:
++#if defined(__MINGW32__) || defined(_MSC_VER)
++        {
++            HMODULE msvcrt = GetModuleHandleA("msvcrt");
++            if (!msvcrt)
++                ERR("Cannot get msvcrt\n");
++
++            p_realpath = (void *)GetProcAddress(msvcrt, "__hangover_realpath");
++            if (!p_realpath)
++                ERR("Cannot get realpath\n");
++            p_getpwuid = (void *)GetProcAddress(msvcrt, "__hangover_getpwuid");
++            if (!p_getpwuid)
++                ERR("Cannot get getpwuid\n");
++            p_getgrgid = (void *)GetProcAddress(msvcrt, "__hangover_getgrgid");
++            if (!p_getgrgid)
++                ERR("Cannot get getgrgid\n");
++        }
++#endif
++
+         shell32_hInstance = hinstDLL;
+         DisableThreadLibraryCalls(shell32_hInstance);
+ 
+diff --git a/dlls/shell32/shell32_main.h b/dlls/shell32/shell32_main.h
+index 11a96309e8b..0d65671f9a6 100644
+--- a/dlls/shell32/shell32_main.h
++++ b/dlls/shell32/shell32_main.h
+@@ -267,4 +267,32 @@ static inline WCHAR *strdupAtoW(const char *str)
+     return ret;
+ }
+ 
++/* Hangover hacks to make the unix shell folder work in a PE build. */
++#if defined(__MINGW32__) || defined(_MSC_VER)
++typedef int uid_t, gid_t;
++
++struct passwd {
++    char   *pw_name;       /* username */
++    char   *pw_passwd;     /* user password */
++    uid_t   pw_uid;        /* user ID */
++    gid_t   pw_gid;        /* group ID */
++    char   *pw_gecos;      /* user information */
++    char   *pw_dir;        /* home directory */
++    char   *pw_shell;      /* shell program */
++};
++
++struct group {
++    char   *gr_name;       /* group name */
++    char   *gr_passwd;     /* group password */
++    gid_t   gr_gid;        /* group ID */
++    char  **gr_mem;        /* group members */
++};
++
++char * (* CDECL p_realpath)(const char *path, char *resolved_path);
++struct passwd * (* CDECL p_getpwuid)(uid_t uid);
++struct group *(* CDECL p_getgrgid)(gid_t gid);
++
++
++#endif
++
+ #endif
+diff --git a/dlls/shell32/shfldr_unixfs.c b/dlls/shell32/shfldr_unixfs.c
+index 732a103b507..01221e54e7d 100644
+--- a/dlls/shell32/shfldr_unixfs.c
++++ b/dlls/shell32/shfldr_unixfs.c
+@@ -167,8 +167,6 @@
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(shell);
+ 
+-#if !defined(__MINGW32__) && !defined(_MSC_VER)
+-
+ #define LEN_SHITEMID_FIXED_PART ((USHORT) \
+     ( sizeof(USHORT)      /* SHITEMID's cb field. */ \
+     + sizeof(PIDLTYPE)    /* PIDLDATA's type field. */ \
+@@ -404,7 +402,11 @@ static BOOL UNIXFS_get_unix_path(LPCWSTR pszDosPath, char *pszCanonicalPath)
+     pszUnixPath = wine_get_unix_file_name(wszDrive);
+     if (!pszUnixPath) return FALSE;
+     cDriveSymlinkLen = strlen(pszUnixPath);
++#if !defined(__MINGW32__) && !defined(_MSC_VER)
+     pElement = realpath(pszUnixPath, szPath);
++#else
++    pElement = p_realpath(pszUnixPath, szPath);
++#endif
+     heap_free(pszUnixPath);
+     if (!pElement) return FALSE;
+     if (szPath[strlen(szPath)-1] != '/') strcat(szPath, "/");
+@@ -1536,11 +1538,21 @@ static HRESULT WINAPI ShellFolder2_GetDetailsOf(IShellFolder2* iface,
+             psd->str.u.cStr[10] = '\0';
+             break;
+         case 5:
++#if !defined(__MINGW32__) && !defined(_MSC_VER)
+             pPasswd = getpwuid(statItem.st_uid);
++#else
++            ERR("Calling pw stuff.\n");
++            pPasswd = p_getpwuid(statItem.st_uid);
++#endif
+             if (pPasswd) strcpy(psd->str.u.cStr, pPasswd->pw_name);
+             break;
+         case 6:
++#if !defined(__MINGW32__) && !defined(_MSC_VER)
+             pGroup = getgrgid(statItem.st_gid);
++#else
++            ERR("Calling group stuff.\n");
++            pGroup = p_getgrgid(statItem.st_gid);
++#endif
+             if (pGroup) strcpy(psd->str.u.cStr, pGroup->gr_name);
+             break;
+     }
+@@ -2538,30 +2550,6 @@ static IEnumIDList *UnixSubFolderIterator_Constructor(UnixFolder *pUnixFolder, S
+     return &iterator->IEnumIDList_iface;
+ }
+ 
+-#else /* __MINGW32__ || _MSC_VER */
+-
+-HRESULT WINAPI UnixFolder_Constructor(IUnknown *pUnkOuter, REFIID riid, LPVOID *ppv)
+-{
+-    return E_NOTIMPL;
+-}
+-
+-HRESULT WINAPI UnixDosFolder_Constructor(IUnknown *pUnkOuter, REFIID riid, LPVOID *ppv)
+-{
+-    return E_NOTIMPL;
+-}
+-
+-HRESULT WINAPI FolderShortcut_Constructor(IUnknown *pUnkOuter, REFIID riid, LPVOID *ppv)
+-{
+-    return E_NOTIMPL;
+-}
+-
+-HRESULT WINAPI MyDocuments_Constructor(IUnknown *pUnkOuter, REFIID riid, LPVOID *ppv)
+-{
+-    return E_NOTIMPL;
+-}
+-
+-#endif /* __MINGW32__ || _MSC_VER */
+-
+ /******************************************************************************
+  * UNIXFS_is_rooted_at_desktop [Internal]
+  *
+diff --git a/dlls/shell32/trash.c b/dlls/shell32/trash.c
+index fc75c17dd28..9c7fba9f6b9 100644
+--- a/dlls/shell32/trash.c
++++ b/dlls/shell32/trash.c
+@@ -239,6 +239,9 @@ HRESULT TRASH_GetDetails(const char *trash_path, const char *name, WIN32_FIND_DA
+     path[trash_path_length] = '/';
+     memcpy(path+trash_path_length+1, name, name_length+1);
+ 
++#if defined(__MINGW32__) || defined(_MSC_VER)
++    ERR("This will probably not work.\n");
++#endif
+     ret = lstat(path, &stats);
+     heap_free(path);
+     if(ret == -1) return S_FALSE;

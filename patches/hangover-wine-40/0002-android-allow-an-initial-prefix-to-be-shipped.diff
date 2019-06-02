@@ -1,0 +1,21 @@
+From 446a585f4ea064ac6af9d143eb8f596329c71681 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andr=C3=A9=20Hentschel?= <nerv@dawncrow.de>
+Date: Fri, 25 Jan 2019 13:44:49 +0100
+Subject: [PATCH] wineandroid: Allow an initial prefix to be shipped
+
+---
+ dlls/wineandroid.drv/WineActivity.java | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/dlls/wineandroid.drv/WineActivity.java b/dlls/wineandroid.drv/WineActivity.java
+index 8744ea6956c..3ed4874ba50 100644
+--- a/dlls/wineandroid.drv/WineActivity.java
++++ b/dlls/wineandroid.drv/WineActivity.java
+@@ -189,6 +189,7 @@ private void createProgressDialog( final int max, final String message )
+     private final boolean isFileWanted( String name )
+     {
+         if (name.equals( "files.sum" )) return true;
++        if (name.startsWith( "prefix/" )) return true;
+         if (name.startsWith( "share/" )) return true;
+         for (String abi : get_supported_abis())
+         {

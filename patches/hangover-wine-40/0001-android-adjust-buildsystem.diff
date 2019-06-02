@@ -1,0 +1,22 @@
+From 0d0d98b7d08e987911e7317b36854ca849bf21a2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andr=C3=A9=20Hentschel?= <nerv@dawncrow.de>
+Date: Sun, 27 Jan 2019 22:47:26 +0100
+Subject: [PATCH] wineandroid.drv: Adjust buildsystem for my system
+
+---
+ dlls/wineandroid.drv/build.gradle.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dlls/wineandroid.drv/build.gradle.in b/dlls/wineandroid.drv/build.gradle.in
+index 8ae2fb47641..36bc11b43fb 100644
+--- a/dlls/wineandroid.drv/build.gradle.in
++++ b/dlls/wineandroid.drv/build.gradle.in
+@@ -28,7 +28,7 @@ buildscript
+     }
+     dependencies
+     {
+-        classpath "com.android.tools.build:gradle:2.2.1"
++        classpath "com.android.tools.build:gradle:2.3.3"
+     }
+ }
+ 
