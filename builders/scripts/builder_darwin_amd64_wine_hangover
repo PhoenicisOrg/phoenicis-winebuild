@@ -2,14 +2,14 @@
 
 ##### WINE
 cd /root/hangover
-mv wine wine.back
+rm -r wine
 ln -s /root/wine-git ./wine
 
 mkdir -p /root/hangover/build/wine-tools
 cd /root/hangover/build/wine-tools
 ../../wine/configure --enable-win64
 make __tooldeps__ -j 4
-ln -s /root/hangover/build/wine-tools /root/wine-tools64/
+ln -s /root/hangover/build/wine-tools /root/wine-tools64
 
 ##### Cross environment
 export FRAMEWORK="10.11"
@@ -120,7 +120,10 @@ mkdir -p x86_64-windows-user/qemu_guest_dll32
 mkdir -p x86_64-windows-user/qemu_host_dll32
 
 cd /root/hangover
-mkdir -p /root/hangover
+
+export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vkd3d/include/"
+export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib:/root/wine"
+
 make -f Makefile.macoscross
 cp /usr/lib/gcc/i686-w64-mingw32/6.3-win32/libgcc_s_sjlj-1.dll x86_64-windows-user/qemu_guest_dll32
 

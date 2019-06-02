@@ -444,13 +444,14 @@ diff --git a/dlls/winspool.drv/Makefile b/dlls/winspool.drv/Makefile
 index 97d212a2..069ee23a 100644
 --- a/dlls/winspool.drv/Makefile
 +++ b/dlls/winspool.drv/Makefile
-@@ -2,7 +2,7 @@
+@@ -2,8 +2,8 @@
  DESTDIR?=../..
  CURRENT_DLL=DLL_WINSPOOL
  CFLAGS+=-I$(SRCDIR)/../include -I$(SRCDIR)/../../qemu/include -DQEMU_CURRENT_DLL=$(CURRENT_DLL) -O2 -DCONST_VTABLE -DGUEST_BIT=$(GUEST_BIT) -DHOST_BIT=$(HOST_BIT)
 -WINEGCC=$(DESTDIR)/build/wine-host/tools/winegcc/winegcc -B$(DESTDIR)/build/wine-host/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
+-
 +WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
- 
++WINEGCC=dllgcc
  VPATH=$(SRCDIR)
  
 diff --git a/dlls/ws2_32/Makefile b/dlls/ws2_32/Makefile
