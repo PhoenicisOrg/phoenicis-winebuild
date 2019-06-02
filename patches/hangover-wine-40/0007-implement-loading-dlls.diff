@@ -1,0 +1,46 @@
+From e3f5ee7bdca1aedaa4a824ba0762fc9cc68879cf Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stefan=20D=C3=B6singer?= <stefan@codeweavers.com>
+Date: Fri, 25 Jan 2019 13:44:49 +0100
+Subject: [PATCH] libwine: Implement loading DLLs in wine_dlopen & friends.
+
+---
+ libs/wine/loader.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/libs/wine/loader.c b/libs/wine/loader.c
+index e4172a74ccd..d7829fbbc77 100644
+--- a/libs/wine/loader.c
++++ b/libs/wine/loader.c
+@@ -1017,6 +1017,10 @@ void wine_init( int argc, char *argv[], char *error, int error_size )
+  */
+ void *wine_dlopen( const char *filename, int flag, char *error, size_t errorsize )
+ {
++#if defined(__MINGW32__) || defined(_MSC_VER)
++    return LoadLibraryA(filename);
++#endif
++
+ #ifdef HAVE_DLOPEN
+     void *ret;
+     const char *s;
+@@ -1085,6 +1089,10 @@ void *wine_dlopen( const char *filename, int flag, char *error, size_t errorsize
+  */
+ void *wine_dlsym( void *handle, const char *symbol, char *error, size_t errorsize )
+ {
++#if defined(__MINGW32__) || defined(_MSC_VER)
++    return GetProcAddress(handle, symbol);
++#endif
++
+ #ifdef HAVE_DLOPEN
+     void *ret;
+     const char *s;
+@@ -1121,6 +1129,10 @@ void *wine_dlsym( void *handle, const char *symbol, char *error, size_t errorsiz
+  */
+ int wine_dlclose( void *handle, char *error, size_t errorsize )
+ {
++#if defined(__MINGW32__) || defined(_MSC_VER)
++    return FreeLibrary(handle);
++#endif
++
+ #ifdef HAVE_DLOPEN
+     int ret;
+     const char *s;

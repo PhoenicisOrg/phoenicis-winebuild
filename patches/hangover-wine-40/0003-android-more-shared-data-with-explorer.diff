@@ -1,0 +1,37 @@
+From 9101d497988a13cc9046d95d06e4a51916cf83a4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andr=C3=A9=20Hentschel?= <nerv@dawncrow.de>
+Date: Fri, 25 Jan 2019 13:44:49 +0100
+Subject: [PATCH] Move shared user data for explorer.exe on Android
+
+---
+ dlls/ntdll/thread.c | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/dlls/ntdll/thread.c b/dlls/ntdll/thread.c
+index c4e02dacb1d..8efba95b67e 100644
+--- a/dlls/ntdll/thread.c
++++ b/dlls/ntdll/thread.c
+@@ -292,8 +292,22 @@ void thread_init(void)
+                                       MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE );
+     if (status)
+     {
+-        MESSAGE( "wine: failed to map the shared user data: %08x\n", status );
++        MESSAGE( "wine: %d: failed to map the shared user data: %08x %p\n", getpid(), status, addr );
++        /* explorer.exe will run in the JVM process on Android, thus the address is not available */
++        /* all other process should be fine */
++    #ifdef __ANDROID__
++        addr = NULL;
++        status = NtAllocateVirtualMemory( NtCurrentProcess(), &addr, 0, &size,
++                                          MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE );
++        if (status)
++        {
++            MESSAGE( "wine: %d: failed to map the fake shared user data: %08x %p\n", getpid(), status, addr );
++            exit(1);
++        }
++        MESSAGE( "wine: %d: fake shared user data is at: %p\n", getpid(), addr );
++    #else
+         exit(1);
++    #endif
+     }
+     user_shared_data = addr;
+     memcpy( user_shared_data->NtSystemRoot, default_windirW, sizeof(default_windirW) );

@@ -18,7 +18,14 @@
     "extends": "upstream",
     "source": "https://github.com/wine-mirror/wine",
     "hooks": [],
-    "patches": [],
+    "patches": [
+      {
+        "name": "hangover-wine-40",
+        "operatingSystems": [
+          "darwin"
+        ]
+      }
+    ],
     "scriptSuffix": "hangover"
   },
   {
