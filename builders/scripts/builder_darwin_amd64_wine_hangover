@@ -125,7 +125,7 @@ export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/r
 export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib:/root/wine"
 
 make -f Makefile.macoscross
-cp /usr/lib/gcc/i686-w64-mingw32/6.3-win32/libgcc_s_sjlj-1.dll x86_64-windows-user/qemu_guest_dll32
+cp /usr/lib/gcc/i686-w64-mingw32/6.3-win32/libgcc_s_sjlj-1.dll /root/hangover/build/qemu/x86_64-windows-user/qemu_guest_dll32
 
 mkdir -p /root/wine/hangover
 cp -a /root/hangover/build/qemu/x86_64-windows-user/qemu_* /root/wine/hangover/
