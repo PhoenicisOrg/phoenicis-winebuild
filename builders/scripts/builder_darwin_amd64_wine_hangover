@@ -56,6 +56,7 @@ export LDFLAGS="-L/root/hangover-build/x86_64-w64-mingw32/lib -L/root/hangover-b
 unset CC
 ../../wine/configure --disable-tests --host=x86_64-w64-mingw32 --with-wine-tools=../wine-tools --without-freetype --with-xml --with-xslt ac_cv_lib_soname_xslt="libxslt-1.dll"
 make -j 4
+make install DESTDIR="/root/hangover-build/x86_64-w64-mingw32/"
 
 mkdir -p /root/hangover/build/wine-guest32
 cd /root/hangover/build/wine-guest32
@@ -64,6 +65,7 @@ export LIBRARY_PATH="/root/hangover-build/i686-w64-mingw32/lib:/root/hangover-bu
 export LDFLAGS="-L/root/hangover-build/i686-w64-mingw32/lib -L/root/hangover-build/i686-w64-mingw32/bin -lxml2"
 ../../wine/configure --disable-tests --host=i686-w64-mingw32 --with-wine-tools=../wine-tools --without-freetype --with-xml --with-xslt ac_cv_lib_soname_xslt="libxslt-1.dll"
 make -j 4
+make install DESTDIR="/root/hangover-build/i686-w64-mingw32/"
 
 mkdir -p /root/hangover/build/qemu
 
