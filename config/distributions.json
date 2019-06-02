@@ -27,7 +27,7 @@
       }
     ],
     "scriptSuffix": "hangover",
-    "environmentSuffit": "hangover"
+    "environmentSuffix": "hangover"
   },
   {
     "name": "dos_support",
