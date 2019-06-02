@@ -132,3 +132,6 @@ cp /usr/lib/gcc/i686-w64-mingw32/6.3-win32/libgcc_s_sjlj-1.dll /root/hangover/bu
 mkdir -p /root/wine/hangover
 cp -a /root/hangover/build/qemu/x86_64-windows-user/qemu_* /root/wine/hangover/
 cp -a /root/hangover/build/qemu/x86_64-windows-user/qemu-x86_64.exe* /root/wine/hangover
+
+cp /root/hangover/run_wine.sh /root/wine/bin/wine
+chmod +x /root/wine/bin/wine

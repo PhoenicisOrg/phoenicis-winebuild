@@ -56,3 +56,4 @@ ADD darwin/hangover/0002-hangover.patch  /root/hangover/
 RUN patch -p1 < 0002-hangover.patch
 
 ADD darwin/hangover/Makefile.macoscross /root/hangover/
+ADD darwin/hangover/run_wine.sh /root/hangover/
