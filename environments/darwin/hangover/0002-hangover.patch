@@ -453,7 +453,8 @@ index 97d212a2..069ee23a 100644
 +WINEGCC=$(DESTDIR)/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin15  -B$(DESTDIR)/build/wine-tools/tools/winebuild -I$(DESTDIR)/build/wine-host/include -I$(DESTDIR)/wine/include
 +WINEGCC=dllgcc
  VPATH=$(SRCDIR)
- 
+
+ all: winspool.drv qemu_winspool.drv.so
 diff --git a/dlls/ws2_32/Makefile b/dlls/ws2_32/Makefile
 index 536846d6..64aee6cf 100644
 --- a/dlls/ws2_32/Makefile
