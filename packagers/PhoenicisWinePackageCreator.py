@@ -28,7 +28,7 @@ class PhoenicisWinePackageCreator:
         pathlib.Path(PackageStore.get_logs_path()).mkdir(parents=True, exist_ok=True)
 
         # FIXME: Put more abstraction here:
-
+        print(distribution_parameters)
         environmentSuffix = ""
         if "environmentSuffix" in distribution_parameters:
             environmentSuffix = "_" + distribution_parameters["environmentSuffix"]
