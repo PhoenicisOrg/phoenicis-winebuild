@@ -1,0 +1,59 @@
+FROM phoenicis/winebuild/linux-amd64:wine_osxcross
+
+WORKDIR /root
+RUN git clone https://github.com/AndreRH/hangover
+WORKDIR /root/hangover
+RUN git submodule init
+RUN git submodule update
+
+RUN mkdir -p /root/hangover-build/
+
+RUN mkdir -p /root/hangover/build/libiconv32
+WORKDIR /root/hangover/build/libiconv32
+RUN ../../libiconv/configure --host=i686-w64-mingw32 --prefix="/root/hangover-build/i686-w64-mingw32"
+RUN make -j 4
+RUN make install
+
+RUN mkdir -p /root/hangover/build/libiconv64
+WORKDIR /root/hangover/build/libiconv64
+RUN ../../libiconv/configure --host=x86_64-w64-mingw32 --prefix="/root/hangover-build/x86_64-w64-mingw32"
+RUN make -j 4
+RUN make install
+
+WORKDIR /root/hangover/libxml2
+RUN NOCONFIGURE=1 ./autogen.sh
+
+RUN mkdir -p /root/hangover/build/libxml2_32
+WORKDIR /root/hangover/build/libxml2_32
+RUN ../../libxml2/configure --host=i686-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-zlib --without-lzma --with-iconv=/root/hangover-build/i686-w64-mingw32 --prefix=/root/hangover-build/i686-w64-mingw32
+RUN make -j 4 && make install
+
+RUN mkdir -p /root/hangover/build/libxml2_64
+WORKDIR /root/hangover/build/libxml2_64
+RUN ../../libxml2/configure --host=x86_64-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-zlib --without-lzma --with-iconv=/root/hangover-build/x86_64-w64-mingw32 --prefix=/root/hangover-build/x86_64-w64-mingw32
+RUN make -j 4 &&  make install
+
+WORKDIR /root/hangover/libxslt
+RUN NOCONFIGURE=1 ./autogen.sh
+ADD darwin/hangover/0001-libxslt-fix.patch /root/hangover/libxslt
+RUN patch -p1 < 0001-libxslt-fix.patch
+
+RUN mkdir -p /root/hangover/build/libxslt32
+WORKDIR /root/hangover/build/libxslt32
+RUN ../../libxslt/configure --host=i686-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-plugins --without-crypto --prefix=/root/hangover-build/i686-w64-mingw32 PATH=/root/hangover-build/i686-w64-mingw32/bin:$PATH PKG_CONFIG_PATH=/root/hangover-build/i686-w64-mingw32/lib/pkgconfig
+RUN make -j 4 && make install
+
+RUN mkdir -p /root/hangover/build/libxslt64
+WORKDIR /root/hangover/build/libxslt64
+RUN ../../libxslt/configure --host=x86_64-w64-mingw32 --enable-static=no --enable-shared=yes --without-python --without-plugins --without-crypto --prefix=/root/hangover-build/x86_64-w64-mingw32 PATH=/root/hangover-build/x86_64-w64-mingw32/bin:$PATH PKG_CONFIG_PATH=/root/hangover-build/x86_64-w64-mingw32/lib/pkgconfig
+RUN make -j 4 && make install
+
+WORKDIR /root/hangover/
+ADD darwin/hangover/mingw-w64/winreg.h /root/hangover/
+RUN cp winreg.h /usr/share/mingw-w64/include/winreg.h
+
+ADD darwin/hangover/0002-hangover.patch  /root/hangover/
+RUN patch -p1 < 0002-hangover.patch
+
+ADD darwin/hangover/Makefile.macoscross /root/hangover/
+ADD darwin/hangover/run_wine.sh /root/hangover/

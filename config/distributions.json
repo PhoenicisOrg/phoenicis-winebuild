@@ -14,6 +14,22 @@
     "patches": []
   },
   {
+    "name": "hangover",
+    "extends": "upstream",
+    "source": "https://github.com/wine-mirror/wine",
+    "hooks": [],
+    "patches": [
+      {
+        "name": "hangover-wine-40",
+        "operatingSystems": [
+          "darwin"
+        ]
+      }
+    ],
+    "scriptSuffix": "hangover",
+    "environmentSuffix": "hangover"
+  },
+  {
     "name": "dos_support",
     "extends": "upstream",
     "source": "https://github.com/wine-mirror/wine",

@@ -100,6 +100,9 @@ cp -d libpulse*.so* "/root/runtime/lib64/"
 cp -d libFLAC*.so* "/root/runtime/lib64/"
 cp -d libsasl2*.so* "/root/runtime/lib64/"
 #cp -d libheimbase*.so*  "/root/runtime/lib64/" Fails currently
+cp -d libXext*.so* "/root/runtime/lib64/"
 
+cd "/lib/x86_64-linux-gnu/"
+cp -d libncurses*.so* "/root/runtime/lib64/"
 
 echo "[END]"

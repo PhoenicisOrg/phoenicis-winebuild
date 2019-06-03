@@ -1,0 +1,155 @@
+From c7146ac09c6337dfac83db3730230d46bd84e604 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Stefan=20D=C3=B6singer?= <stefan@codeweavers.com>
+Date: Fri, 25 Jan 2019 13:44:49 +0100
+Subject: [PATCH] Revert "arm64: Use __builtin_ms_va_list and
+ __attribute__((ms_abi)) on arm64."
+
+This reverts commit 8fb8cc03c3edb599dd98f369e14a08f899cbff95.
+
+I'm doing this for now because hangover's va_args assembler wrapper
+currently implements the Unix version of the ABI. In the long run we'll
+want to adjust it to the Windows ABI, but it isn't all too important
+because we're a winelib application on the arm64 side anyway.
+---
+ configure                | 24 ------------------------
+ configure.ac             |  7 -------
+ include/msvcrt/crtdefs.h |  6 +-----
+ include/windef.h         |  6 +-----
+ include/wine/test.h      |  4 ++--
+ 5 files changed, 4 insertions(+), 43 deletions(-)
+
+diff --git a/configure b/configure
+index b3a360e72ea..e231f9b9cc3 100755
+--- a/configure
++++ b/configure
+@@ -5615,30 +5615,6 @@ rm -f core conftest.err conftest.$ac_objext \
+     CFLAGS="$CFLAGS -marm -mfloat-abi=$float_abi"
+     TARGETFLAGS="-marm -mfloat-abi=$float_abi"
+ 
+-    ;;
+-  aarch64*)
+-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CC supports __builtin_ms_va_list" >&5
+-$as_echo_n "checking whether $CC supports __builtin_ms_va_list... " >&6; }
+-    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+-/* end confdefs.h.  */
+-#include <stdarg.h>
+-int
+-main ()
+-{
+-void func(__builtin_ms_va_list *args);
+-  ;
+-  return 0;
+-}
+-_ACEOF
+-if ac_fn_c_try_compile "$LINENO"; then :
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-$as_echo "yes" >&6; }
+-else
+-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-$as_echo "no" >&6; }
+-                       as_fn_error $? "You need clang >= 5.0 to build Wine for arm64." "$LINENO" 5
+-fi
+-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+     ;;
+   i[3456789]86*)
+     enable_win16=${enable_win16:-yes}
+diff --git a/configure.ac b/configure.ac
+index 119c4cef0e7..da9fba5e645 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -206,13 +206,6 @@ case $host in
+     CFLAGS="$CFLAGS -marm -mfloat-abi=$float_abi"
+     AC_SUBST(TARGETFLAGS,"-marm -mfloat-abi=$float_abi")
+     ;;
+-  aarch64*)
+-    AC_MSG_CHECKING([whether $CC supports __builtin_ms_va_list])
+-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <stdarg.h>]], [[void func(__builtin_ms_va_list *args);]])],
+-                      [AC_MSG_RESULT([yes])],
+-                      [AC_MSG_RESULT([no])
+-                       AC_MSG_ERROR([You need clang >= 5.0 to build Wine for arm64.])])
+-    ;;
+   i[[3456789]]86*)
+     enable_win16=${enable_win16:-yes}
+     ;;
+diff --git a/include/msvcrt/crtdefs.h b/include/msvcrt/crtdefs.h
+index 0c0b08748ea..a9edef57c4f 100644
+--- a/include/msvcrt/crtdefs.h
++++ b/include/msvcrt/crtdefs.h
+@@ -62,8 +62,6 @@
+ #  endif
+ # elif defined(__arm__) && defined (__GNUC__) && !defined(__SOFTFP__)
+ #   define __stdcall __attribute__((pcs("aapcs-vfp")))
+-# elif defined(__aarch64__) && defined (__GNUC__)
+-#  define __stdcall __attribute__((ms_abi))
+ # else  /* __i386__ */
+ #  define __stdcall
+ # endif  /* __i386__ */
+@@ -84,15 +82,13 @@
+ #  endif
+ # elif defined(__arm__) && defined (__GNUC__) && !defined(__SOFTFP__)
+ #   define __cdecl __attribute__((pcs("aapcs-vfp")))
+-# elif defined(__aarch64__) && defined (__GNUC__)
+-#  define __cdecl __attribute__((ms_abi))
+ # elif !defined(_MSC_VER)
+ #  define __cdecl
+ # endif
+ #endif /* __cdecl */
+ 
+ #ifndef __ms_va_list
+-# if (defined(__x86_64__) || defined(__aarch64__)) && defined (__GNUC__)
++# if defined(__x86_64__) && defined (__GNUC__)
+ #  define __ms_va_list __builtin_ms_va_list
+ #  define __ms_va_start(list,arg) __builtin_ms_va_start(list,arg)
+ #  define __ms_va_end(list) __builtin_ms_va_end(list)
+diff --git a/include/windef.h b/include/windef.h
+index f9a570d9cd1..5f01203c591 100644
+--- a/include/windef.h
++++ b/include/windef.h
+@@ -71,8 +71,6 @@ extern "C" {
+ #  endif
+ # elif defined(__arm__) && defined (__GNUC__) && !defined(__SOFTFP__)
+ #   define __stdcall __attribute__((pcs("aapcs-vfp")))
+-# elif defined(__aarch64__) && defined (__GNUC__)
+-#  define __stdcall __attribute__((ms_abi))
+ # else  /* __i386__ */
+ #  define __stdcall
+ # endif  /* __i386__ */
+@@ -93,15 +91,13 @@ extern "C" {
+ #  endif
+ # elif defined(__arm__) && defined (__GNUC__) && !defined(__SOFTFP__)
+ #   define __cdecl __attribute__((pcs("aapcs-vfp")))
+-# elif defined(__aarch64__) && defined (__GNUC__)
+-#  define __cdecl __attribute__((ms_abi))
+ # elif !defined(_MSC_VER)
+ #  define __cdecl
+ # endif
+ #endif /* __cdecl */
+ 
+ #ifndef __ms_va_list
+-# if (defined(__x86_64__) || defined(__aarch64__)) && defined (__GNUC__)
++# if defined(__x86_64__) && defined (__GNUC__)
+ #  define __ms_va_list __builtin_ms_va_list
+ #  define __ms_va_start(list,arg) __builtin_ms_va_start(list,arg)
+ #  define __ms_va_end(list) __builtin_ms_va_end(list)
+diff --git a/include/wine/test.h b/include/wine/test.h
+index 22ba7e8b40e..eaea6684191 100644
+--- a/include/wine/test.h
++++ b/include/wine/test.h
+@@ -90,7 +90,7 @@ static inline int winetest_strcmpW( const WCHAR *str1, const WCHAR *str2 )
+ #define START_TEST(name) void func_##name(void)
+ #endif
+ 
+-#if (defined(__x86_64__) || defined(__aarch64__)) && defined(__GNUC__) && defined(__WINE_USE_MSVCRT)
++#if defined(__x86_64__) && defined(__GNUC__) && defined(__WINE_USE_MSVCRT)
+ #define __winetest_cdecl __cdecl
+ #define __winetest_va_list __builtin_ms_va_list
+ #else
+@@ -192,7 +192,7 @@ extern void __winetest_cdecl winetest_trace( const char *msg, ... ) WINETEST_PRI
+ #include <stdio.h>
+ #include <excpt.h>
+ 
+-#if (defined(__x86_64__) || defined(__aarch64__)) && defined(__GNUC__) && defined(__WINE_USE_MSVCRT)
++#if defined(__x86_64__) && defined(__GNUC__) && defined(__WINE_USE_MSVCRT)
+ # define __winetest_va_start(list,arg) __builtin_ms_va_start(list,arg)
+ # define __winetest_va_end(list) __builtin_ms_va_end(list)
+ #else
