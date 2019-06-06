@@ -10,7 +10,7 @@ RUN apt-get -y install git llvm clang wget
 RUN mkdir -p /root/llvm
 COPY darwin/llvm/*.deb /root/llvm/
 WORKDIR /root/llvm
-RUN apt-get -y install libjs-mathjax python-yaml lib32gcc1 lib32stdc++6 libc6-i386 libctypes-ocaml-dev-v0kb0 ocaml-nox-4.02.3 libjs-jquery python-six python-pygments libjs-underscore
+RUN apt-get -y install libjs-mathjax python-yaml lib32gcc1 lib32stdc++6 libc6-i386 libctypes-ocaml-dev-v0kb0 ocaml-nox-4.02.3 libjs-jquery python-six python-pygments libjs-underscore cmake
 RUN dpkg -i *.deb
 
 RUN git clone https://github.com/tpoechtrager/osxcross /root/osxcross
