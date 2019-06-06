@@ -20,7 +20,7 @@ RUN cd /root/osxcross && UNATTENDED=1 ./build.sh
 ENV PATH="/root/osxcross/target/bin:${PATH}"
 ENV MACOSX_DEPLOYMENT_TARGET="10.11"
 ENV FRAMEWORK="10.11"
-ENV FAUDIO="19.05"
+ENV FAUDIO="19.06"
 ENV MOLTENVK="1.1.106.0"
 ENV VKD3D="vkd3d-1.1"
 
