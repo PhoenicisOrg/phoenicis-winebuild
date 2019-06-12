@@ -17,9 +17,9 @@ Phoenicis Winebuild can:
 -   Docker
 -   docker-py
 
-
+```
     pip install docker
-
+```
 ### Linux user
 
 Ensure that your current user belongs to the docker group. You might need to restart your session
@@ -27,24 +27,26 @@ Ensure that your current user belongs to the docker group. You might need to res
 ### macOS user
 -   Install Docker
 -   Install [homebrew](https://brew.sh/)
--   brew install Python3
--   pip3 install docker
+-   `brew install Python3`
+-   `pip3 install docker`
 
 ### OSX targeted builds
 
-You need to extract Mac OS 10.11 SDK from XCode 9, compress it into a .tar.xz file and place it to darwin/SDK directory  
+You need to extract Mac OS 10.11 SDK from [XCode 7.3.1](https://download.developer.apple.com/Developer_Tools/Xcode_7.3.1/Xcode_7.3.1.dmg), compress it into a .tar.xz file and place it to darwin/SDK directory  
 
 ## How to use
 
 ### Basic Usage Linux
 
-After setup, run examples/interactive_builder.py
-   PYTHONPATH="$PWD" python examples/interactive_builder.py  
-   
+After setup, run `examples/interactive_builder.py`
+```   
+PYTHONPATH="$PWD" python examples/interactive_builder.py  
+```  
 ### Basic Usage macOS
-After setup, run examples/interactive_builder.py
+After setup, run `examples/interactive_builder.py`
+```
    PYTHONPATH="$PWD" python3 examples/interactive_builder.py  
-
+```
 ### Key concepts
 
 #### Environment
@@ -62,7 +64,7 @@ A container is the instanciation of an environment. It corresponds to a docker c
 
 A _Builder_ is the components that builds wine. A builder needs a container to operate. We currently support one kind of builder :
 
--   **WineBuilder** downloads the source of wine into /root/wine-git and runs a script
+-   **WineBuilder** downloads the source of wine into `/root/wine-git` and runs a script
 
 #### Script
 
@@ -73,20 +75,20 @@ A script can be run inside a context initiated by a builder. We have two scripts
 
 ### Web Services
 
-After setup, run run_web_server.py
+After setup, run `run_web_server.py`
 
 #### Create an environment
 
--   Go to the endpoint /environments (<http://localhost:5000/environments>)
--   Grab the docker name of a supported environment (exemple: phoenicis/winebuild/linux-x86:wine)
--   Create an environement creation task
+-   Go to the endpoint `/environments` (<http://localhost:5000/environments>)
+-   Grab the docker name of a supported environment (example: phoenicis/winebuild/linux-x86:wine)
+-   Create an environment creation task
 
-
+```
      curl -d '{"type": "EnvironmentCreationTask", "argument": "phoenicis/winebuild/linux-x86:wine"}' -H "Content-Type: application/json" -X POST http://localhost:5000/tasks
+```
+-   Go to the endpoint `/tasks` to track the task creation process: <http://127.0.0.1:5000/tasks>. You should get a response like this one:
 
--   Go to the endpoint /tasks to track the task creation process: <http://127.0.0.1:5000/tasks>. You should get a response like this one:
-
-
+```
     [{
       BuilderStageReaderTest.py"argument": {
         "docker_name": "phoenicis/winebuild/linux-x86:wine_osxcross"
@@ -100,19 +102,19 @@ After setup, run run_web_server.py
       "start_date": "Sun, 21 Oct 2018 14:18:39 GMT",
       "type": "EnvironmentCreationTask"
     }]
-
+```
 #### Create a wine build task
 
-Make a POST request to the /tasks endpoint:
-
+Make a POST request to the `/tasks` endpoint:
+```
     curl -d '{"type": "PhoenicisWinePackageCreationTask", "argument": {"os": "darwin", "distribution": "upstream", "arch": "x86", "version": "wine-3.0.3"}}' -H "Content-Type: application/json" -X POST http://localhost:5000/tasks
-
+```
 ### Advanced scripting
 
-You have two example python files (example_linux.py and example_darwin.py). If you need to tweak your build (select the version, use custom script, ...) you'll probably need to use the python API (See Key Concepts)
+You have two example python files (`example_linux.py` and `example_darwin.py`). If you need to tweak your build (select the version, use custom script, ...) you'll probably need to use the python API (See Key Concepts)
 
 #### Examples
-
+```
     #!/usr/bin/env python
     from packagers.PhoenicisWinePackageCreator import PhoenicisWinePackageCreator
 
@@ -120,11 +122,12 @@ You have two example python files (example_linux.py and example_darwin.py). If y
     
     ## Builds wine 4.0 x86 for darwin aka macOS
     builder.build("upstream", "wine-4.0", "darwin", "x86")
-
+```
 ## Troubleshooting
 
 ### The fonts are ugly on macOS
 
-Try to export this environement variable:
-
+Try to export this environment variable:
+```
     export FREETYPE_PROPERTIES="truetype:interpreter-version=35"
+```

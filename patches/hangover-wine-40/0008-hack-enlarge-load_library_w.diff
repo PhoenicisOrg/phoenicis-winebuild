@@ -1,0 +1,22 @@
+From 1d6dcd8bb9cff59f3824c2fb571687a9595640c0 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Andr=C3=A9=20Hentschel?= <nerv@dawncrow.de>
+Date: Wed, 13 Feb 2019 18:46:58 +0100
+Subject: [PATCH] HACK: Enlarge LoadLibraryW for a custom hook in qemu_kernel32
+
+---
+ dlls/kernel32/module.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/dlls/kernel32/module.c b/dlls/kernel32/module.c
+index 1199eff4e8f..fea923276c3 100644
+--- a/dlls/kernel32/module.c
++++ b/dlls/kernel32/module.c
+@@ -1074,6 +1074,8 @@ HMODULE WINAPI DECLSPEC_HOTPATCH LoadLibraryA(LPCSTR libname)
+  */
+ HMODULE WINAPI DECLSPEC_HOTPATCH LoadLibraryW(LPCWSTR libnameW)
+ {
++    /* Make room for a custom hook in qemu_kernel32, otherwise this function has less than 16 bytes */
++    TRACE("Remove this trace when Hangover is fixed\n");
+     return LoadLibraryExW(libnameW, 0, 0);
+ }
+ 

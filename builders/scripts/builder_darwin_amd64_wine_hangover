@@ -2,14 +2,14 @@
 
 ##### WINE
 cd /root/hangover
-mv wine wine.back
+rm -r wine
 ln -s /root/wine-git ./wine
 
 mkdir -p /root/hangover/build/wine-tools
 cd /root/hangover/build/wine-tools
 ../../wine/configure --enable-win64
 make __tooldeps__ -j 4
-
+ln -s /root/hangover/build/wine-tools /root/wine-tools64
 
 ##### Cross environment
 export FRAMEWORK="10.11"
@@ -56,6 +56,7 @@ export LDFLAGS="-L/root/hangover-build/x86_64-w64-mingw32/lib -L/root/hangover-b
 unset CC
 ../../wine/configure --disable-tests --host=x86_64-w64-mingw32 --with-wine-tools=../wine-tools --without-freetype --with-xml --with-xslt ac_cv_lib_soname_xslt="libxslt-1.dll"
 make -j 4
+make install DESTDIR="/root/hangover-build/x86_64-w64-mingw32/"
 
 mkdir -p /root/hangover/build/wine-guest32
 cd /root/hangover/build/wine-guest32
@@ -64,6 +65,7 @@ export LIBRARY_PATH="/root/hangover-build/i686-w64-mingw32/lib:/root/hangover-bu
 export LDFLAGS="-L/root/hangover-build/i686-w64-mingw32/lib -L/root/hangover-build/i686-w64-mingw32/bin -lxml2"
 ../../wine/configure --disable-tests --host=i686-w64-mingw32 --with-wine-tools=../wine-tools --without-freetype --with-xml --with-xslt ac_cv_lib_soname_xslt="libxslt-1.dll"
 make -j 4
+make install DESTDIR="/root/hangover-build/i686-w64-mingw32/"
 
 mkdir -p /root/hangover/build/qemu
 
@@ -110,12 +112,26 @@ chmod +x /root/hangover/bin/dllgcc
 
 export PATH="/root/hangover/bin:$PATH"
 
+cd "/root/hangover/build/qemu"
 CC="qemugcc" CXX="qemug++" ../../qemu/configure --disable-bzip2 --disable-libusb --disable-sdl --disable-snappy --disable-virtfs --disable-opengl --python=/usr/bin/python2.7 --disable-xen --disable-lzo --disable-qom-cast-debug --disable-vnc --disable-seccomp --disable-strip --disable-hax --disable-gnutls --disable-nettle --disable-replication --disable-tpm --disable-gtk --disable-gcrypt --disable-linux-aio --disable-system --disable-tools --disable-linux-user --disable-guest-agent --enable-windows-user --disable-fdt --disable-capstone
+make -j4
 
 mkdir -p x86_64-windows-user/qemu_guest_dll64
 mkdir -p x86_64-windows-user/qemu_host_dll64
 mkdir -p x86_64-windows-user/qemu_guest_dll32
 mkdir -p x86_64-windows-user/qemu_host_dll32
 
+cd /root/hangover
+
+export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vkd3d/include/"
+export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib:/root/wine"
+
 make -f Makefile.macoscross
-cp /usr/lib/gcc/i686-w64-mingw32/6.3-win32/libgcc_s_sjlj-1.dll x86_64-windows-user/qemu_guest_dll32
+cp /usr/lib/gcc/i686-w64-mingw32/6.3-win32/libgcc_s_sjlj-1.dll /root/hangover/build/qemu/x86_64-windows-user/qemu_guest_dll32
+
+mkdir -p /root/wine/hangover
+cp -a /root/hangover/build/qemu/x86_64-windows-user/qemu_* /root/wine/hangover/
+cp -a /root/hangover/build/qemu/x86_64-windows-user/qemu-x86_64.exe* /root/wine/hangover
+
+cp /root/hangover/run_wine.sh /root/wine/bin/wine
+chmod +x /root/wine/bin/wine
