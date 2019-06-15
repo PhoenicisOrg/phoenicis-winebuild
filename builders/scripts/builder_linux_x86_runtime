@@ -104,6 +104,7 @@ cp -d libXext*.so* "/root/runtime/lib/"
 
 cd "/lib/i386-linux-gnu/"
 cp -d libncurses*.so* "/root/runtime/lib/"
+cp -d libidn*.so* "/root/runtime/lib/"
 
 
 echo "[END]"
