@@ -8,7 +8,7 @@ cp -d libpangocairo*.so* "/root/runtime/lib/"
 cp -d libxcb-sync*.so* "/root/runtime/lib/"
 cp -d libp11-kit*.so* "/root/runtime/lib/"
 cp -d libicuio*.so* "/root/runtime/lib/"
-cp -d libidn*.so* "/root/runtime/lib/"
+cp -d libidn*.so* "/root/runtime/lib/" #See gnutls
 cp -d libtheoraenc*.so* "/root/runtime/lib/"
 cp -d libgnutl*.so* "/root/runtime/lib/"
 cp -d libgstfft*.so* "/root/runtime/lib/"
@@ -19,7 +19,7 @@ cp -d libgsttag*.so* "/root/runtime/lib/"
 cp -d libgstallocators*.so* "/root/runtime/lib/"
 cp -d libgstcheck*.so* "/root/runtime/lib/"
 cp -d libpangoxft*.so* "/root/runtime/lib/"
-# cp -d libfreetype*.so* "/root/runtime/lib/"
+# cp -d libfreetype*.so* "/root/runtime/lib/" Crash wine, added in dependencies
 cp -d libgstreamer*.so* "/root/runtime/lib/"
 cp -d libicui18n*.so* "/root/runtime/lib/"
 cp -d libpangoft2*.so* "/root/runtime/lib/"
@@ -28,7 +28,7 @@ cp -d libcairo-script-interpreter*.so* "/root/runtime/lib/"
 cp -d libicuuc*.so* "/root/runtime/lib/"
 # cp -d libfontconfig*.so* "/root/runtime/lib/" cannot find the right config file
 cp /usr/local/lib/libFAudio*.so* "/root/runtime/lib/"
-cp -d libgnutls*.so* "/root/runtime/lib/"
+cp -d libgnutls*.so* "/root/runtime/lib/" #Does not work but should
 cp -d libpango*.so* "/root/runtime/lib/"
 cp -d libgstbase*.so* "/root/runtime/lib/"
 cp -d libltdl*.so* "/root/runtime/lib/"
@@ -86,7 +86,7 @@ cp -d libgstbase*.so* "/root/runtime/lib/"
 cp -d liblcms2*.so* "/root/runtime/lib/"
 cp -d libopus*.so* "/root/runtime/lib/"
 cp -d libpango*.so* "/root/runtime/lib/"
-cp -d libncurses*.so* "/root/runtime/lib/"
+#cp -d libncurses*.so* "/root/runtime/lib/" Does not work, added in dependencies
 cp -d libjpeg*.so* "/root/runtime/lib/"
 cp -d libsqlite3*.so* "/root/runtime/lib/"
 cp -d libavcodec*.so* "/root/runtime/lib/"
@@ -100,11 +100,13 @@ cp -d libpulse*.so* "/root/runtime/lib/"
 cp -d libFLAC*.so* "/root/runtime/lib/"
 cp -d libsasl2*.so* "/root/runtime/lib/"
 #cp -d libheimbase*.so*  "/root/runtime/lib/" Fails currently
-cp -d libXext*.so* "/root/runtime/lib/"
+cp -d libX*.so* "/root/runtime/lib/"
+cp -d libxcb*.so* "/root/runtime/lib"
+cp -d libstdc++*.so* "/root/runtime/lib"
+#cp -d libbsd*.so* "/root/runtime/lib" Not found, added in dependencies
 
 cd "/lib/i386-linux-gnu/"
-cp -d libncurses*.so* "/root/runtime/lib/"
-cp -d libidn*.so* "/root/runtime/lib/"
-
+#cp -d libncurses*.so* "/root/runtime/lib/" Does not work, added in dependencies
+cp -d libidn*.so* "/root/runtime/lib/" #See gnutls
 
 echo "[END]"
