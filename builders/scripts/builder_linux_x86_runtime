@@ -104,6 +104,7 @@ cp -d libX*.so* "/root/runtime/lib/"
 cp -d libxcb*.so* "/root/runtime/lib"
 cp -d libstdc++*.so* "/root/runtime/lib"
 #cp -d libbsd*.so* "/root/runtime/lib" Not found, added in dependencies
+cp -d libgmp*.so* "/root/runtime/lib"
 
 cd "/lib/i386-linux-gnu/"
 #cp -d libncurses*.so* "/root/runtime/lib/" Does not work, added in dependencies
