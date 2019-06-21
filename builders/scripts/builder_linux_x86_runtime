@@ -8,7 +8,7 @@ cp -d libpangocairo*.so* "/root/runtime/lib/"
 cp -d libxcb-sync*.so* "/root/runtime/lib/"
 cp -d libp11-kit*.so* "/root/runtime/lib/"
 cp -d libicuio*.so* "/root/runtime/lib/"
-cp -d libidn*.so* "/root/runtime/lib/" #See gnutls
+#cp -d libidn*.so* "/root/runtime/lib/" See gnutls
 cp -d libtheoraenc*.so* "/root/runtime/lib/"
 cp -d libgnutl*.so* "/root/runtime/lib/"
 cp -d libgstfft*.so* "/root/runtime/lib/"
@@ -86,7 +86,6 @@ cp -d libgstbase*.so* "/root/runtime/lib/"
 cp -d liblcms2*.so* "/root/runtime/lib/"
 cp -d libopus*.so* "/root/runtime/lib/"
 cp -d libpango*.so* "/root/runtime/lib/"
-#cp -d libncurses*.so* "/root/runtime/lib/" Does not work, added in dependencies
 cp -d libjpeg*.so* "/root/runtime/lib/"
 cp -d libsqlite3*.so* "/root/runtime/lib/"
 cp -d libavcodec*.so* "/root/runtime/lib/"
@@ -103,11 +102,15 @@ cp -d libsasl2*.so* "/root/runtime/lib/"
 cp -d libX*.so* "/root/runtime/lib/"
 cp -d libxcb*.so* "/root/runtime/lib"
 cp -d libstdc++*.so* "/root/runtime/lib"
-#cp -d libbsd*.so* "/root/runtime/lib" Not found, added in dependencies
 cp -d libgmp*.so* "/root/runtime/lib"
+cp -d libmenu*.so.* "/root/runtime/lib"
+cp -d libpanel*.so.* "/root/runtime/lib"
+cp -d libtic*.so.* "/root/runtime/lib"
 
 cd "/lib/i386-linux-gnu/"
-#cp -d libncurses*.so* "/root/runtime/lib/" Does not work, added in dependencies
+cp -d libncurses*.so* "/root/runtime/lib/" #Does not work, added in dependencies
+cp -d libtinfo*.so* "/root/runtime/lib/"
 cp -d libidn*.so* "/root/runtime/lib/" #See gnutls
+cp -d libbsd*.so* "/root/runtime/lib"
 
 echo "[END]"
