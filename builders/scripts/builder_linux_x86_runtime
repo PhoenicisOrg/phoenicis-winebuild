@@ -8,7 +8,6 @@ cp -d libpangocairo*.so* "/root/runtime/lib/"
 cp -d libxcb-sync*.so* "/root/runtime/lib/"
 cp -d libp11-kit*.so* "/root/runtime/lib/"
 cp -d libicuio*.so* "/root/runtime/lib/"
-#cp -d libidn*.so* "/root/runtime/lib/" See gnutls
 cp -d libtheoraenc*.so* "/root/runtime/lib/"
 cp -d libgnutl*.so* "/root/runtime/lib/"
 cp -d libgstfft*.so* "/root/runtime/lib/"
@@ -19,7 +18,7 @@ cp -d libgsttag*.so* "/root/runtime/lib/"
 cp -d libgstallocators*.so* "/root/runtime/lib/"
 cp -d libgstcheck*.so* "/root/runtime/lib/"
 cp -d libpangoxft*.so* "/root/runtime/lib/"
-# cp -d libfreetype*.so* "/root/runtime/lib/" Crash wine, added in dependencies
+cp -d libfreetype*.so* "/root/runtime/lib/"
 cp -d libgstreamer*.so* "/root/runtime/lib/"
 cp -d libicui18n*.so* "/root/runtime/lib/"
 cp -d libpangoft2*.so* "/root/runtime/lib/"
@@ -28,7 +27,7 @@ cp -d libcairo-script-interpreter*.so* "/root/runtime/lib/"
 cp -d libicuuc*.so* "/root/runtime/lib/"
 # cp -d libfontconfig*.so* "/root/runtime/lib/" cannot find the right config file
 cp /usr/local/lib/libFAudio*.so* "/root/runtime/lib/"
-cp -d libgnutls*.so* "/root/runtime/lib/" #Does not work but should
+cp -d libgnutls*.so* "/root/runtime/lib/"
 cp -d libpango*.so* "/root/runtime/lib/"
 cp -d libgstbase*.so* "/root/runtime/lib/"
 cp -d libltdl*.so* "/root/runtime/lib/"
@@ -108,9 +107,12 @@ cp -d libpanel*.so.* "/root/runtime/lib"
 cp -d libtic*.so.* "/root/runtime/lib"
 
 cd "/lib/i386-linux-gnu/"
-cp -d libncurses*.so* "/root/runtime/lib/" #Does not work, added in dependencies
+cp -d libncurses*.so* "/root/runtime/lib/"
 cp -d libtinfo*.so* "/root/runtime/lib/"
-cp -d libidn*.so* "/root/runtime/lib/" #See gnutls
+cp -d libidn*.so* "/root/runtime/lib/"
 cp -d libbsd*.so* "/root/runtime/lib"
+cp -d libz*.so* "/root/runtime/lib"
+cp -d libudev*.so* "/root/runtime/lib"
+
 
 echo "[END]"
