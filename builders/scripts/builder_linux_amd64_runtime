@@ -8,7 +8,6 @@ cp -d libpangocairo*.so* "/root/runtime/lib64/"
 cp -d libxcb-sync*.so* "/root/runtime/lib64/"
 cp -d libp11-kit*.so* "/root/runtime/lib64/"
 cp -d libicuio*.so* "/root/runtime/lib64/"
-cp -d libidn*.so* "/root/runtime/lib64/" #See gnutls
 cp -d libtheoraenc*.so* "/root/runtime/lib64/"
 cp -d libgnutl*.so* "/root/runtime/lib64/"
 cp -d libgstfft*.so* "/root/runtime/lib64/"
@@ -19,16 +18,16 @@ cp -d libgsttag*.so* "/root/runtime/lib64/"
 cp -d libgstallocators*.so* "/root/runtime/lib64/"
 cp -d libgstcheck*.so* "/root/runtime/lib64/"
 cp -d libpangoxft*.so* "/root/runtime/lib64/"
-#cp -d libfreetype*.so* "/root/runtime/lib64/" Crash wine, added in dependencies
+cp -d libfreetype*.so* "/root/runtime/lib64/"
 cp -d libgstreamer*.so* "/root/runtime/lib64/"
 cp -d libicui18n*.so* "/root/runtime/lib64/"
 cp -d libpangoft2*.so* "/root/runtime/lib64/"
 cp -d libgstcontroller*.so* "/root/runtime/lib64/"
 cp -d libcairo-script-interpreter*.so* "/root/runtime/lib64/"
 cp -d libicuuc*.so* "/root/runtime/lib64/"
-#cp -d libfontconfig*.so* "/root/runtime/lib64/" cannot find the right config file
+# cp -d libfontconfig*.so* "/root/runtime/lib64/" cannot find the right config file
 cp /usr/local/lib/libFAudio*.so* "/root/runtime/lib64/"
-cp -d libgnutls*.so* "/root/runtime/lib64/" #Does not work but should
+cp -d libgnutls*.so* "/root/runtime/lib64/"
 cp -d libpango*.so* "/root/runtime/lib64/"
 cp -d libgstbase*.so* "/root/runtime/lib64/"
 cp -d libltdl*.so* "/root/runtime/lib64/"
@@ -86,7 +85,6 @@ cp -d libgstbase*.so* "/root/runtime/lib64/"
 cp -d liblcms2*.so* "/root/runtime/lib64/"
 cp -d libopus*.so* "/root/runtime/lib64/"
 cp -d libpango*.so* "/root/runtime/lib64/"
-#cp -d libncurses*.so* "/root/runtime/lib64/" Does not work, added in dependencies
 cp -d libjpeg*.so* "/root/runtime/lib64/"
 cp -d libsqlite3*.so* "/root/runtime/lib64/"
 cp -d libavcodec*.so* "/root/runtime/lib64/"
@@ -101,12 +99,19 @@ cp -d libFLAC*.so* "/root/runtime/lib64/"
 cp -d libsasl2*.so* "/root/runtime/lib64/"
 #cp -d libheimbase*.so*  "/root/runtime/lib64/" Fails currently
 cp -d libX*.so* "/root/runtime/lib64/"
-cp -d libxcb*.so* "/root/runtime/lib64"
-cp -d libstdc++*.so* "/root/runtime/lib64"
-#cp -d libbsd*.so* "/root/runtime/lib" Not found, added in dependencies
+cp -d libxcb*.so* "/root/runtime/lib64/"
+cp -d libstdc++*.so* "/root/runtime/lib64/"
+cp -d libgmp*.so* "/root/runtime/lib64/"
+cp -d libmenu*.so.* "/root/runtime/lib64/"
+cp -d libpanel*.so.* "/root/runtime/lib64/"
+cp -d libtic*.so.* "/root/runtime/lib64/"
 
 cd "/lib/x86_64-linux-gnu/"
-#cp -d libncurses*.so* "/root/runtime/lib64/" Does not work, added in dependencies
-cp -d libidn*.so* "/root/runtime/lib64/" #See gnutls
+cp -d libncurses*.so* "/root/runtime/lib64/"
+cp -d libtinfo*.so* "/root/runtime/lib64/"
+cp -d libidn*.so* "/root/runtime/lib64/"
+cp -d libbsd*.so* "/root/runtime/lib64/" 
+cp -d libz*.so* "/root/runtime/lib64/" 
+cp -d libudev*.so* "/root/runtime/lib64/" 
 
 echo "[END]"
