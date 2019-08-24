@@ -111,6 +111,8 @@ cp -d libkrb5support*.so* "/root/runtime/lib64/"
 cp -d libkrb5*.so* "/root/runtime/lib64/"
 cp -d libkeyutils*.so* "/root/runtime/lib64/"
 cp -d libk5crypto*.so* "/root/runtime/lib64/"
+cp -d libcom_err*.so "/root/runtime/lib64/"
+
 
 cd "/usr/lib/x86_64-linux-gnu/pulseaudio/"
 cp -d libpulsecommon*.so* "/root/runtime/lib64/"
