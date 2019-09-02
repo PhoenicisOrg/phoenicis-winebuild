@@ -14,15 +14,12 @@ RUN apt-get -y install libjs-mathjax python-yaml lib32gcc1 lib32stdc++6 libc6-i3
 RUN dpkg -i *.deb
 
 RUN git clone https://github.com/tpoechtrager/osxcross /root/osxcross
-COPY darwin/SDK/MacOSX10.11.sdk.tar.xz /root/osxcross/tarballs/
+COPY darwin/SDK/MacOSX10.13.sdk.tar.xz /root/osxcross/tarballs/
 RUN cd /root/osxcross && UNATTENDED=1 ./build.sh
 
 ENV PATH="/root/osxcross/target/bin:${PATH}"
 ENV MACOSX_DEPLOYMENT_TARGET="10.11"
-ENV FRAMEWORK="10.11"
-ENV FAUDIO="19.06"
-ENV MOLTENVK="1.1.106.0"
-ENV VKD3D="vkd3d-1.1"
+ENV FRAMEWORK="10.13"
 
 RUN mkdir -p /root/osxcross/target/macports
 RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
@@ -48,9 +45,9 @@ RUN tar -xvf  ncurses-6.1.tar.gz
 WORKDIR /root/ncurses/ncurses-6.1
 
 ### NCurses 32Bit
-RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
-ENV CC_OSX="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
-RUN env CC="$CC_OSX" ./configure --host i386-apple-darwin15 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
+RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin17-strip" "/root/osxcross/target/bin/strip"
+ENV CC_OSX="clang -O3 -target i386-apple-darwin17 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+RUN env CC="$CC_OSX" ./configure --host i386-apple-darwin17 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
 RUN env CC="$CC_OSX" make -j 4
 RUN env CC="$CC_OSX" make install
 RUN rm "/root/osxcross/target/bin/strip"
@@ -58,29 +55,30 @@ RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib /roo
 
 ### NCurses 64Bit
 RUN env CC="$CC_OSX" make clean
-RUN ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
-ENV CC_OSX="clang -O3 -target x86_64-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
-RUN env CC="$CC_OSX" ./configure --host x86_64-apple-darwin15 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
+RUN ln -s "/root/osxcross/target/bin/x86_64-apple-darwin17-strip" "/root/osxcross/target/bin/strip"
+ENV CC_OSX="clang -O3 -target x86_64-apple-darwin17 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+RUN env CC="$CC_OSX" ./configure --host x86_64-apple-darwin17 --with-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/root/osxcross/target/macports/pkgs/opt/local" --enable-rpath --datarootdir=/usr/share
 RUN env CC="$CC_OSX" make -j 4
 RUN env CC="$CC_OSX" make install
 RUN rm "/root/osxcross/target/bin/strip"
 RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/
 
 ### Merge the NCurses into a single file
-RUN x86_64-apple-darwin15-lipo /root/osxcross/target/macports/pkgs/opt/local/lib32/libncurses.6.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/libncurses.6.dylib -output /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib -create
+RUN x86_64-apple-darwin17-lipo /root/osxcross/target/macports/pkgs/opt/local/lib32/libncurses.6.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/libncurses.6.dylib -output /root/osxcross/target/macports/pkgs/opt/local/lib/libncurses.6.dylib -create
 
 ### SDL2 Source code
 # We need to build manually SDL2 as macports does not have a universal version for download but we need one.
+ENV SDL2="SDL2-2.0.9"
 RUN mkdir /root/sdl2
 WORKDIR /root/sdl2
-RUN wget https://www.libsdl.org/release/SDL2-2.0.9.tar.gz
-RUN tar -xvf  SDL2-2.0.9.tar.gz
-WORKDIR /root/sdl2/SDL2-2.0.9
+RUN wget https://www.libsdl.org/release/${SDL2}.tar.gz
+RUN tar -xvf  ${SDL2}.tar.gz
+WORKDIR /root/sdl2/${SDL2}
 
 ### SDL2 32Bit
-RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
-ENV CC_OSX="clang -O3 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
-RUN env CC="$CC_OSX" ./configure --host i386-apple-darwin15  --prefix="/root/osxcross/target/macports/pkgs/opt/local"
+RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin17-strip" "/root/osxcross/target/bin/strip"
+ENV CC_OSX="clang-7 -O3 -target i386-apple-darwin17 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+RUN env CC="$CC_OSX" ./configure --host i386-apple-darwin17  --prefix="/root/osxcross/target/macports/pkgs/opt/local"
 RUN env CC="$CC_OSX" make -j 4
 RUN env CC="$CC_OSX" make install-hdrs
 RUN env CC="$CC_OSX" make install-lib
@@ -89,10 +87,10 @@ RUN rm "/root/osxcross/target/bin/strip"
 RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libSDL2-2.0.0.dylib /root/osxcross/target/macports/pkgs/opt/local/lib32/
 
 ### SDL2 64Bit
-RUN ln -s "/root/osxcross/target/bin/x86_64-apple-darwin15-strip" "/root/osxcross/target/bin/strip"
+RUN ln -s "/root/osxcross/target/bin/x86_64-apple-darwin17-strip" "/root/osxcross/target/bin/strip"
 RUN env CC="$CC_OSX" make clean
-ENV CC_OSX="clang -O3 -target x86_64-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
-RUN env CC="$CC_OSX" ./configure --host x86_64-apple-darwin15 --prefix="/root/osxcross/target/macports/pkgs/opt/local"
+ENV CC_OSX="clang-7 -O3 -target x86_64-apple-darwin17 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/"
+RUN env CC="$CC_OSX" ./configure --disable-render-metal --host x86_64-apple-darwin17 --prefix="/root/osxcross/target/macports/pkgs/opt/local"
 RUN env CC="$CC_OSX" make -j 4
 RUN env CC="$CC_OSX" make install-hdrs
 RUN env CC="$CC_OSX" make install-lib
@@ -101,9 +99,10 @@ RUN rm "/root/osxcross/target/bin/strip"
 RUN mv /root/osxcross/target/macports/pkgs/opt/local/lib/libSDL2-2.0.0.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/
 
 ### Merge the SDL2 into a single file
-RUN x86_64-apple-darwin15-lipo /root/osxcross/target/macports/pkgs/opt/local/lib32/libSDL2-2.0.0.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/libSDL2-2.0.0.dylib -output /root/osxcross/target/macports/pkgs/opt/local/lib/libSDL2-2.0.0.dylib -create
+RUN x86_64-apple-darwin17-lipo /root/osxcross/target/macports/pkgs/opt/local/lib32/libSDL2-2.0.0.dylib /root/osxcross/target/macports/pkgs/opt/local/lib64/libSDL2-2.0.0.dylib -output /root/osxcross/target/macports/pkgs/opt/local/lib/libSDL2-2.0.0.dylib -create
 
 ### Vulkan
+ENV MOLTENVK="1.1.114.0"
 WORKDIR /root/
 RUN wget https://sdk.lunarg.com/sdk/download/${MOLTENVK}/mac/vulkansdk-macos-${MOLTENVK}.tar.gz
 RUN tar -xvf vulkansdk-macos-${MOLTENVK}.tar.gz
@@ -117,6 +116,7 @@ RUN mv static/* /root/osxcross/target/macports/pkgs/opt/local/lib/
 RUN mv dynamic/* /root/osxcross/target/macports/pkgs/opt/local/lib/
 
 ### VK3D3
+ENV VKD3D="vkd3d-1.1"
 WORKDIR /root
 RUN git clone https://github.com/KhronosGroup/SPIRV-Headers
 RUN apt-get install -y libtool-bin
@@ -126,7 +126,8 @@ COPY darwin/install_vkd3d.sh /root/
 COPY darwin/fix_imports.sh /root/
 
 # Faudio
-RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ld" "/root/osxcross/target/bin/ld"
+ENV FAUDIO="19.08"
+RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin17-ld" "/root/osxcross/target/bin/ld"
 RUN apt-get -y install cmake
 RUN mkdir -p /root/faudio
 WORKDIR /root/faudio
@@ -135,16 +136,16 @@ RUN mkdir -p /root/faudio/build64
 RUN mkdir -p /root/faudio/build32
 RUN mkdir -p /root/faudio/build
 WORKDIR /root/faudio/build64
-RUN env SDL2_DIR=/root/osxcross/target/macports/pkgs/opt/local/lib/cmake/SDL2 env CFLAGS="-O3 -msse2 -target x86_64-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/" cmake /root/faudio/FAudio -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang -DBUILD_CPP=OFF -DCMAKE_OSX_SYSROOT=/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk  -DCMAKE_SYSTEM_NAME=Darwin -DCMAKE_FIND_ROOT_PATH=/root/osxcross/target/macports/pkgs/opt/local/
+RUN env SDL2_DIR=/root/osxcross/target/macports/pkgs/opt/local/lib/cmake/SDL2 env CFLAGS="-O3 -msse2 -target x86_64-apple-darwin17 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/" cmake /root/faudio/FAudio -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang -DBUILD_CPP=OFF -DCMAKE_OSX_SYSROOT=/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk  -DCMAKE_SYSTEM_NAME=Darwin -DCMAKE_FIND_ROOT_PATH=/root/osxcross/target/macports/pkgs/opt/local/
 RUN make
 RUN make install DESTDIR=install/
 RUN cp install/usr/local/include/* /root/osxcross/target/macports/pkgs/opt/local/include
 
 WORKDIR /root/faudio/build32
-RUN env SDL2_DIR=/root/osxcross/target/macports/pkgs/opt/local/lib/cmake/SDL2 env CFLAGS="-O3 -msse2 -target i386-apple-darwin15 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/" cmake /root/faudio/FAudio -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang -DBUILD_CPP=OFF -DCMAKE_OSX_SYSROOT=/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk  -DCMAKE_SYSTEM_NAME=Darwin -DCMAKE_FIND_ROOT_PATH=/root/osxcross/target/macports/pkgs/opt/local/
+RUN env SDL2_DIR=/root/osxcross/target/macports/pkgs/opt/local/lib/cmake/SDL2 env CFLAGS="-O3 -msse2 -target i386-apple-darwin17 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/" cmake /root/faudio/FAudio -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang -DBUILD_CPP=OFF -DCMAKE_OSX_SYSROOT=/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk  -DCMAKE_SYSTEM_NAME=Darwin -DCMAKE_FIND_ROOT_PATH=/root/osxcross/target/macports/pkgs/opt/local/
 RUN make
 WORKDIR /root/faudio/build
-RUN x86_64-apple-darwin15-lipo ../build32/libFAudio.0.$FAUDIO.dylib ../build64/libFAudio.0.$FAUDIO.dylib -output libFAudio.0.$FAUDIO.dylib -create
+RUN x86_64-apple-darwin17-lipo ../build32/libFAudio.0.$FAUDIO.dylib ../build64/libFAudio.0.$FAUDIO.dylib -output libFAudio.0.$FAUDIO.dylib -create
 RUN ln -s libFAudio.0.$FAUDIO.dylib libFAudio.dylib
 RUN ln -s libFAudio.0.$FAUDIO.dylib libFAudio.0.dylib
 RUN cp -d *.dylib /root/osxcross/target/macports/pkgs/opt/local/lib
@@ -156,3 +157,5 @@ RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/lib/wine
 RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/include/wine/
 
 RUN apt-get -y install gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
+RUN apt-get -y install libunwind-dev
+RUN osxcross-macports -universal install libunwind

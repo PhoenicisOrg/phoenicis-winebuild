@@ -20,21 +20,21 @@ chmod +x winebuild
 ### Environment preparation
 mkdir -p "/root/wine-git/wine64-build/"
 mkdir -p "/root/wine-git/wine32-build/"
-export FRAMEWORK="10.11"
 
 ## Some tools are not directly found by wine
-ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ld" "/root/osxcross/target/bin/ld"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin15-otool" "/root/osxcross/target/bin/otool"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ranlib" "/root/osxcross/target/bin/ranlib"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin15-ar" "/root/osxcross/target/bin/ar"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin15-as" "/root/osxcross/target/bin/as"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin15-install_name_tool" "/root/osxcross/target/bin/install_name_tool"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin17-ld" "/root/osxcross/target/bin/ld"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin17-otool" "/root/osxcross/target/bin/otool"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin17-ranlib" "/root/osxcross/target/bin/ranlib"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin17-ar" "/root/osxcross/target/bin/ar"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin17-as" "/root/osxcross/target/bin/as"
+ln -s "/root/osxcross/target/bin/i386-apple-darwin17-install_name_tool" "/root/osxcross/target/bin/install_name_tool"
 
 #### 64bits
-export CC="clang-7 -O3 -target x86_64-apple-darwin15 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks"
+export CC="clang-7 -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks -Wno-unused-command-line-argument -Wno-deprecated-declarations"
+
 ## This hack will allow winegcc to use the right compiler
-echo '$CC "$@"' > "/root/osxcross/target/bin/x86_64-apple-darwin15-gcc"
-chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin15-gcc"
+echo '$CC "$@"' > "/root/osxcross/target/bin/x86_64-apple-darwin17-gcc"
+chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin17-gcc"
 
 ####### Install VKD3D
 echo "[STAGE 3/11] Installing vkd3d"
@@ -45,19 +45,19 @@ export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib"
 
 cd "/root/wine-git/wine64-build/"
 echo "[STAGE 4/11] Configure 64 bits"
-../configure --enable-win64 --host x86_64-apple-darwin15 --prefix="/" --with-wine-tools="/root/wine-tools64" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks" || exit 6
+../configure --enable-win64 --host x86_64-apple-darwin17 --prefix="/" --with-wine-tools="/root/wine-tools64" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks" || exit 6
 echo "[STAGE 5/11] Make 64 bits"
 make -j 4 || exit 7
 
 #### 32bits
-export CC="clang-7 -O3 -target i386-apple-darwin15 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks"
+export CC="clang-7 -O3 -target i386-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks -Wno-unused-command-line-argument -Wno-deprecated-declarations"
 ## This hack will allow winegcc to use the right compiler
-echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin15-gcc"
-chmod +x "/root/osxcross/target/bin/i386-apple-darwin15-gcc"
+echo '$CC "$@"' > "/root/osxcross/target/bin/i386-apple-darwin17-gcc"
+chmod +x "/root/osxcross/target/bin/i386-apple-darwin17-gcc"
 
 cd "/root/wine-git/wine32-build/"
 echo "[STAGE 6/11] Configure 32 bits"
-../configure --with-wine64=/root/wine-git/wine64-build --host i386-apple-darwin15 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib" || exit 8
+../configure --with-wine64=/root/wine-git/wine64-build --host i386-apple-darwin17 --prefix="/" --with-wine-tools="/root/wine-tools" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib" || exit 8
 
 echo "[STAGE 7/11] Make 32 bits"
 make -j 4 || exit 9
@@ -191,6 +191,10 @@ rm libxcb.1.dylib
 rm libxcb.dylib
 rm libxslt.1.dylib
 rm libxslt.dylib
+
+# remove libunwind not needed at runtime
+rm libunwind.dylib
+rm libunwind.1.dylib
 
 ## Fixing imports
 echo "[STAGE 11/11] Fixing imports"
