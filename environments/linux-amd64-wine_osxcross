@@ -68,7 +68,7 @@ RUN x86_64-apple-darwin17-lipo /root/osxcross/target/macports/pkgs/opt/local/lib
 
 ### SDL2 Source code
 # We need to build manually SDL2 as macports does not have a universal version for download but we need one.
-ENV SDL2="SDL2-2.0.9"
+ENV SDL2="SDL2-2.0.10"
 RUN mkdir /root/sdl2
 WORKDIR /root/sdl2
 RUN wget https://www.libsdl.org/release/${SDL2}.tar.gz
