@@ -171,10 +171,6 @@ rm libxcb.dylib
 rm libxslt.1.dylib
 rm libxslt.dylib
 
-# remove libunwind not needed at runtime
-rm libunwind.dylib
-rm libunwind.1.dylib
-
 ## Fixing imports
 echo "[STAGE 8/8] Fixing imports"
 bash /root/fix_imports.sh "/root/wine"

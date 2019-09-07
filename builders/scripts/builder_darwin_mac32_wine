@@ -4,7 +4,7 @@ cp -a "/root/wine-git" "/root/wine-tools" || exit 1
 ####### Build Tools
 echo "[STAGE 1/11] Configure tools"
 cd "/root/wine-tools"
-./configure --enable-win64 || exit 2
+./configure --without-unwind --enable-win64 || exit 2
 
 echo "[STAGE 2/11] Make tools"
 make __tooldeps__ -j 4 || exit 3
@@ -170,10 +170,6 @@ rm libxcb.1.dylib
 rm libxcb.dylib
 rm libxslt.1.dylib
 rm libxslt.dylib
-
-# remove libunwind not needed at runtime
-rm libunwind.dylib
-rm libunwind.1.dylib
 
 ## Fixing imports
 echo "[STAGE 11/11] Fixing imports"

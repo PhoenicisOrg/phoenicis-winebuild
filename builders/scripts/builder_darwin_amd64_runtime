@@ -2,10 +2,10 @@
 
 ####### Build Tools
 cd "/root/"
-git clone -b "wine-4.0.1" https://github.com/wine-mirror/wine
+git clone -b "wine-4.0.2" https://github.com/wine-mirror/wine
 cp -a "/root/wine" "/root/wine-tools64"
 cd "/root/wine-tools64/"
-./configure --enable-win64
+./configure --without-unwind --enable-win64
 make __tooldeps__ -j 4
 
 ## Some tools are not directly found by wine
@@ -149,10 +149,6 @@ rm libxcb.1.dylib
 rm libxcb.dylib
 rm libxslt.1.dylib
 rm libxslt.dylib
-
-# remove libunwind not needed at runtime
-rm libunwind.dylib
-rm libunwind.1.dylib
 
 ## Fixing imports
 bash /root/fix_imports.sh "/root/runtime"
