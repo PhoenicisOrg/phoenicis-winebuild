@@ -18,7 +18,7 @@ COPY darwin/SDK/MacOSX10.13.sdk.tar.xz /root/osxcross/tarballs/
 RUN cd /root/osxcross && UNATTENDED=1 ./build.sh
 
 ENV PATH="/root/osxcross/target/bin:${PATH}"
-ENV MACOSX_DEPLOYMENT_TARGET="10.11"
+ENV MACOSX_DEPLOYMENT_TARGET="10.13"
 ENV FRAMEWORK="10.13"
 
 RUN mkdir -p /root/osxcross/target/macports
@@ -28,6 +28,7 @@ RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 # This will prevent wine-devel from installing it
 RUN osxcross-macports -universal fakeinstall ncurses
 RUN osxcross-macports -universal fakeinstall pulseaudio
+RUN osxcross-macports fakeinstall MoltenVK
 RUN osxcross-macports -universal install wine-devel
 # RUN osxcross-macports -universal install gnutls
 
@@ -157,5 +158,3 @@ RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/lib/wine
 RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/include/wine/
 
 RUN apt-get -y install gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
-RUN apt-get -y install libunwind-dev
-RUN osxcross-macports -universal install libunwind
