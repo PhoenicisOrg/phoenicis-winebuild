@@ -96,7 +96,11 @@
     "name": "league-of-legends",
     "extends": "",
     "source": "https://github.com/wine-mirror/wine",
-    "hooks": [],
+    "hooks": [
+      {
+        "template": "ApplyWineStagingPatches"
+      }
+    ],
     "patches": [
       {
         "name": "league-of-legends",
