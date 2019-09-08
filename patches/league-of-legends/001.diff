@@ -1,0 +1,13 @@
+diff --git a/dlls/ntdll/virtual.c b/dlls/ntdll/virtual.c
+index a2477191d1..58d26ccba6 100644
+--- a/dlls/ntdll/virtual.c
++++ b/dlls/ntdll/virtual.c
+@@ -3130,7 +3130,7 @@ static NTSTATUS get_working_set_ex( HANDLE process, LPCVOID addr,
+     {
+         FIXME("(VirtualAddress=%p) Unimplemented.\n", p->VirtualAddress);
+         /* FIXME Mark all addresses as invalid. */
+-        info->VirtualAttributes.Valid = 0;
++        p->VirtualAttributes.Valid = 0;
+     }
+ 
+     if (res_len)
