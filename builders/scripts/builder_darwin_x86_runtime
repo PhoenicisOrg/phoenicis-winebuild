@@ -123,8 +123,6 @@ rm libxcb-xvmc.0.dylib
 rm libxcb-xvmc.dylib
 rm libxcb.1.dylib
 rm libxcb.dylib
-rm libxslt.1.dylib
-rm libxslt.dylib
 
 ## Fixing imports
 bash /root/fix_imports.sh "/root/runtime"

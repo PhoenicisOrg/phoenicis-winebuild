@@ -29,6 +29,8 @@ RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 RUN osxcross-macports -universal fakeinstall ncurses
 RUN osxcross-macports -universal fakeinstall pulseaudio
 RUN osxcross-macports fakeinstall MoltenVK
+RUN osxcross-macports -universal fakeinstall libxml2
+RUN osxcross-macports -universal fakeinstall libxslt
 RUN osxcross-macports -universal install wine-devel
 # RUN osxcross-macports -universal install gnutls
 
@@ -129,7 +131,6 @@ COPY darwin/fix_imports.sh /root/
 # Faudio
 ENV FAUDIO="19.08"
 RUN ln -s "/root/osxcross/target/bin/i386-apple-darwin17-ld" "/root/osxcross/target/bin/ld"
-RUN apt-get -y install cmake
 RUN mkdir -p /root/faudio
 WORKDIR /root/faudio
 RUN git clone -b "${FAUDIO}" https://github.com/FNA-XNA/FAudio
