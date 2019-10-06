@@ -114,7 +114,7 @@ cp -d libk5crypto*.so* "/root/runtime/lib64/"
 cp -d libcom_err*.so* "/root/runtime/lib64/"
 cp -d libldap*.so* "/root/runtime/lib64/"
 cp -d liblber*.so* "/root/runtime/lib64/"
-cp -d libasound*.so* "/root/runtime/lib64
+cp -d libasound*.so* "/root/runtime/lib64"
 
 cd "/usr/lib/x86_64-linux-gnu/pulseaudio/"
 cp -d libpulsecommon*.so* "/root/runtime/lib64/"
