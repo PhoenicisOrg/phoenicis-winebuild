@@ -1,131 +1,31 @@
 #!/bin/bash
 
-mkdir -p /root/runtime/lib
+mkdir -p '/root/runtime/lib'
 
-cd "/usr/lib/i386-linux-gnu/"
-cp -d libcrypto*.so* "/root/runtime/lib/"
-cp -d libpangocairo*.so* "/root/runtime/lib/"
-cp -d libxcb-sync*.so* "/root/runtime/lib/"
-cp -d libp11-kit*.so* "/root/runtime/lib/"
-cp -d libicuio*.so* "/root/runtime/lib/"
-cp -d libtheoraenc*.so* "/root/runtime/lib/"
-cp -d libgnutl*.so* "/root/runtime/lib/"
-cp -d libgstfft*.so* "/root/runtime/lib/"
-cp -d libtheora*.so* "/root/runtime/lib/"
-cp -d libogg*.so* "/root/runtime/lib/"
-cp -d libpcre16*.so* "/root/runtime/lib/"
-cp -d libgsttag*.so* "/root/runtime/lib/"
-cp -d libgstallocators*.so* "/root/runtime/lib/"
-cp -d libgstcheck*.so* "/root/runtime/lib/"
-cp -d libpangoxft*.so* "/root/runtime/lib/"
-cp -d libfreetype*.so* "/root/runtime/lib/"
-cp -d libgstreamer*.so* "/root/runtime/lib/"
-cp -d libicui18n*.so* "/root/runtime/lib/"
-cp -d libpangoft2*.so* "/root/runtime/lib/"
-cp -d libgstcontroller*.so* "/root/runtime/lib/"
-cp -d libcairo-script-interpreter*.so* "/root/runtime/lib/"
-cp -d libicuuc*.so* "/root/runtime/lib/"
-# cp -d libfontconfig*.so* "/root/runtime/lib/" cannot find the right config file
-cp /usr/local/lib/libFAudio*.so* "/root/runtime/lib/"
-cp -d libgnutls*.so* "/root/runtime/lib/"
-cp -d libpango*.so* "/root/runtime/lib/"
-cp -d libgstbase*.so* "/root/runtime/lib/"
-cp -d libltdl*.so* "/root/runtime/lib/"
-cp -d libp11-kit*.so* "/root/runtime/lib/"
-cp -d libpcre*.so* "/root/runtime/lib/"
-cp -d libvorbisenc*.so* "/root/runtime/lib/"
-cp -d libgstrtsp*.so* "/root/runtime/lib/"
-cp -d libgettext*.so* "/root/runtime/lib/"
-cp -d libgstriff*.so* "/root/runtime/lib/"
-cp -d libharfbuzz*.so* "/root/runtime/lib/"
-cp -d libgstcontroller*.so* "/root/runtime/lib/"
-cp -d libgdbm*.so* "/root/runtime/lib/"
-cp -d libgstrtp*.so* "/root/runtime/lib/"
-cp -d libpcap*.so* "/root/runtime/lib/"
-cp -d libpcre*.so* "/root/runtime/lib/"
-cp -d libgstnet*.so* "/root/runtime/lib/"
-cp -d libicutu*.so* "/root/runtime/lib/"
-cp -d libpng*.so* "/root/runtime/lib/"
-cp -d libidn*.so* "/root/runtime/lib/"
-cp -d libgmodule*.so* "/root/runtime/lib/"
-cp -d libvorbisenc*.so* "/root/runtime/lib/"
-cp -d libxml*.so* "/root/runtime/lib/"
-cp -d libcairo-gobject*.so* "/root/runtime/lib/"
-cp -d libgirepository*.so* "/root/runtime/lib/"
-cp -d libunistring*.so* "/root/runtime/lib/"
-cp -d libgraphite*.so* "/root/runtime/lib/"
-cp -d libicutest*.so* "/root/runtime/lib/"
-cp /usr/lib/libSDL2*.so* "/root/runtime/lib/"
-cp -d libtheoradec*.so* "/root/runtime/lib/"
-cp -d libtasn1*.so* "/root/runtime/lib/"
-cp -d libtiff*.so* "/root/runtime/lib/"
-cp -d libgraphite*.so* "/root/runtime/lib/"
-cp -d libgstvideo*.so* "/root/runtime/lib/"
-cp -d liborc*.so* "/root/runtime/lib/"
-cp -d libopenal*.so* "/root/runtime/lib/"
-cp -d libSM*.so* "/root/runtime/lib/"
-cp -d libpangoxft*.so* "/root/runtime/lib/"
-cp -d libnettle*.so* "/root/runtime/lib/"
-cp -d liblcms2*.so* "/root/runtime/lib/"
-cp -d libcurses*.so* "/root/runtime/lib/"
-cp -d libffi*.so* "/root/runtime/lib/"
-cp -d libOSMesa*.so* "/root/runtime/lib/"
-cp -d libXmu*.so* "/root/runtime/lib/"
-cp -d libpixman*.so* "/root/runtime/lib/"
-cp -d libXmuu*.so* "/root/runtime/lib/"
-cp -d libicutu*.so* "/root/runtime/lib/"
-cp -d libogg*.so* "/root/runtime/lib/"
-cp -d libexslt*.so* "/root/runtime/lib/"
-cp -d libform*.so* "/root/runtime/lib/"
-cp -d libicudata*.so* "/root/runtime/lib/"
-cp -d libhogweed*.so* "/root/runtime/lib/"
-cp -d libgstrtp*.so* "/root/runtime/lib/"
-cp -d libssl*.so* "/root/runtime/lib/"
-cp -d libgstbase*.so* "/root/runtime/lib/"
-cp -d liblcms2*.so* "/root/runtime/lib/"
-cp -d libopus*.so* "/root/runtime/lib/"
-cp -d libpango*.so* "/root/runtime/lib/"
-cp -d libjpeg*.so* "/root/runtime/lib/"
-cp -d libsqlite3*.so* "/root/runtime/lib/"
-cp -d libavcodec*.so* "/root/runtime/lib/"
-cp -d libavutil*.so* "/root/runtime/lib/"
-cp -d libvkd3d*.so* "/root/runtime/lib/"
-cp -d libgphoto2*.so* "/root/runtime/lib/"
-cp -d libmpg123*.so* "/root/runtime/lib/"
-cp -d libexif*.so* "/root/runtime/lib/"
-cp -d libOpenCL*.so* "/root/runtime/lib/"
-cp -d libpulse*.so* "/root/runtime/lib/"
-cp -d libFLAC*.so* "/root/runtime/lib/"
-cp -d libsasl2*.so* "/root/runtime/lib/"
-#cp -d libheimbase*.so*  "/root/runtime/lib/" Fails currently
-cp -d libX*.so* "/root/runtime/lib/"
-cp -d libxcb*.so* "/root/runtime/lib"
-cp -d libstdc++*.so* "/root/runtime/lib"
-cp -d libgmp*.so* "/root/runtime/lib"
-cp -d libmenu*.so* "/root/runtime/lib"
-cp -d libpanel*.so* "/root/runtime/lib"
-cp -d libtic*.so* "/root/runtime/lib"
-cp -d libICE*.so* "/root/runtime/lib/"
-cp -d libgssapi_krb5*.so* "/root/runtime/lib/"
-cp -d libkrb5support*.so* "/root/runtime/lib/"
-cp -d libkrb5*.so* "/root/runtime/lib/"
-cp -d libkeyutils*.so* "/root/runtime/lib/"
-cp -d libk5crypto*.so* "/root/runtime/lib/"
-cp -d libcom_err*.so* "/root/runtime/lib/"
-cp -d libldap*.so* "/root/runtime/lib/"
-cp -d liblber*.so* "/root/runtime/lib/"
-cp -d libasound*.so* "/root/runtime/lib"
+rsync -ar --exclude='*.a*' --exclude='*.la*' --exclude='*.sh*' --exclude='*.h*' --exclude='pkgconfig' --exclude='perl*' --exclude='ImageMagick-6.9.7' --exclude='avahi' --exclude='cmake' --exclude='dbus-1.0' --exclude='krb5' --exclude='libgphoto2-dev' --exclude='icu' --exclude='wx' --exclude='xen' --exclude='qt' --exclude='vdpau' --exclude='libdrm*' --exclude='dri' --exclude='audit' --exclude='gconv' --exclude='libgcc_s.so.1' --exclude='libdl*' --exclude='*.o*' --exclude='libBrokenLocale*' --exclude='libm.so*' --exclude='pulseaudio' --exclude='libQt*' --exclude='sse2/libQt*' --exclude='libfontconfig*' --exclude='LibLLVM*' /usr/lib/i386-linux-gnu/ /root/runtime/lib/
 
-cd "/usr/lib/i386-linux-gnu/pulseaudio/"
-cp -d libpulsecommon*.so* "/root/runtime/lib/"
+rsync -ar --exclude='*.a*' --exclude='*.la*' --exclude='*.sh*' --exclude='*.h*' --exclude='ld-*' --exclude='libBrokenLocale*' --exclude='libSegFault*' -exclude='libanl*' --exclude='libc-2.24.so' --exclude='libc.so.6' --exclude='libcidn*' --exclude='libcrypt*' --exclude='libdl*' --exclude='libm-*' --exclude='libmemusage.so' --exclude='libnsl*' --exclude='libnss*' --exclude='libpcprofile.so' --exclude='libpthread*' --exclude='libresolv*' --exclude='librt*' --exclude='libthread*' --exclude='libutil*' --exclude='*.o*' /lib/i386-linux-gnu/ /root/runtime/lib/ #Do not copy libc6 !
 
-cd "/lib/i386-linux-gnu/"
-cp -d libncurses*.so* "/root/runtime/lib/"
-cp -d libtinfo*.so* "/root/runtime/lib/"
-cp -d libidn*.so* "/root/runtime/lib/"
-cp -d libbsd*.so* "/root/runtime/lib"
-cp -d libz*.so* "/root/runtime/lib"
-cp -d libudev*.so* "/root/runtime/lib"
+cp -da /etc/alternatives/libtxc-dxtn-i386-linux-gnu /root/runtime/lib
+cp -da /usr/lib/i386-linux-gnu/pulseaudio/libpulsecommon-10.0.so /root/runtime/lib
 
-
-echo "[END]"
+### We fix some symlinks
+cd '/root/runtime/lib/'
+ln -sf libcom_err.so.2 libcom_err.so
+ln -sf libdbus-1.so.3.14.16 libdbus-1.so
+ln -sf libexpat.so.1.6.2 libexpat.so
+ln -sf libglib-2.so.0 libglib-2.so
+ln -sf libidn.so.11 libidn.so
+ln -sf liblzma.so.5.2.2 liblzma.so
+ln -sf libpcre.so.3 libpcre.so
+ln -sf libtinfo.so.5 libtinfo.so
+ln -sf libtxc-dxtn-i386-linux-gnu libtxc_dxtn.so
+ln -sf s2tc/libtxc-dtxn.so libtxc-dxtn-i386-linux-gnu  
+ln -sf libz.so.1.2.8 libz.so
+ln -sf libglib-2.0.so.0 libglib-2.0.so
+### We use our own SDL2 and FAudio
+rm -rf libSDL2*.so*
+cp /usr/lib/libSDL2*.so* '/root/runtime/lib/'
+cp /usr/local/lib/libFAudio*.so* '/root/runtime/lib/'
+ 
+echo '[END]'
