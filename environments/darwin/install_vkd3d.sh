@@ -9,7 +9,7 @@ export LIBRARY_PATH="/root/osxcross/target/macports/pkgs/opt/local/lib:/root/vul
 export PATH="/root/wine-tools64/tools/widl/:$PATH"
 
 ./autogen.sh || exit 1
-./configure --host x86_64-apple-darwin15 --prefix="/" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks" || exit 2
+./configure --host x86_64-apple-darwin17 --prefix="/" LFFLAGS=" -Wl,-rpath,/opt/x11/lib -L/root/osxcross/target/macports/pkgs/opt/local/lib -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks" || exit 2
 make || exit 3
 make install DESTDIR="/root/osxcross/target/macports/pkgs/opt/local/" || exit 4
 libtool --finish /root/osxcross/target/macports/pkgs/opt/local/lib || exit 5
