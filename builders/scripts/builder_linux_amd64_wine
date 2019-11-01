@@ -10,7 +10,7 @@ mkdir -p "/root/wine-git/wine32-build/"
 ### 64bits build
 echo "[STAGE 1/7] Configure 64 bits"
 cd "/root/wine-git/wine64-build/"
-../configure --enable-win64 --prefix="/"  LFFLAGS="-L/usr/local/lib"  || exit 4
+../configure --without-unwind --enable-win64 --prefix="/"  LFFLAGS="-L/usr/local/lib"  || exit 4
 
 echo "[STAGE 2/7] Make 64 bits"
 make -j 4 || exit 5
