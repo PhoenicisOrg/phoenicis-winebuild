@@ -1,7 +1,7 @@
 #!/bin/bash
-git clone "https://source.winehq.org/git/vkd3d.git/" "/root/vkd3d"
+git clone "git://source.winehq.org/git/vkd3d.git" "/root/vkd3d"
 
-cd "/root/vkd3d"
+cd "/root/vkd3d" || exit 1
 git checkout -f "$@"
 
 export C_INCLUDE_PATH="/root/osxcross/target/macports/pkgs/opt/local/include/:/root/osxcross/target/macports/pkgs/opt/local/include/libxml2/:/root/vulkansdk-macos-${MOLTENVK}/macOS/include/:/root/SPIRV-Headers/include/:/root/SPIRV-Headers/include/spirv/"

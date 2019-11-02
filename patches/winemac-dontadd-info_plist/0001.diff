@@ -1,0 +1,34 @@
+diff --git a/configure b/configure
+index 816aaf6374..2a111f384a 100755
+--- a/configure
++++ b/configure
+@@ -8594,10 +8594,10 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
+     APPKIT_LIBS="-framework AppKit"
+
+
+-    WINELOADER_LDFLAGS="-Wl,-pie,-pagezero_size,0x1000,-sectcreate,__TEXT,__info_plist,wine_info.plist"
++    WINELOADER_LDFLAGS="-Wl,-pie,-pagezero_size,0x1000"
+
+     wine_can_build_preloader=yes
+-    WINEPRELOADER_LDFLAGS="-nostartfiles -nodefaultlibs -e _start -ldylib1.o -Wl,-image_base,0x7c400000,-pagezero_size,0x1000,-sectcreate,__TEXT,__info_plist,wine_info.plist"
++    WINEPRELOADER_LDFLAGS="-nostartfiles -nodefaultlibs -e _start -ldylib1.o -Wl,-image_base,0x7c400000,-pagezero_size,0x1000"
+     { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -Wl,-no_new_main -e _main" >&5
+ $as_echo_n "checking whether the compiler supports -Wl,-no_new_main -e _main... " >&6; }
+ if ${ac_cv_cflags__Wl__no_new_main__e__main+:} false; then :
+diff --git a/configure.ac b/configure.ac
+index 8493778066..48a793b457 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -768,10 +768,10 @@ case $host_os in
+     AC_SUBST(CORESERVICES_LIBS,"-framework CoreServices")
+     AC_SUBST(APPKIT_LIBS,"-framework AppKit")
+
+-    WINELOADER_LDFLAGS="-Wl,-pie,-pagezero_size,0x1000,-sectcreate,__TEXT,__info_plist,wine_info.plist"
++    WINELOADER_LDFLAGS="-Wl,-pie,-pagezero_size,0x1000"
+
+     wine_can_build_preloader=yes
+-    WINEPRELOADER_LDFLAGS="-nostartfiles -nodefaultlibs -e _start -ldylib1.o -Wl,-image_base,0x7c400000,-pagezero_size,0x1000,-sectcreate,__TEXT,__info_plist,wine_info.plist"
++    WINEPRELOADER_LDFLAGS="-nostartfiles -nodefaultlibs -e _start -ldylib1.o -Wl,-image_base,0x7c400000,-pagezero_size,0x1000"
+     WINE_TRY_CFLAGS([-Wl,-no_new_main -e _main],
+                     [WINEPRELOADER_LDFLAGS="-Wl,-no_new_main $WINEPRELOADER_LDFLAGS"
+                      WINE_TRY_CFLAGS([-Wl,-no_new_main -e _main -nostartfiles -nodefaultlibs],,
