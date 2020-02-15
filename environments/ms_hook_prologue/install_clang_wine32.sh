@@ -6,9 +6,9 @@ mkdir -p "/root/clang_wine32/"
 cd "/root/clang_wine32/"
 apt-get -y install devscripts wget
 
-llvmBaseUrl="http://http.debian.net/debian/pool/main/l/llvm-toolchain-7"
-llvmMainVersion="7_7.0.1"
-llvmVersion="8"
+llvmBaseUrl="http://ftp.debian.org/debian/pool/main/l/llvm-toolchain-8/"
+llvmMainVersion="8_8.0.1"
+llvmVersion="4"
 
 wget "$llvmBaseUrl/llvm-toolchain-$llvmMainVersion-$llvmVersion.dsc"
 wget "$llvmBaseUrl/llvm-toolchain-$llvmMainVersion.orig-clang-tools-extra.tar.bz2"
@@ -29,5 +29,5 @@ cd llvm-toolchain-7-7.0.1/
 cat ../0003-Add-Wine32-Support-Full.patch | patch -p1
 mk-build-deps -i -r -t "apt-get -y" debian/control
 
-DEB_BUILD_OPTIONS=nocheck debuild -us -uc -b -j3
+DEB_BUILD_OPTIONS=nocheck debuild -us -uc -nc -b -j3
 exit 0

@@ -1,0 +1,87 @@
+diff --git a/loader/wine_info.plist.in b/loader/wine_info.plist.in
+index 6495b8f90f..d3d066b64e 100644
+--- a/loader/wine_info.plist.in
++++ b/loader/wine_info.plist.in
+@@ -7,13 +7,13 @@
+     <key>CFBundleDevelopmentRegion</key>
+     <string>English</string>
+     <key>CFBundleExecutable</key>
+-    <string>wine</string>
++    <string>wine64</string>
+     <key>CFBundleIdentifier</key>
+-    <string>org.winehq.wine</string>
++    <string>org.portmyapps.shape3dx</string>
+     <key>CFBundleInfoDictionaryVersion</key>
+     <string>6.0</string>
+     <key>CFBundleName</key>
+-    <string>Wine</string>
++    <string>Shape3D X</string>
+     <key>CFBundlePackageType</key>
+     <string>APPL</string>
+     <key>CFBundleShortVersionString</key>
+@@ -26,5 +26,64 @@
+     <string>WineApplication</string>
+     <key>LSUIElement</key>
+     <string>1</string>
++    <key>CFBundleDocumentTypes</key>
++    <array>
++      <dict>
++        <key>CFBundleTypeExtensions</key>
++        <array>
++          <string>s3dx</string>
++        </array>
++        <key>CFBundleTypeIconFile</key>
++        <string>document.icns</string>
++        <key>CFBundleTypeName</key>
++        <string>Shape3D X file</string>
++        <key>CFBundleTypeRole</key>
++        <string>Viewer</string>
++        <key>LSIsAppleDefaultForType</key>
++        <true/>
++      </dict>
++      <dict>
++        <key>CFBundleTypeExtensions</key>
++        <array>
++          <string>s3d</string>
++        </array>
++        <key>CFBundleTypeIconFile</key>
++        <string>s3d.icns</string>
++        <key>CFBundleTypeName</key>
++        <string>Shape3D file</string>
++        <key>CFBundleTypeRole</key>
++        <string>Viewer</string>
++        <key>LSIsAppleDefaultForType</key>
++        <true/>
++      </dict>
++      <dict>
++        <key>CFBundleTypeExtensions</key>
++        <array>
++          <string>src</string>
++        </array>
++        <key>CFBundleTypeIconFile</key>
++        <string>srf.icns</string>
++        <key>CFBundleTypeName</key>
++        <string>Shape3D SRF file</string>
++        <key>CFBundleTypeRole</key>
++        <string>Viewer</string>
++        <key>LSIsAppleDefaultForType</key>
++        <true/>
++      </dict>
++      <dict>
++        <key>CFBundleTypeExtensions</key>
++        <array>
++          <string>brd</string>
++        </array>
++        <key>CFBundleTypeIconFile</key>
++        <string>brd.icns</string>
++        <key>CFBundleTypeName</key>
++        <string>Shape3D BRD file</string>
++        <key>CFBundleTypeRole</key>
++        <string>Viewer</string>
++        <key>LSIsAppleDefaultForType</key>
++        <true/>
++      </dict>
++    </array>
+ </dict>
+ </plist>
+ 

@@ -80,7 +80,10 @@ class Container:
             )
 
             for chunk in exec_output:
-                do_output(chunk.decode())
+                try:
+                    do_output(chunk.decode())
+                except UnicodeDecodeError:
+                    pass
 
             exit_code = self.docker_client.api_client.exec_inspect(resp['Id'])['ExitCode']
             if exit_code != 0 and exit_code is not None:

@@ -4,7 +4,17 @@
     "extends": "",
     "source": "https://github.com/PhoenicisOrg/winecx",
     "hooks": [],
-    "patches": []
+    "patches": [
+      {
+        "name": "wine32on64-allow-when-crosscompiling",
+        "operatingSystems": [
+          "darwin"
+        ],
+        "architectures": [
+          "x86on64"
+        ]
+      }
+    ]
   },
   {
     "name": "upstream",
@@ -23,6 +33,11 @@
         "name": "hangover-wine-40",
         "operatingSystems": [
           "darwin"
+        ],
+        "architectures": [
+          "amd64",
+          "x86",
+          "x86on64"
         ]
       }
     ],
@@ -88,6 +103,11 @@
         "operatingSystems": [
           "darwin",
           "linux"
+        ],
+        "architectures": [
+          "amd64",
+          "x86",
+          "x86on64"
         ]
       }
     ]
