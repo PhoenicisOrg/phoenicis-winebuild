@@ -1,17 +1,19 @@
-FROM amd64/debian:stretch
+FROM amd64/debian:buster
 
-RUN echo 'deb-src http://deb.debian.org/debian stretch main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://security.debian.org/debian-security stretch/updates main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://deb.debian.org/debian stretch-updates main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian buster main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://security.debian.org/debian-security buster/updates main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian buster-updates main' >> /etc/apt/sources.list
 
 RUN apt-get update
 RUN apt-get -y build-dep wine
 RUN apt-get -y install git llvm clang wget
 RUN mkdir -p /root/llvm
-COPY darwin/llvm/*.deb /root/llvm/
-WORKDIR /root/llvm
-RUN apt-get -y install libjs-mathjax python-yaml lib32gcc1 lib32stdc++6 libc6-i386 libctypes-ocaml-dev-v0kb0 ocaml-nox-4.02.3 libjs-jquery python-six python-pygments libjs-underscore cmake
-RUN dpkg -i *.deb
+
+# COPY darwin/llvm/*.deb /root/llvm/
+# WORKDIR /root/llvm
+# RUN sleep 3600
+RUN apt-get -y install libjs-mathjax python-yaml lib32gcc1 lib32stdc++6 libc6-i386 libctypes-ocaml-dev ocaml-nox libjs-jquery python-six python-pygments libjs-underscore cmake
+# RUN dpkg -i *.deb
 
 RUN git clone https://github.com/tpoechtrager/osxcross /root/osxcross
 COPY darwin/SDK/MacOSX10.13.sdk.tar.xz /root/osxcross/tarballs/
@@ -146,6 +148,7 @@ RUN cp install/usr/local/include/* /root/osxcross/target/macports/pkgs/opt/local
 WORKDIR /root/faudio/build32
 RUN env SDL2_DIR=/root/osxcross/target/macports/pkgs/opt/local/lib/cmake/SDL2 env CFLAGS="-O3 -msse2 -target i386-apple-darwin17 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/ -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks/" cmake /root/faudio/FAudio -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang -DBUILD_CPP=OFF -DCMAKE_OSX_SYSROOT=/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk  -DCMAKE_SYSTEM_NAME=Darwin -DCMAKE_FIND_ROOT_PATH=/root/osxcross/target/macports/pkgs/opt/local/
 RUN make
+
 WORKDIR /root/faudio/build
 RUN x86_64-apple-darwin17-lipo ../build32/libFAudio.0.$FAUDIO.dylib ../build64/libFAudio.0.$FAUDIO.dylib -output libFAudio.0.$FAUDIO.dylib -create
 RUN ln -s libFAudio.0.$FAUDIO.dylib libFAudio.dylib
@@ -159,3 +162,9 @@ RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/lib/wine
 RUN rm -r /root/osxcross/target/macports/pkgs/opt/local/include/wine/
 
 RUN apt-get -y install gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
+
+## Clang 8
+RUN mkdir /root/clang-8
+WORKDIR /root/clang-8
+RUN wget https://repository.playonlinux.com/clang8/llvm-8-mwine32-release.tar.gz
+RUN tar -xvf llvm-8-mwine32-release.tar.gz

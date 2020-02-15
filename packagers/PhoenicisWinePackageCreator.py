@@ -66,7 +66,7 @@ class PhoenicisWinePackageCreator:
             traceback.print_exc()
         finally:
             print("Cleaning container")
-            container.clean()
+            #container.clean()
 
     def create_hooks(self, hooks):
         hooks_instances = []

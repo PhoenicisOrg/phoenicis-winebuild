@@ -21,7 +21,7 @@ class WineBuilder:
 
         self._apply_hooks("after-git", operating_system, arch, version, distribution)
 
-        self._apply_patches(operating_system)
+        self._apply_patches(operating_system, arch)
 
     def _apply_hooks(self, event, operating_system, arch, version, distribution):
         for hook in self.hooks:
@@ -31,7 +31,7 @@ class WineBuilder:
     def build(self, operating_system, arch, version, distribution="upstream",
               repository="https://github.com/wine-mirror/wine"):
         script = "builders/scripts/builder_%s_%s_wine" % (operating_system, arch)
-
+        print(script)
         if self.builder_suffix is not None:
             script = script + "_" + self.builder_suffix
 
@@ -46,15 +46,16 @@ class WineBuilder:
             run(["tar", "xf", tmp_directory + "/archive.tar.gz", "-C", tmp_directory])
             run(["tar", "-C", tmp_directory + "/wine", "-czvf", local_file, "./"])
 
-    def _apply_patches(self, operating_system):
+    def _apply_patches(self, operating_system, architecture):
         for patch in self.patches:
             if type(patch) == str:
                 self._apply_patch({
                     "name": patch["name"]
                 })
             if type(patch == dict):
-                if operating_system in patch["operatingSystems"]:
+                if operating_system in patch["operatingSystems"] and architecture in patch["architectures"]:
                     self._apply_patch(patch)
+
 
     def _apply_patch(self, patch):
         self.container.run(["mkdir", "-p", "/root/patches"])
