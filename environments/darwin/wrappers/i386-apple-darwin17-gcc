@@ -1,0 +1,2 @@
+#!/bin/bash
+i386-apple-darwin17-clang -Wno-unused-command-line-argument -Wno-deprecated-declarations "$@"

@@ -1,36 +1,22 @@
 #!/bin/bash
 
 ####### Build Tools
-cd "/root/"
-git clone -b "wine-4.0.2" https://github.com/wine-mirror/wine
-cp -a "/root/wine" "/root/wine-tools64"
-cd "/root/wine-tools64/"
-./configure --without-unwind --enable-win64
-make __tooldeps__ -j 4
-
-## Some tools are not directly found by wine
-ln -s "/root/osxcross/target/bin/i386-apple-darwin17-ld" "/root/osxcross/target/bin/ld"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin17-otool" "/root/osxcross/target/bin/otool"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin17-ranlib" "/root/osxcross/target/bin/ranlib"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin17-ar" "/root/osxcross/target/bin/ar"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin17-as" "/root/osxcross/target/bin/as"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin17-install_name_tool" "/root/osxcross/target/bin/install_name_tool"
-
-#### 64bits
-export CC="clang-7 -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/root/osxcross/target/macports/pkgs/opt/local/Library/Frameworks"
-## This hack will allow winegcc to use the right compiler
-echo '$CC "$@"' > "/root/osxcross/target/bin/x86_64-apple-darwin17-gcc"
-chmod +x "/root/osxcross/target/bin/x86_64-apple-darwin17-gcc"
+#cd "/root/"
+#git clone -b "wine-4.0.4" https://github.com/wine-mirror/wine
+#cp -a "/root/wine" "/root/wine-tools"
+#cd "/root/wine-tools/"
+#./configure CC="clang" CXX="clang++" --disable-option-checking --disable-tests --without-unwind --enable-win64  >>/dev/null 2>&1 || exit 1
+#make __tooldeps__ -j 4  >>/dev/null 2>&1
 
 ####### Install VKD3D
-echo "[STAGE 3/11] Installing vkd3d"
-bash "/root/install_vkd3d.sh" "$VKD3D" || exit 5
+#echo "[STAGE 3/11] Installing vkd3d"
+#bash "/root/install_vkd3d.sh" "$VKD3D"  >>/dev/null 2>&1 || exit 2
 
 mkdir -p /root/runtime/lib
 cd "/root/runtime/lib/"
 
 ## Copying libs
-cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/runtime/lib"
+cp -d /opt/local/lib/*.dylib "/root/runtime/lib"
 rm /root/runtime/lib/libpython2.7.dylib
 
 ## Remove all the XQuartz files, not needed and shrink file size!
