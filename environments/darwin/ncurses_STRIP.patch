@@ -1,0 +1,11 @@
+--- a/configure	2018-01-19 19:27:18.000000000 -0500
++++ b/configure	2018-03-14 19:18:39.136573491 -0400
+@@ -13716,7 +13716,7 @@
+ 
+ if test "$with_stripping" = yes
+ then
+-	INSTALL_OPT_S="-s"
++	INSTALL_OPT_S="-s --strip-program=${STRIP}"
+ else
+ 	INSTALL_OPT_S=
+ fi

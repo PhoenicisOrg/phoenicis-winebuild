@@ -1,12 +1,9 @@
 #!/bin/bash
-ln -s "/root/osxcross/target/bin/i386-apple-darwin17-install_name_tool" "/root/osxcross/target/bin/install_name_tool"
-ln -s "/root/osxcross/target/bin/i386-apple-darwin17-otool" "/root/osxcross/target/bin/otool"
-
 mkdir -p /root/runtime/lib
 cd "/root/runtime/lib/"
 
 ## Copying libs
-cp -d /root/osxcross/target/macports/pkgs/opt/local/lib/*.dylib "/root/runtime/lib"
+cp -d /opt/local/lib/*.dylib "/root/runtime/lib"
 rm /root/runtime/lib/libpython2.7.dylib
 
 ## Remove all the XQuartz files, not needed and shrink file size!
