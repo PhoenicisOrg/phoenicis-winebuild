@@ -19,11 +19,11 @@
 fix_imports () {
   [[ "$1" = "" ]] && echo "Please set a library name" && return
   echo "Fixing $1... "
-  install_name_tool -id "$1" "$1"
+  x86_64-apple-darwin17-install_name_tool -id "$1" "$1"
 
-  for lib in $(otool -L $1 |grep /opt/local --color=never|cut -d"(" -f1|xargs); do
+  for lib in $(x86_64-apple-darwin17-otool -L $1 |grep /opt/local --color=never|cut -d"(" -f1|xargs); do
    basename="$(basename $lib)"
-   install_name_tool -change "/opt/local/lib/$basename" "@loader_path/$basename" $1
+   x86_64-apple-darwin17-install_name_tool -change "/opt/local/lib/$basename" "@loader_path/$basename" $1
    echo "/opt/local/lib/$basename -> @loader_path/$basename"
   done
 

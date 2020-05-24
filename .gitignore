@@ -6,3 +6,4 @@ dist/
 *.tar.gz
 *.pol
 *.log
+environments/darwin/SDK/*.sdk.tar.xz
