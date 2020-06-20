@@ -15,6 +15,9 @@ class ApplyDosboxPatch(AbstractHook):
         if operating_system == "darwin":
             self._install_darwin_dosbox(container)
 
+        if operating_system == "linux":
+            self._install_linux_dosbox(container)
+
     def _install_darwin_dosbox(self, container):
         container.run(["cp", "/root/osxcross/target/macports/pkgs/opt/local/bin/dosbox", "/root/wine/bin/"])
         container.run(["cp", "/root/osxcross/target/macports/pkgs/opt/local/lib/libSDL_sound-1.0.1.dylib", "/root/wine/lib/"])
