@@ -4,7 +4,6 @@ cd "/root/runtime/lib/"
 
 ## Copying libs
 cp -d /opt/local/lib/*.dylib "/root/runtime/lib"
-rm /root/runtime/lib/libpython2.7.dylib
 
 ## Remove all the XQuartz files, not needed and shrink file size!
 cd "/root/runtime/lib"
@@ -120,13 +119,16 @@ rm libxcb-xvmc.0.dylib
 rm libxcb-xvmc.dylib
 rm libxcb.1.dylib
 rm libxcb.dylib
+rm libpython2.7.dylib
+rm libMoltenVK.dylib
 
 ## Fixing imports
-bash /root/fix_imports.sh "/root/runtime"
+bash /root/fix_imports.sh "/root/runtime" >>/dev/null 2>&1
 
-## To make package smaller, we are only going to keep i386 part of the libraries
+## Make dylibs 32Bit only
+cd "/root/wine/lib/"
 for file in *.dylib; do
-  [ ! -L "$file" ] && i386-apple-darwin17-lipo -extract i386 "$file" -o "$file" 2> /dev/null
+  [ ! -L "$file" ] && i386-apple-darwin17-lipo -thin i386 "$file" -o "$file" 2> /dev/null
 done
 
 echo "[END]"
