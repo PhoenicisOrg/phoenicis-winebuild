@@ -10,14 +10,15 @@ cd /root/hangover/build/wine-tools
 ../../wine/configure CC="clang" CXX="clang++" --disable-option-checking --disable-tests --without-unwind --enable-win64  >>/dev/null 2>&1
 make __tooldeps__ -j 4
 
-##### Cross environment
-export LDFLAGS="-Wl,-rpath,@loader_path/../ -Wl,-rpath,/opt/local/lib -Wl,-rpath,/opt/X11/lib/"
 #echo "[STAGE 3/11] Installing vkd3d"
 #bash "/root/install_vkd3d.sh" "$VKD3D"
 
+##### Cross environment
+export LDFLAGS="-Wl,-rpath,@loader_path/../ -Wl,-rpath,/opt/local/lib -Wl,-rpath,/opt/X11/lib/"
+
 mkdir -p /root/hangover/build/wine-host
 cd /root/hangover/build/wine-host
-../../wine/configure --enable-win64 --host x86_64-apple-darwin17 --prefix="/" --with-wine-tools="/root/hangover/build/wine-tools"
+../../wine/configure --enable-win64 --host x86_64-apple-darwin17 --prefix="" --with-wine-tools="/root/hangover/build/wine-tools"
 make -j4
 ln -s /root/hangover/build/wine-host /root/wine
 make install DESTDIR="/root/wine"
@@ -51,7 +52,7 @@ ln -s "/root/osxcross/target/bin/x86_64-apple-darwin17-ar" "/root/osxcross/targe
 ln -s "/root/osxcross/target/bin/x86_64-apple-darwin17-as" "/root/osxcross/target/bin/as"
 ln -s "/root/osxcross/target/bin/x86_64-apple-darwin17-install_name_tool" "/root/osxcross/target/bin/install_name_tool"
 
-export CC="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/opt/local/Library/Frameworks"
+export CC="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.9 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk/  -F/opt/local/Library/Frameworks"
 
 mkdir -p /root/hangover/bin/
 touch /root/hangover/bin/Rez
@@ -63,7 +64,7 @@ omp install glib2-devel
 
 cat << EOF > /root/hangover/bin/qemugcc
 #!/bin/bash
-export CC="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/opt/local/Library/Frameworks"
+export CC="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.9 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk/  -F/opt/local/Library/Frameworks"
 /root/hangover/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin17  -B/root/hangover/build/wine-tools/tools/winebuild/ -I/root/hangover/build/wine-tools/include/ -I/root/hangover/wine/include -lpthread -DWINE_NOWINSOCK -I/opt/local/include/glib-2.0/ -I/root/hangover/glib/glib/ -L/opt/local/lib --sysroot=/root/hangover/build/wine-host/ "\$@"
 EOF
 chmod +x /root/hangover/bin/qemugcc
@@ -71,15 +72,15 @@ chmod +x /root/hangover/bin/qemugcc
 
 cat << EOF > /root/hangover/bin/qemug++
 #!/bin/bash
-export CC="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/opt/local/Library/Frameworks"
-export CXX="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/opt/local/Library/Frameworks"
+export CC="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.9 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk/  -F/opt/local/Library/Frameworks"
+export CXX="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.9 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk/  -F/opt/local/Library/Frameworks"
 /root/hangover/build/wine-tools/tools/winegcc/wineg++ -b x86_64-apple-darwin17 -B/root/hangover/build/wine-tools/tools/winebuild -I/root/hangover/build/wine-tools/include -I/root/hangover/wine/include -lpthread -DWINE_NOWINSOCK -I/opt/local/include/glib-2.0/ -I/root/hangover/glib/glib/ --sysroot=/root/hangover/build/wine-host/ -L/opt/local/lib "\$@"
 EOF
 chmod +x /root/hangover/bin/qemug++
 
 cat << EOF > /root/hangover/bin/dllgcc
 #!/bin/bash
-export CC="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.8 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$FRAMEWORK.sdk/  -F/opt/local/Library/Frameworks"
+export CC="clang -O3 -target x86_64-apple-darwin17 -mlinker-version=0.0 -mmacosx-version-min=10.9 -B/root/osxcross/target/bin/ -isysroot/root/osxcross/target/SDK/MacOSX$MACOSX_DEPLOYMENT_TARGET.sdk/  -F/opt/local/Library/Frameworks"
 /root/hangover/build/wine-tools/tools/winegcc/winegcc -b x86_64-apple-darwin17  -B/root/hangover/build/wine-tools/tools/winebuild/ -I/root/hangover/build/wine-host/include/ -I/root/hangover/wine/include --sysroot=/root/hangover/build/wine-host/ "\$@"
 EOF
 chmod +x /root/hangover/bin/dllgcc

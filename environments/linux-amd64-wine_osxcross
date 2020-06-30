@@ -28,9 +28,6 @@ ENV PATH="/root/clang-8/llvm/bin:/root/osxcross/target/bin:${PATH}"
 ENV MACOSX_DEPLOYMENT_TARGET="10.13"
 # OSXCROSS will handle headers/libraries/frameworks injection
 ENV OSXCROSS_MP_INC="YES"
-# OSCROSS pkgconfig settings
-ENV OSXCROSS_PKG_CONFIG_DIR="/opt/local/lib/pkgconfig:/opt/local/share/pkgconfig"
-ENV OSXCROSS_PKG_CONFIG_LIBDIR="/opt/local/lib"
 
 RUN mkdir -p /root/osxcross/target/macports
 RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
@@ -41,9 +38,10 @@ RUN osxcross-macports -universal fakeinstall ncurses
 RUN osxcross-macports -universal fakeinstall pulseaudio
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 
-# symlink "/root/osxcross/target/macports/pkgs/opt" to /opt
-RUN rm -r /opt
-RUN ln -s "/root/osxcross/target/macports/pkgs/opt" "/opt"
+# symlink "/root/osxcross/target/macports/pkgs/opt/local" to /opt/local
+RUN ln -s "/root/osxcross/target/macports/pkgs/opt/local" "/opt/local"
+# Symlink "/System" to avoid "ld: warning: directory not found for option '-F/System/Library/Frameworks/'"
+RUN ln -s "/root/osxcross/target/SDK/MacOSX10.13.sdk/System" "/System"
 
 # Lets make folders to keep compiled libs inside
 RUN mkdir /opt/local/lib32
@@ -51,6 +49,9 @@ RUN mkdir /opt/local/lib64
 
 # Copy in premade wrappers
 COPY darwin/wrappers/* /root/osxcross/target/bin/
+
+### Environment preparation
+ENV CFLAGS="-msse2 -O3 -Wno-unused-command-line-argument -Wno-deprecated-declarations"
 
 ### NCurses Source code
 # We need to build manually ncurses so that TERMINFO is not set to /opt/local/share/terminfo to avoid
@@ -135,7 +136,7 @@ RUN mv dynamic/* /opt/local/lib/
 COPY darwin/fix_imports.sh /root/
 
 # Faudio - Upgrading past 20.03 means dropping 10.8 support!
-ENV FAUDIO="20.05"
+ENV FAUDIO="20.06"
 RUN mkdir -p /root/faudio
 WORKDIR /root/faudio
 RUN git clone -b "${FAUDIO}" https://github.com/FNA-XNA/FAudio
