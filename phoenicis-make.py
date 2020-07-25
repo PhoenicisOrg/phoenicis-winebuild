@@ -33,6 +33,9 @@ parser.add_argument('--os', help='Target OS to build')
 parser.add_argument('--architecture', help='Target architecture to build')
 
 parser.add_argument('--build', help="Build", action="store_true")
+
+parser.add_argument('--no-clean', help="Don't clean container after building (useful if you want to debug the process)", action="store_true")
+
 args = parser.parse_args()
 
 if args.environment is None:
@@ -66,7 +69,9 @@ try:
     if args.build:
         builder.do_build(args.os, args.architecture)
 
-    container.clean()
+    if not args.no_clean:
+        container.clean()
+
 except IndexError:
     fatal("You need to provide a valid environment (ex: --environment=wine_osxcross/linux/amd64)")
 
