@@ -65,23 +65,23 @@ COPY darwin/ncurses_STRIP.patch .
 RUN patch -p1 < ncurses_STRIP.patch
 
 ### NCurses 32Bit
-RUN env STRIP="i386-apple-darwin17-strip" ./configure --host i386-apple-darwin17 --with-shared --with-cxx-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/opt/local" --enable-rpath --datarootdir=/usr/share
+RUN env STRIP="i386-apple-darwin17-strip" ./configure --host i386-apple-darwin17 --with-shared --without-cxx-binding --without-cxx --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/opt/local" --enable-rpath --datarootdir=/usr/share
 RUN make -j 4
 RUN make install
 RUN mv /opt/local/lib/libncurses.6.dylib /opt/local/lib32/
-RUN mv /opt/local/lib/libncurses++.6.dylib /opt/local/lib32/
+# RUN mv /opt/local/lib/libncurses++.6.dylib /opt/local/lib32/
 
 ### NCurses 64Bit
 RUN make clean
-RUN env STRIP="x86_64-apple-darwin17-strip" ./configure --host x86_64-apple-darwin17 --with-shared --with-cxx-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/opt/local" --enable-rpath --datarootdir=/usr/share
+RUN env STRIP="x86_64-apple-darwin17-strip" ./configure --host x86_64-apple-darwin17 --with-shared --without-cxx-binding --without-cxx --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/opt/local" --enable-rpath --datarootdir=/usr/share
 RUN make -j 4
 RUN make install
 RUN mv /opt/local/lib/libncurses.6.dylib /opt/local/lib64/
-RUN mv /opt/local/lib/libncurses++.6.dylib /opt/local/lib64/
+# RUN mv /opt/local/lib/libncurses++.6.dylib /opt/local/lib64/
 
 ### Merge the NCurses into a single file
 RUN x86_64-apple-darwin17-lipo /opt/local/lib32/libncurses.6.dylib /opt/local/lib64/libncurses.6.dylib -output /opt/local/lib/libncurses.6.dylib -create
-RUN x86_64-apple-darwin17-lipo /opt/local/lib32/libncurses++.6.dylib /opt/local/lib64/libncurses++.6.dylib -output /opt/local/lib/libncurses++.6.dylib -create
+# RUN x86_64-apple-darwin17-lipo /opt/local/lib32/libncurses++.6.dylib /opt/local/lib64/libncurses++.6.dylib -output /opt/local/lib/libncurses++.6.dylib -create
 
 ### SDL2 Source code
 # We need to build manually SDL2 as macports does not have a universal version for download but we need one.
