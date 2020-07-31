@@ -15,9 +15,10 @@ class WineBuilder:
         self.builder_suffix = builder_suffix
         self._local_archive = None
 
-    def prepare(self, operating_system, arch, version, distribution, repository):
-        self.container.run(["git", "clone", "--progress", repository, "/root/wine-git"])
-        self.container.run(["git", "checkout", "-f", version], workdir="/root/wine-git")
+    def prepare(self, operating_system, arch, version, distribution, repository, clone = True):
+        if clone:
+           self.container.run(["git", "clone", "--progress", repository, "/root/wine-git"])
+           self.container.run(["git", "checkout", "-f", version], workdir="/root/wine-git")
 
         self._apply_hooks("after-git", operating_system, arch, version, distribution)
 
@@ -29,15 +30,20 @@ class WineBuilder:
                 hook.patch(self.container, operating_system, arch, version, distribution)
 
     def build(self, operating_system, arch, version, distribution="upstream",
-              repository="https://github.com/wine-mirror/wine"):
+              repository="https://github.com/wine-mirror/wine", clone = True):
+        self.prepare(operating_system, arch, version, distribution, repository, clone)
+
+        self.do_build(operating_system, arch)
+
+        self._apply_hooks("after-build", operating_system, arch, version, distribution)
+
+    def do_build(self, operating_system, arch):
         script = "builders/scripts/builder_%s_%s_wine" % (operating_system, arch)
-        print(script)
+
         if self.builder_suffix is not None:
             script = script + "_" + self.builder_suffix
 
-        self.prepare(operating_system, arch, version, distribution, repository)
         self.container.run_script(script)
-        self._apply_hooks("after-build", operating_system, arch, version, distribution)
 
     def archive(self, local_file):
         with tempfile.TemporaryDirectory() as tmp_directory:

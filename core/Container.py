@@ -21,6 +21,7 @@ class Container:
         self._output_callback = lambda line: print(line, end='')
         self.containerEnvironmentVariables = {}
         self.with_docker_client(DockerClient.from_env())
+        self.mounts = []
 
     def with_output_callback(self, output_callback):
         self._output_callback = output_callback
@@ -34,9 +35,23 @@ class Container:
         self._logfile = logfile
         return self
 
+    def with_mount(self, mount):
+        self.mounts += [mount]
+        return self
+
     def start(self):
-        self.container = self.docker_client.client.containers.run(self.environment.full_name(), detach=True,
+        if len(self.mounts) == 0:
+            self.container = self.docker_client.client.containers.run(self.environment.full_name(), detach=True,
                                                                   stdin_open=True, tty=True)
+        else:
+            volumes = {}
+            for mount in self.mounts:
+                volumes[mount["src"]] = {
+                    "bind": mount["dest"],
+                    "mode": mount["mode"]
+                }
+            self.container = self.docker_client.client.containers.run(self.environment.full_name(), detach=True,
+                                                                      stdin_open=True, tty=True, volumes=volumes)
 
     def env(self, key, value):
         self.containerEnvironmentVariables[key] = value
