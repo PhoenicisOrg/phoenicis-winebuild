@@ -1,0 +1,16 @@
+diff --git a/dlls/winemac.drv/cocoa_app.m b/dlls/winemac.drv/cocoa_app.m
+index 4cdc313..facd747 100644
+--- a/dlls/winemac.drv/cocoa_app.m
++++ b/dlls/winemac.drv/cocoa_app.m
+@@ -386,8 +386,9 @@ - (void) transformProcessToForeground
+ 
+             // CrossOver Hack 10912: Mac Edit menu
+             [self changeEditMenuKeyEquivalentsForWindow:[NSApp keyWindow]];
+-
+-            [NSApp setApplicationIconImage:self.applicationIcon];
++            if( ! [[[[NSProcessInfo processInfo]environment]objectForKey:@"SET_ICON"] isEqualToString: @"FALSE"] ) {
++                [NSApp setApplicationIconImage:self.applicationIcon];
++            }
+         }
+     }
+ 
