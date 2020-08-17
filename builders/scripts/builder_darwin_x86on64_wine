@@ -40,7 +40,7 @@ make -j 4 || exit 8
 unset LDFLAGS
 
 ### Environment preparation
-export LDFLAGS="-Wl,-rpath,@loader_path/../lib64 -Wl,-rpath,/opt/local/lib -Wl,-rpath,/opt/X11/lib/"
+export LDFLAGS="-Wl,-rpath,@loader_path/../../lib64 -Wl,-rpath,/opt/local/lib -Wl,-rpath,/opt/X11/lib/"
 
 cd "/root/wine-git/wine32on64-build/"
 echo "[STAGE 6/12] Configure 32on64"
