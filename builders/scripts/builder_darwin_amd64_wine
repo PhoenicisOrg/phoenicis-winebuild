@@ -18,7 +18,7 @@ mkdir -p "/root/wine-git/wine32-build/"
 #bash "/root/install_vkd3d.sh" "$VKD3D"  >>/dev/null 2>&1 || exit 4
 
 ### Environment preparation
-export LDFLAGS="-Wl,-rpath,@loader_path/../ -Wl,-rpath,/opt/local/lib -Wl,-rpath,/opt/X11/lib/"
+export LDFLAGS="-Wl,-rpath,@loader_path/../,-rpath,/opt/local/lib,-rpath,/opt/X11/lib/"
 
 #### Linux only options to disable
 export LINUX_OPTIONS="--without-pulse --without-inotify --without-v4l2 --without-oss --without-udev --without-capi"
