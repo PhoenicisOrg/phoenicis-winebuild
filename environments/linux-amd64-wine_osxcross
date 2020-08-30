@@ -13,18 +13,18 @@ RUN apt-get -y install gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
 RUN git clone https://github.com/tpoechtrager/osxcross /root/osxcross
 COPY darwin/SDK/MacOSX10.13.sdk.tar.xz /root/osxcross/tarballs/
 
-## Clang 8
+### Clang 8
 RUN mkdir /root/clang-8
 WORKDIR /root/clang-8
 RUN wget https://repository.playonlinux.com/clang8/llvm-8-mwine32-release.tar.gz
 RUN tar -xvf llvm-8-mwine32-release.tar.gz
 
-RUN cd /root/osxcross && OSX_VERSION_MIN=10.9 UNATTENDED=1 CC=/root/clang-8/llvm/bin/clang CXX=/root/clang-8/llvm/bin/clang++ ./build.sh
+RUN cd /root/osxcross && OSX_VERSION_MIN=10.8 UNATTENDED=1 ./build.sh
 
 # We want the custom Clang first in path so OSXCROSS wrappers use that
 ENV PATH="/root/clang-8/llvm/bin:/root/osxcross/target/bin:${PATH}"
 
-# OSXCROSS envirument settings;
+### OSXCROSS envirument settings;
 ENV MACOSX_DEPLOYMENT_TARGET="10.13"
 # OSXCROSS will handle headers/libraries/frameworks injection
 ENV OSXCROSS_MP_INC="YES"
@@ -115,6 +115,7 @@ RUN mv /opt/local/lib/libSDL2-2.0.0.dylib /opt/local/lib64/
 RUN x86_64-apple-darwin17-lipo /opt/local/lib32/libSDL2-2.0.0.dylib /opt/local/lib64/libSDL2-2.0.0.dylib -output /opt/local/lib/libSDL2-2.0.0.dylib -create
 
 ### Vulkan
+# VulkanSDK-1.2.135.0 is the last version to be distributed within tar.gz, the dmg images can't be extracted using 7z
 ENV MOLTENVK="1.2.135.0"
 WORKDIR /root/
 RUN wget https://sdk.lunarg.com/sdk/download/${MOLTENVK}/mac/vulkansdk-macos-${MOLTENVK}.tar.gz
@@ -135,11 +136,14 @@ RUN mv dynamic/* /opt/local/lib/
 ## Import fix
 COPY darwin/fix_imports.sh /root/
 
-# Faudio - Upgrading past 20.03 means dropping 10.8 support!
-ENV FAUDIO="20.06"
+### Faudio
+ENV FAUDIO="20.08"
 RUN mkdir -p /root/faudio
 WORKDIR /root/faudio
 RUN git clone -b "${FAUDIO}" https://github.com/FNA-XNA/FAudio
+WORKDIR /root/faudio/FAudio
+COPY darwin/patch-faudio-remove-deployment-target.patch .
+RUN patch -p0 < patch-faudio-remove-deployment-target.patch
 RUN mkdir -p /root/faudio/build64
 RUN mkdir -p /root/faudio/build32
 RUN mkdir -p /root/faudio/build
