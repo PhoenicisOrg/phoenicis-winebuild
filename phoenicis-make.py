@@ -34,6 +34,8 @@ parser.add_argument('--architecture', help='Target architecture to build')
 
 parser.add_argument('--build', help="Build", action="store_true")
 
+parser.add_argument('--archive', help="Archive file", default=None)
+
 parser.add_argument('--no-clean', help="Don't clean container after building (useful if you want to debug the process)", action="store_true")
 
 args = parser.parse_args()
@@ -68,6 +70,9 @@ try:
 
     if args.build:
         builder.do_build(args.os, args.architecture)
+
+    if args.archive is not None:
+        builder.archive(args.archive)
 
     if not args.no_clean:
         container.clean()
