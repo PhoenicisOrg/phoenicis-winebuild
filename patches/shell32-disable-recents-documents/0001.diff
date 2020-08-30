@@ -1,0 +1,27 @@
+diff --git a/dlls/shell32/shelllink.c b/dlls/shell32/shelllink.c
+index 586f0f1f..7986be36 100644
+--- a/dlls/shell32/shelllink.c
++++ b/dlls/shell32/shelllink.c
+@@ -420,8 +420,8 @@ static HRESULT WINAPI IPersistFile_fnSave(IPersistFile* iface, LPCOLESTR pszFile
+ 
+ static HRESULT WINAPI IPersistFile_fnSaveCompleted(IPersistFile* iface, LPCOLESTR filename)
+ {
+-    IShellLinkImpl *This = impl_from_IPersistFile(iface);
+-    FIXME("(%p)->(%s): stub\n", This, debugstr_w(filename));
++    //IShellLinkImpl *This = impl_from_IPersistFile(iface);
++    //FIXME("(%p)->(%s): stub\n", This, debugstr_w(filename));
+     return S_OK;
+ }
+ 
+diff --git a/dlls/shell32/shellord.c b/dlls/shell32/shellord.c
+index b04a56e7..02a40ec5 100644
+--- a/dlls/shell32/shellord.c
++++ b/dlls/shell32/shellord.c
+@@ -745,6 +745,7 @@ static INT SHADD_create_add_mru_data(HANDLE mruhandle, LPCSTR doc_name, LPCSTR n
+  */
+ void WINAPI SHAddToRecentDocs (UINT uFlags,LPCVOID pv)
+ {
++    return;
+ /* If list is a string list lpfnCompare has the following prototype
+  * int CALLBACK MRUCompareString(LPCSTR s1, LPCSTR s2)
+  * for binary lists the prototype is
