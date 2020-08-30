@@ -1,0 +1,26 @@
+diff --git a/dlls/advapi32/advapi.c b/dlls/advapi32/advapi.c
+index b9662833..4309dedd 100644
+--- a/dlls/advapi32/advapi.c
++++ b/dlls/advapi32/advapi.c
+@@ -85,18 +85,10 @@ GetUserNameA( LPSTR lpszName, LPDWORD lpSize )
+ BOOL WINAPI
+ GetUserNameW( LPWSTR lpszName, LPDWORD lpSize )
+ {
+-    /* CrossOver Hack 12735: Use a consistent username */
+-    const char * HOSTPTR report_real_username = getenv( "CX_REPORT_REAL_USERNAME" );
+-    const char * HOSTPTR name;
+-    LPWSTR backslash;
+-    DWORD i, len;
+-
+-    if (!report_real_username)
+-        name = "crossover";
+-    else
+-        name = wine_get_user_name();
++    const char *name = wine_get_user_name();
++    DWORD i, len = MultiByteToWideChar( CP_UNIXCP, 0, name, -1, NULL, 0 );
+ 
+-    len = MultiByteToWideChar( CP_UNIXCP, 0, name, -1, NULL, 0 );
++    LPWSTR backslash;
+     if (len > *lpSize)
+     {
+         SetLastError( ERROR_INSUFFICIENT_BUFFER );
