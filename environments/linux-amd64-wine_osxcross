@@ -137,7 +137,7 @@ RUN mv dynamic/* /opt/local/lib/
 COPY darwin/fix_imports.sh /root/
 
 ### Faudio
-ENV FAUDIO="20.08"
+ENV FAUDIO="20.09"
 RUN mkdir -p /root/faudio
 WORKDIR /root/faudio
 RUN git clone -b "${FAUDIO}" https://github.com/FNA-XNA/FAudio
