@@ -14,7 +14,7 @@ make __tooldeps__ -j 4
 #bash "/root/install_vkd3d.sh" "$VKD3D"
 
 ##### Cross environment
-export LDFLAGS="-Wl,-rpath,@loader_path/../,-rpath,/opt/local/lib,-rpath,/opt/X11/lib/"
+export LDFLAGS="-Wl,-rpath,@loader_path/../,-rpath,/opt/local/lib,-rpath,/opt/X11/lib"
 
 mkdir -p /root/hangover/build/wine-host
 cd /root/hangover/build/wine-host

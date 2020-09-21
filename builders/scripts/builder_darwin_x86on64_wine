@@ -19,7 +19,7 @@ mkdir -p "/root/wine-git/wine32on64-build/"
 #bash "/root/install_vkd3d.sh" "$VKD3D"  >>/dev/null 2>&1 || exit 4
 
 ### Environment preparation
-export LDFLAGS="-Wl,-rpath,@loader_path/../,-rpath,/opt/local/lib,-rpath,/opt/X11/lib/"
+export LDFLAGS="-Wl,-rpath,@loader_path/../,-rpath,/opt/local/lib,-rpath,/opt/X11/lib"
 
 #### Linux only options to disable
 export LINUX_OPTIONS="--without-pulse --without-inotify --without-v4l2 --without-oss --without-udev --without-capi"
@@ -37,7 +37,7 @@ echo "[STAGE 7/12] Make 32bit"
 make -j 4 || exit 8
 
 ### Environment preparation
-export LDFLAGS="-Wl,-rpath,@loader_path/../../lib64,-rpath,/opt/local/lib,-rpath,/opt/X11/lib/"
+export LDFLAGS="-Wl,-rpath,@loader_path/../../lib64,-rpath,/opt/local/lib,-rpath,/opt/X11/lib"
 
 cd "/root/wine-git/wine32on64-build/"
 echo "[STAGE 6/12] Configure 32on64"
