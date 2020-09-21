@@ -18,7 +18,7 @@ mkdir -p "/root/wine-git/wine32-build/"
 #bash "/root/install_vkd3d.sh" "$VKD3D"  >>/dev/null 2>&1 || exit 4
 
 ### Environment preparation
-export LDFLAGS="-Wl,-rpath,@loader_path/../,-rpath,/opt/local/lib,-rpath,/opt/X11/lib/"
+export LDFLAGS="-Wl,-rpath,@loader_path/../,-rpath,/opt/local/lib,-rpath,/opt/X11/lib"
 
 #### Linux only options to disable
 export LINUX_OPTIONS="--without-pulse --without-inotify --without-v4l2 --without-oss --without-udev --without-capi"
@@ -174,13 +174,13 @@ cp -d /opt/local/lib/*.dylib "/root/wine/lib64"
 cd "/root/wine/lib/"
 rm libMoltenVK.dylib
 for file in *.dylib; do
-  [ ! -L "$file" ] && i386-apple-darwin17-lipo -thin i386 "$file" -o "$file" 2> /dev/null
+  [ ! -L "$file" ] && lipo -thin i386 "$file" -o "$file" 2> /dev/null
 done
 
 ## Make dylibs 64Bit only
 cd "/root/wine/lib64/"
 for file in *.dylib; do
-  [ ! -L "$file" ] && x86_64-apple-darwin17-lipo -thin x86_64 "$file" -o "$file" 2> /dev/null
+  [ ! -L "$file" ] && lipo -thin x86_64 "$file" -o "$file" 2> /dev/null
 done
 
 echo "[END]"
