@@ -16,7 +16,7 @@ index b9662833..4309dedd 100644
 -        name = "crossover";
 -    else
 -        name = wine_get_user_name();
-+    const char *name = wine_get_user_name();
++    const char * HOSTPTR name = wine_get_user_name();
 +    DWORD i, len = MultiByteToWideChar( CP_UNIXCP, 0, name, -1, NULL, 0 );
  
 -    len = MultiByteToWideChar( CP_UNIXCP, 0, name, -1, NULL, 0 );
