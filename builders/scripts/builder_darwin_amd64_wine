@@ -174,13 +174,13 @@ cp -d /opt/local/lib/*.dylib "/root/wine/lib64"
 cd "/root/wine/lib/"
 rm libMoltenVK.dylib
 for file in *.dylib; do
-  [ ! -L "$file" ] && lipo -thin i386 "$file" -o "$file" 2> /dev/null
+  [ ! -L "$file" ] && i386-apple-darwin17-lipo -thin i386 "$file" -o "$file" 2> /dev/null
 done
 
 ## Make dylibs 64Bit only
 cd "/root/wine/lib64/"
 for file in *.dylib; do
-  [ ! -L "$file" ] && lipo -thin x86_64 "$file" -o "$file" 2> /dev/null
+  [ ! -L "$file" ] && x86_64-apple-darwin17-lipo -thin x86_64 "$file" -o "$file" 2> /dev/null
 done
 
 echo "[END]"
