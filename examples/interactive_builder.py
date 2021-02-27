@@ -12,7 +12,7 @@ def input_from_choices(choices, text):
     return result
 
 
-version = input_from_choices([version["name"] for version in WineVersionFetcher().fetch_versions(majors=[1, 2, 3, 4, 5])],
+version = input_from_choices([version["name"] for version in WineVersionFetcher().fetch_versions(majors=[1, 2, 3, 4, 5, 6])],
                              "Please select a wine version to build: ")
 
 arch = input_from_choices(["x86", "amd64"], "Choose an architecture: ")
