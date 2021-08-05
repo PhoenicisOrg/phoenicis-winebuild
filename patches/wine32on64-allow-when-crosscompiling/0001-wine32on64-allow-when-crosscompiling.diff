@@ -1,30 +1,14 @@
-Index: configure
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- configure	(revision ee369bd8c8b927aa3c8bce9a75a877225375f3ab)
-+++ configure	(date 1581782593247)
-@@ -5619,7 +5619,7 @@
-       PKG_CONFIG_PATH=${PKG_CONFIG_PATH:-/usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/pkgconfig}
+diff --git a/.DS_Store b/.DS_Store
+index 3aaaaaef..ed826543 100644
+Binary files a/.DS_Store and b/.DS_Store differ
+diff --git a/configure.ac b/configure.ac
+index 41059564..ba7f0caa 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -170,7 +170,7 @@ case $host in
        export PKG_CONFIG_PATH
        enable_win16=${enable_win16:-yes}
--    elif test "x$enable_win64" != "xyes" -a "x$enable_win32on64" = "xyes" -a "$cross_compiling" != "yes"
-+    elif test "x$enable_win64" != "xyes" -a "x$enable_win32on64" = "xyes"
-     then
-       if test "x${GCC}" = "xyes"
-       then
-Index: configure.ac
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- configure.ac	(revision ee369bd8c8b927aa3c8bce9a75a877225375f3ab)
-+++ configure.ac	(date 1581782573773)
-@@ -168,7 +168,7 @@
-       PKG_CONFIG_PATH=${PKG_CONFIG_PATH:-/usr/lib/i386-linux-gnu/pkgconfig:/usr/lib/pkgconfig}
-       export PKG_CONFIG_PATH
-       enable_win16=${enable_win16:-yes}
+       with_unwind=${with_unwind:-no}
 -    elif test "x$enable_win64" != "xyes" -a "x$enable_win32on64" = "xyes" -a "$cross_compiling" != "yes"
 +    elif test "x$enable_win64" != "xyes" -a "x$enable_win32on64" = "xyes"
      then
