@@ -4,10 +4,10 @@ cp -a "/root/wine-git" "/root/wine-tools" || exit 1
 ####### Build Tools
 echo "[STAGE 1/12] Configure tools"
 cd "/root/wine-tools"
-./configure CC="clang" CXX="clang++" --disable-option-checking --disable-tests --without-unwind --enable-win64  >>/dev/null 2>&1 || exit 2
+./configure CC="clang" CXX="clang++" --disable-option-checking --disable-tests --without-unwind --enable-win64 2>&1 || exit 2
 
 echo "[STAGE 2/12] Make tools"
-make __tooldeps__ -j 4  >>/dev/null 2>&1 || exit 3
+make __tooldeps__ -j 4 2>&1 || exit 3
 
 ####### Build wine
 mkdir -p "/root/wine-git/wine64-build/"
