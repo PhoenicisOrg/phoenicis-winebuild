@@ -35,14 +35,14 @@ prepare() {
 }
 
 install-libs() {
-  cd "/build/$ARCH/" || exit 3
+  cd "/build/$ARCH/opt/local/" || exit 3
   cp -r lib/* "/opt/local/$LIB_DIRECTORY" || exit 4
   cp -r include/* "/opt/local/include/" || exit 4
 }
 
 stage-libs() {
   mkdir -p "/staging/$LIB_DIRECTORY"
-  cd "/build/$ARCH/" || exit 3
+  cd "/build/$ARCH/opt/local/" || exit 3
   cp -r lib/* "/staging/$LIB_DIRECTORY" || exit 4
   cp -r include/* "/staging/include/" || exit 4
 }
