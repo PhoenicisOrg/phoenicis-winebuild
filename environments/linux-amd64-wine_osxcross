@@ -17,6 +17,7 @@ RUN apt-get -y install texinfo
 
 RUN git clone https://github.com/tpoechtrager/osxcross /root/osxcross
 COPY darwin/SDK/MacOSX10.13.sdk.tar.xz /root/osxcross/tarballs/
+RUN ln -s "/root/osxcross/target/SDK/MacOSX10.13.sdk/System" "/System"
 
 ### Clang 8
 RUN mkdir /root/clang-8
@@ -33,12 +34,10 @@ ENV PATH="/root/clang-8/llvm/bin:/root/osxcross/target/bin:${PATH}"
 ENV MACOSX_DEPLOYMENT_TARGET="10.13"
 # OSXCROSS will handle headers/libraries/frameworks injection
 ENV OSXCROSS_MP_INC="YES"
+ENV CFLAGS="-msse2 -O3 -Wno-unused-command-line-argument -Wno-deprecated-declarations"
 
-# symlink "/root/osxcross/target/macports/pkgs/opt/local" to /opt/local
-RUN ln -s "/root/osxcross/target/macports/pkgs/opt/local" "/opt/local"
-# Symlink "/System" to avoid "ld: warning: directory not found for option '-F/System/Library/Frameworks/'"
-RUN ln -s "/root/osxcross/target/SDK/MacOSX10.13.sdk/System" "/System"
-
+# Copy in premade wrappers
+COPY darwin/wrappers/* /root/osxcross/target/bin/
 
 ########################################
 # Install build scripts
@@ -52,10 +51,14 @@ ENV PATH="/build-scripts:${PATH}"
 ########################################
 # Lets make folders to keep compiled libs inside
 ########################################
-RUN rm /opt/local
+RUN mkdir -p "/root/osxcross/target/macports/pkgs/opt/local"
+RUN ln -s "/root/osxcross/target/macports/pkgs/opt/local" "/opt/local"
+RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
+
 RUN mkdir -p /opt/local/lib32
 RUN mkdir -p /opt/local/lib64
 RUN mkdir -p /opt/local/include
+
 
 ########################################
 # Install wine dependencies
@@ -66,19 +69,16 @@ RUN VERSION="3.7.3" ARCH="x86_64" nettle.sh
 RUN VERSION="4.17.0" ARCH="i386" libtasn1.sh
 RUN VERSION="4.17.0" ARCH="x86_64" libtasn1.sh
 
-RUN VERSION="1.13.1" ARCH="i386" unbound.sh
-RUN VERSION="1.13.1" ARCH="x86_64" unbound.sh
-
 RUN VERSION="6.2.1" ARCH="x86_64" gmp.sh
 RUN VERSION="6.2.1" ARCH="i386" gmp.sh
 
 RUN install-staging-libs.sh
 
+
 RUN VERSION="3.7.2" ARCH="x86_64" gnutls.sh
 RUN VERSION="3.7.2" ARCH="i386" gnutls.sh
 
-RUN mkdir -p /root/osxcross/target/macports
-RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
+
 
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
 # This will prevent wine-devel from installing it
@@ -89,11 +89,7 @@ RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-d
 
 
 
-# Copy in premade wrappers
-COPY darwin/wrappers/* /root/osxcross/target/bin/
-
 ### Environment preparation
-ENV CFLAGS="-msse2 -O3 -Wno-unused-command-line-argument -Wno-deprecated-declarations"
 
 ### NCurses Source code
 # We need to build manually ncurses so that TERMINFO is not set to /opt/local/share/terminfo to avoid
