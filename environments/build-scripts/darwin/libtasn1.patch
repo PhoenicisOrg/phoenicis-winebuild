@@ -1,0 +1,33 @@
+diff -ur libtasn1-4.17.0/Makefile.am libtasn1-4.17.0.patch/Makefile.am
+--- libtasn1-4.17.0/Makefile.am	2021-05-13 19:06:27.000000000 +0200
++++ libtasn1-4.17.0.patch/Makefile.am	2021-08-08 13:23:45.000000000 +0200
+@@ -27,7 +27,7 @@
+ 	windows/test-tree/test-tree.vcproj windows/libtasn14win.mk
+ EXTRA_DIST += cfg.mk maint.mk CONTRIBUTING.md README.md
+
+-SUBDIRS = lib src fuzz tests
++SUBDIRS = lib src fuzz
+
+ if ENABLE_DOC
+ SUBDIRS += doc examples
+diff -ur libtasn1-4.17.0/Makefile.in libtasn1-4.17.0.patch/Makefile.in
+--- libtasn1-4.17.0/Makefile.in	2021-08-08 13:22:09.000000000 +0200
++++ libtasn1-4.17.0.patch/Makefile.in	2021-08-08 13:23:58.000000000 +0200
+@@ -208,7 +208,7 @@
+ ETAGS = etags
+ CTAGS = ctags
+ CSCOPE = cscope
+-DIST_SUBDIRS = lib src fuzz tests doc examples
++DIST_SUBDIRS = lib src fuzz doc examples
+ am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
+ 	$(top_srcdir)/aminclude_static.am \
+ 	$(top_srcdir)/build-aux/config.guess \
+@@ -564,7 +564,7 @@
+ 	windows/test-tree/test-tree.vcproj windows/libtasn14win.mk \
+ 	cfg.mk maint.mk CONTRIBUTING.md README.md \
+ 	$(top_srcdir)/.version
+-SUBDIRS = lib src fuzz tests $(am__append_1)
++SUBDIRS = lib src fuzz $(am__append_1)
+ @CODE_COVERAGE_ENABLED_TRUE@GITIGNOREFILES := $(GITIGNOREFILES) $(CODE_COVERAGE_OUTPUT_FILE) $(CODE_COVERAGE_OUTPUT_DIRECTORY)
+ @CODE_COVERAGE_ENABLED_TRUE@code_coverage_v_lcov_cap = $(code_coverage_v_lcov_cap_$(V))
+ @CODE_COVERAGE_ENABLED_TRUE@code_coverage_v_lcov_cap_ = $(code_coverage_v_lcov_cap_$(AM_DEFAULT_VERBOSITY))
