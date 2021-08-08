@@ -36,6 +36,7 @@ RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 # This will prevent wine-devel from installing it
 RUN osxcross-macports -universal fakeinstall ncurses
 RUN osxcross-macports -universal fakeinstall pulseaudio
+RUN osxcross-macports -universal install gnutls
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 
 # symlink "/root/osxcross/target/macports/pkgs/opt/local" to /opt/local
