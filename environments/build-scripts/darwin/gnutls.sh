@@ -18,10 +18,10 @@ export LIBTASN1_LIBS="-ltasn1"
 
 export ac_cv_func_malloc_0_nonnull="yes"
 export ac_cv_func_realloc_0_nonnull="yes"
-./configure --host "$ARCH"-apple-darwin17 --prefix="/build/$ARCH/" --with-included-unistring --without-p11-kit  || exit 2
+./configure --host "$ARCH"-apple-darwin17 --prefix="/build/$ARCH/" --prefix="/opt/local" --with-included-unistring --without-p11-kit  || exit 2
 
 make clean -j 4 || exit 2
 make -j 4 || exit 2
-make install -j 4 || exit 2
+make install DESTDIR="/build/$ARCH/" || exit 2
 
 install-libs
