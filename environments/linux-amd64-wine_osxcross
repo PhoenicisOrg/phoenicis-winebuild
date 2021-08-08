@@ -1,5 +1,9 @@
 FROM amd64/debian:buster
 
+########################################
+# Prepare a building environment
+########################################
+
 RUN echo 'deb-src http://deb.debian.org/debian buster main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://security.debian.org/debian-security buster/updates main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://deb.debian.org/debian buster-updates main' >> /etc/apt/sources.list
@@ -9,6 +13,7 @@ RUN apt-get -y build-dep wine
 RUN apt-get -y install git llvm clang wget
 RUN apt-get -y install libjs-mathjax python-yaml lib32gcc1 lib32stdc++6 libc6-i386 libctypes-ocaml-dev ocaml-nox libjs-jquery python-six python-pygments libjs-underscore cmake
 RUN apt-get -y install gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
+RUN apt-get -y install texinfo
 
 RUN git clone https://github.com/tpoechtrager/osxcross /root/osxcross
 COPY darwin/SDK/MacOSX10.13.sdk.tar.xz /root/osxcross/tarballs/
@@ -29,6 +34,49 @@ ENV MACOSX_DEPLOYMENT_TARGET="10.13"
 # OSXCROSS will handle headers/libraries/frameworks injection
 ENV OSXCROSS_MP_INC="YES"
 
+# symlink "/root/osxcross/target/macports/pkgs/opt/local" to /opt/local
+RUN ln -s "/root/osxcross/target/macports/pkgs/opt/local" "/opt/local"
+# Symlink "/System" to avoid "ld: warning: directory not found for option '-F/System/Library/Frameworks/'"
+RUN ln -s "/root/osxcross/target/SDK/MacOSX10.13.sdk/System" "/System"
+
+
+########################################
+# Install build scripts
+########################################
+RUN mkdir -p  /build-scripts/
+ADD build-scripts/darwin/ /build-scripts/
+ADD build-scripts/darwin/common/ /build-scripts/
+ENV PATH="/build-scripts:${PATH}"
+
+
+########################################
+# Lets make folders to keep compiled libs inside
+########################################
+RUN rm /opt/local
+RUN mkdir -p /opt/local/lib32
+RUN mkdir -p /opt/local/lib64
+RUN mkdir -p /opt/local/include
+
+########################################
+# Install wine dependencies
+########################################
+RUN VERSION="3.7.3" ARCH="i386" nettle.sh
+RUN VERSION="3.7.3" ARCH="x86_64" nettle.sh
+
+RUN VERSION="4.17.0" ARCH="i386" libtasn1.sh
+RUN VERSION="4.17.0" ARCH="x86_64" libtasn1.sh
+
+RUN VERSION="1.13.1" ARCH="i386" unbound.sh
+RUN VERSION="1.13.1" ARCH="x86_64" unbound.sh
+
+RUN VERSION="6.2.1" ARCH="x86_64" gmp.sh
+RUN VERSION="6.2.1" ARCH="i386" gmp.sh
+
+RUN install-staging-libs.sh
+
+RUN VERSION="3.7.2" ARCH="x86_64" gnutls.sh
+RUN VERSION="3.7.2" ARCH="i386" gnutls.sh
+
 RUN mkdir -p /root/osxcross/target/macports
 RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 
@@ -36,17 +84,10 @@ RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
 # This will prevent wine-devel from installing it
 RUN osxcross-macports -universal fakeinstall ncurses
 RUN osxcross-macports -universal fakeinstall pulseaudio
-RUN osxcross-macports -universal install gnutls
+
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 
-# symlink "/root/osxcross/target/macports/pkgs/opt/local" to /opt/local
-RUN ln -s "/root/osxcross/target/macports/pkgs/opt/local" "/opt/local"
-# Symlink "/System" to avoid "ld: warning: directory not found for option '-F/System/Library/Frameworks/'"
-RUN ln -s "/root/osxcross/target/SDK/MacOSX10.13.sdk/System" "/System"
 
-# Lets make folders to keep compiled libs inside
-RUN mkdir /opt/local/lib32
-RUN mkdir /opt/local/lib64
 
 # Copy in premade wrappers
 COPY darwin/wrappers/* /root/osxcross/target/bin/
