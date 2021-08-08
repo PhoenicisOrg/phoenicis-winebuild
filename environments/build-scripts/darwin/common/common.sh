@@ -38,6 +38,7 @@ install-libs() {
   cd "/build/$ARCH/opt/local/" || exit 3
   cp -r lib/* "/opt/local/$LIB_DIRECTORY" || exit 4
   cp -r include/* "/opt/local/include/" || exit 4
+  install-universal-libs
 }
 
 stage-libs() {
@@ -48,9 +49,9 @@ stage-libs() {
 }
 
 install-staging-libs() {
-  mv /staging/lib32/*  "/opt/local/lib32"
-  mv /staging/lib64/*  "/opt/local/lib64"
-  mv /staging/include/*  "/opt/local/include"
+  mv /staging/lib32/* "/opt/local/lib32"
+  mv /staging/lib64/* "/opt/local/lib64"
+  mv /staging/include/* "/opt/local/include"
   return 0
 }
 
@@ -60,8 +61,12 @@ install-universal-libs() {
     filename=$(basename "$file32")
 
     if [ -e "/opt/local/lib64/$filename" ]; then
-      echo "Creating universal lib from $filename"
-      x86_64-apple-darwin17-lipo "/opt/local/lib32/$filename" "/opt/local/lib64/$filename" -output "/opt/local/lib/$filename" -create
+      if [ ! -e "/opt/local/lib/$filename" ]; then
+        echo "Creating universal lib from $filename"
+        x86_64-apple-darwin17-lipo "/opt/local/lib32/$filename" "/opt/local/lib64/$filename" -output "/opt/local/lib/$filename" -create
+      else
+        echo "Universal lib $filename already exists. Skipping."
+      fi
     fi
   done
 }
