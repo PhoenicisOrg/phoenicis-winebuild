@@ -46,13 +46,13 @@ stage-libs() {
   cd "/build/$ARCH/opt/local/" || exit 3
   cp -r lib/* "/staging/$LIB_DIRECTORY" || exit 4
   cp -r include/* "/staging/include/" || exit 4
-  install-universal-libs
 }
 
 install-staging-libs() {
   mv /staging/lib32/* "/opt/local/lib32"
   mv /staging/lib64/* "/opt/local/lib64"
   mv /staging/include/* "/opt/local/include"
+  install-universal-libs
   return 0
 }
 
@@ -60,6 +60,8 @@ install-universal-libs() {
   mkdir -p "/opt/local/lib/*.dylib"
   for file32 in /opt/local/lib32/*.dylib; do
     filename=$(basename "$file32")
+
+    [ "$filename" == "*.dylib" ] && break
 
     if [ -e "/opt/local/lib64/$filename" ]; then
       if [ ! -e "/opt/local/lib/$filename" ]; then
