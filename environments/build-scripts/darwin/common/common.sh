@@ -53,3 +53,15 @@ install-staging-libs() {
   mv /staging/include/*  "/opt/local/include"
   return 0
 }
+
+install-universal-libs() {
+  mkdir -p "/opt/local/lib/*.dylib"
+  for file32 in /opt/local/lib32/*.dylib; do
+    filename=$(basename "$file32")
+
+    if [ -e "/opt/local/lib64/$filename" ]; then
+      echo "Creating universal lib from $filename"
+      x86_64-apple-darwin17-lipo "/opt/local/lib32/$filename" "/opt/local/lib64/$filename" -output "/opt/local/lib/$filename" -create
+    fi
+  done
+}

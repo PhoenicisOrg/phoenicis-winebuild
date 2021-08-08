@@ -17,6 +17,7 @@ RUN apt-get -y install texinfo
 
 RUN git clone https://github.com/tpoechtrager/osxcross /root/osxcross
 COPY darwin/SDK/MacOSX10.13.sdk.tar.xz /root/osxcross/tarballs/
+RUN ln -s "/root/osxcross/target/SDK/MacOSX10.13.sdk/System" "/System"
 
 ### Clang 8
 RUN mkdir /root/clang-8
@@ -34,10 +35,6 @@ ENV MACOSX_DEPLOYMENT_TARGET="10.13"
 # OSXCROSS will handle headers/libraries/frameworks injection
 ENV OSXCROSS_MP_INC="YES"
 
-# symlink "/root/osxcross/target/macports/pkgs/opt/local" to /opt/local
-RUN ln -s "/root/osxcross/target/macports/pkgs/opt/local" "/opt/local"
-# Symlink "/System" to avoid "ld: warning: directory not found for option '-F/System/Library/Frameworks/'"
-RUN ln -s "/root/osxcross/target/SDK/MacOSX10.13.sdk/System" "/System"
 
 # Copy in premade wrappers
 COPY darwin/wrappers/* /root/osxcross/target/bin/
@@ -54,10 +51,13 @@ ENV PATH="/build-scripts:${PATH}"
 ########################################
 # Lets make folders to keep compiled libs inside
 ########################################
-RUN rm /opt/local
+RUN mkdir -p "/root/osxcross/target/macports/pkgs/opt/local"
+RUN ln -s "/root/osxcross/target/macports/pkgs/opt/local" "/opt/local"
+
 RUN mkdir -p /opt/local/lib32
 RUN mkdir -p /opt/local/lib64
 RUN mkdir -p /opt/local/include
+
 
 ########################################
 # Install wine dependencies
@@ -78,6 +78,8 @@ RUN install-staging-libs.sh
 
 RUN VERSION="3.7.2" ARCH="x86_64" gnutls.sh
 RUN VERSION="3.7.2" ARCH="i386" gnutls.sh
+
+RUN install-universal-libs.sh
 
 RUN mkdir -p /root/osxcross/target/macports
 RUN printf "packages.macports.org" > /root/osxcross/target/macports/MIRROR
