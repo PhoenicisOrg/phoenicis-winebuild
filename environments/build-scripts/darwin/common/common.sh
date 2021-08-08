@@ -26,8 +26,8 @@ prepare() {
   export LIB_DIRECTORY
   export ABI
 
-  export CC="$ARCH-apple-darwin17-clang -L/opt/local/$LIB_DIRECTORY -stdlib=libc++ -I/opt/local/include"
-  export CXX="$ARCH-apple-darwin17-clang++ -L/opt/local/$LIB_DIRECTORY -stdlib=libc++ -I/opt/local/include"
+  #export CC="$ARCH-apple-darwin17-clang -L/opt/local/$LIB_DIRECTORY -stdlib=libc++ -I/opt/local/include"
+  #export CXX="$ARCH-apple-darwin17-clang++ -L/opt/local/$LIB_DIRECTORY -stdlib=libc++ -I/opt/local/include"
 
   MAJOR_VERSION="$(basename "$VERSION" | cut -d"." -f1,2)"
   export MAJOR_VERSION

@@ -39,6 +39,8 @@ RUN ln -s "/root/osxcross/target/macports/pkgs/opt/local" "/opt/local"
 # Symlink "/System" to avoid "ld: warning: directory not found for option '-F/System/Library/Frameworks/'"
 RUN ln -s "/root/osxcross/target/SDK/MacOSX10.13.sdk/System" "/System"
 
+# Copy in premade wrappers
+COPY darwin/wrappers/* /root/osxcross/target/bin/
 
 ########################################
 # Install build scripts
@@ -88,9 +90,6 @@ RUN osxcross-macports -universal fakeinstall pulseaudio
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 
 
-
-# Copy in premade wrappers
-COPY darwin/wrappers/* /root/osxcross/target/bin/
 
 ### Environment preparation
 ENV CFLAGS="-msse2 -O3 -Wno-unused-command-line-argument -Wno-deprecated-declarations"
