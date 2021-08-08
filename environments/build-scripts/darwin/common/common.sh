@@ -46,6 +46,7 @@ stage-libs() {
   cd "/build/$ARCH/opt/local/" || exit 3
   cp -r lib/* "/staging/$LIB_DIRECTORY" || exit 4
   cp -r include/* "/staging/include/" || exit 4
+  install-universal-libs
 }
 
 install-staging-libs() {
