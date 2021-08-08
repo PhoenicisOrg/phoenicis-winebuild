@@ -13,4 +13,4 @@ patch -p1 < /build-scripts/libtasn1.patch || exit 1
 make all -j 4 || exit 2
 make install -j 4 || exit 2
 
-install
+install-libs

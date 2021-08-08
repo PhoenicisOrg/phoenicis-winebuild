@@ -12,4 +12,4 @@ cd "nettle-$VERSION" || exit 1
 make -j 4 || exit 2
 make install -j 4 || exit 2
 
-install
+install-libs

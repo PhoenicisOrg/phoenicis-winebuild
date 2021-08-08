@@ -12,4 +12,4 @@ cd "unbound-$VERSION" || exit 1
 make -j 4 || exit 2
 make install || exit 2
 
-install
+install-libs
