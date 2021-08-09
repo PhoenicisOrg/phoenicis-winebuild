@@ -66,7 +66,7 @@ install-universal-libs() {
     if [ -e "/opt/local/lib64/$filename" ]; then
       if [ ! -e "/opt/local/lib/$filename" ]; then
         echo "Creating universal lib from $filename"
-        x86_64-apple-darwin17-lipo "/opt/local/lib32/$filename" "/opt/local/lib64/$filename" -output "/opt/local/lib/$filename" -create
+        x86_64-apple-darwin17-lipo "/opt/local/lib32/$filename" "/opt/local/lib64/$filename" -output "/opt/local/lib/$filename" -create || exit 1
       else
         echo "Universal lib $filename already exists. Skipping."
       fi

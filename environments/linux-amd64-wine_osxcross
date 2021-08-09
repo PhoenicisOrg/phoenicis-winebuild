@@ -84,6 +84,10 @@ RUN VERSION="6.2" ARCH="i386" ncurses.sh
 RUN VERSION="2.0.14" ARCH="x86_64" SDL2.sh
 RUN VERSION="2.0.14" ARCH="i386" SDL2.sh
 
+RUN VERSION="21.08" ARCH="x86_64" faudio.sh
+RUN VERSION="21.08" ARCH="i386" faudio.sh
+
+
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
 # This will prevent wine-devel from installing it
 RUN osxcross-macports -universal fakeinstall ncurses
@@ -114,31 +118,6 @@ RUN mv dynamic/* /opt/local/lib/
 ## Import fix
 COPY darwin/fix_imports.sh /root/
 
-### Faudio
-ENV FAUDIO="20.09"
-RUN mkdir -p /root/faudio
-WORKDIR /root/faudio
-RUN git clone -b "${FAUDIO}" https://github.com/FNA-XNA/FAudio
-WORKDIR /root/faudio/FAudio
-COPY darwin/patch-faudio-remove-deployment-target.patch .
-RUN patch -p0 < patch-faudio-remove-deployment-target.patch
-RUN mkdir -p /root/faudio/build64
-RUN mkdir -p /root/faudio/build32
-RUN mkdir -p /root/faudio/build
-WORKDIR /root/faudio/build64
-RUN x86_64-apple-darwin17-cmake /root/faudio/FAudio
-RUN make
-RUN make install DESTDIR=install/
-RUN cp install/usr/local/include/* /opt/local/include
-
-WORKDIR /root/faudio/build32
-RUN i386-apple-darwin17-cmake /root/faudio/FAudio
-RUN make
-WORKDIR /root/faudio/build
-RUN x86_64-apple-darwin17-lipo ../build32/libFAudio.0.$FAUDIO.dylib ../build64/libFAudio.0.$FAUDIO.dylib -output libFAudio.0.$FAUDIO.dylib -create
-RUN ln -s libFAudio.0.$FAUDIO.dylib libFAudio.dylib
-RUN ln -s libFAudio.0.$FAUDIO.dylib libFAudio.0.dylib
-RUN cp -d *.dylib /opt/local/lib
 
 ## Removing preinstalled wine libs to prevent conflict
 RUN rm /opt/local/lib/libwine.*
