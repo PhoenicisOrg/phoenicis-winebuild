@@ -11,7 +11,7 @@ patch -p0 < /build-scripts/faudio.patch || exit 1
 mkdir "/src/$ARCH" || exit 1
 cd "/src/$ARCH" || exit 1
 
-$ARCH-apple-darwin17-cmake /root/faudio/FAudio || exit 2
+$ARCH-apple-darwin17-cmake /src/FAudio || exit 2
 make -j 4 || exit 2
 make install DESTDIR="/build/$ARCH/" || exit 2
 
