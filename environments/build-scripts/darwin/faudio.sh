@@ -16,6 +16,3 @@ make -j 4 || exit 2
 make install DESTDIR="/build/$ARCH/" || exit 2
 
 install-libs
-
-ln -s /opt/local/lib/libFAudio.0.$VERISON.dylib /opt/local/lib/libFAudio.dylib || exit 3
-ln -s /opt/local/lib/libFAudio.0.$VERSION.dylib /opt/local/lib/libFAudio.0.dylib || exit 3
