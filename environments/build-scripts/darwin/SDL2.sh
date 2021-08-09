@@ -7,7 +7,6 @@ prepare
 wget https://www.libsdl.org/release/SDL2-$VERSION.tar.gz || exit 1
 tar -xvf "SDL2-$VERSION.tar.gz" || exit 1
 cd "SDL2-$VERSION" || exit 1
-patch -p0 < /build-scripts/SDL2.patch || exit 1
 
 [ "$ARCH" = "x86_64" ] && configure_options="--disable-render-metal"
 

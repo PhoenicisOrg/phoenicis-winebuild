@@ -81,8 +81,8 @@ RUN VERSION="3.7.2" ARCH="i386" gnutls.sh
 RUN VERSION="6.2" ARCH="x86_64" ncurses.sh
 RUN VERSION="6.2" ARCH="i386" ncurses.sh
 
-RUN VERSION="2.0.12" ARCH="x86_64" SDL2.sh
-RUN VERSION="2.0.12" ARCH="i386" SDL2.sh
+RUN VERSION="2.0.14" ARCH="x86_64" SDL2.sh
+RUN VERSION="2.0.14" ARCH="i386" SDL2.sh
 
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
 # This will prevent wine-devel from installing it
