@@ -78,6 +78,14 @@ RUN install-staging-libs.sh
 RUN VERSION="3.7.2" ARCH="x86_64" gnutls.sh
 RUN VERSION="3.7.2" ARCH="i386" gnutls.sh
 
+RUN VERSION="6.2" ARCH="x86_64" ncurses.sh
+RUN VERSION="6.2" ARCH="i386" ncurses.sh
+
+RUN VERSION="2.0.14" ARCH="x86_64" SDL2.sh
+RUN VERSION="2.0.14" ARCH="i386" SDL2.sh
+
+RUN VERSION="21.08" ARCH="x86_64" faudio.sh
+RUN VERSION="21.08" ARCH="i386" faudio.sh
 
 
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
@@ -87,70 +95,6 @@ RUN osxcross-macports -universal fakeinstall pulseaudio
 
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 
-
-
-### Environment preparation
-
-### NCurses Source code
-# We need to build manually ncurses so that TERMINFO is not set to /opt/local/share/terminfo to avoid
-# terminals database is inaccessible error
-RUN mkdir /root/ncurses
-WORKDIR /root/ncurses
-RUN wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.2.tar.gz
-RUN tar -xvf  ncurses-6.2.tar.gz
-WORKDIR /root/ncurses/ncurses-6.2
-COPY darwin/ncurses_STRIP.patch .
-RUN patch -p1 < ncurses_STRIP.patch
-
-### NCurses 32Bit
-RUN env STRIP="i386-apple-darwin17-strip" ./configure --host i386-apple-darwin17 --with-shared --with-cxx-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/opt/local" --enable-rpath --datarootdir=/usr/share
-RUN make -j 4
-RUN make install
-RUN mv /opt/local/lib/libncurses.6.dylib /opt/local/lib32/
-RUN mv /opt/local/lib/libncurses++.6.dylib /opt/local/lib32/
-
-### NCurses 64Bit
-RUN make clean
-RUN env STRIP="x86_64-apple-darwin17-strip" ./configure --host x86_64-apple-darwin17 --with-shared --with-cxx-shared --enable-widec --disable-lib-suffixes --enable-overwrite --without-debug --without-ada  --with-manpage-format=normal --enable-pc-files --disable-mixed-case  --prefix="/opt/local" --enable-rpath --datarootdir=/usr/share
-RUN make -j 4
-RUN make install
-RUN mv /opt/local/lib/libncurses.6.dylib /opt/local/lib64/
-RUN mv /opt/local/lib/libncurses++.6.dylib /opt/local/lib64/
-
-### Merge the NCurses into a single file
-RUN x86_64-apple-darwin17-lipo /opt/local/lib32/libncurses.6.dylib /opt/local/lib64/libncurses.6.dylib -output /opt/local/lib/libncurses.6.dylib -create
-RUN x86_64-apple-darwin17-lipo /opt/local/lib32/libncurses++.6.dylib /opt/local/lib64/libncurses++.6.dylib -output /opt/local/lib/libncurses++.6.dylib -create
-
-### SDL2 Source code
-# We need to build manually SDL2 as macports does not have a universal version for download but we need one.
-ENV SDL2="SDL2-2.0.12"
-RUN mkdir /root/sdl2
-WORKDIR /root/sdl2
-RUN wget https://www.libsdl.org/release/${SDL2}.tar.gz
-RUN tar -xvf  ${SDL2}.tar.gz
-WORKDIR /root/sdl2/${SDL2}
-COPY darwin/sdl2-config.cmake.in-fix.patch .
-RUN patch -p0 < sdl2-config.cmake.in-fix.patch
-
-### SDL2 32Bit
-RUN ./configure --host i386-apple-darwin17  --prefix="/opt/local"
-RUN make -j 4
-RUN make install-hdrs
-RUN make install-lib
-RUN make install-data
-RUN mv /opt/local/lib/libSDL2-2.0.0.dylib /opt/local/lib32/
-
-### SDL2 64Bit
-RUN make clean
-RUN ./configure --host x86_64-apple-darwin17 --disable-render-metal --prefix="/opt/local"
-RUN make -j 4
-RUN make install-hdrs
-RUN make install-lib
-RUN make install-data
-RUN mv /opt/local/lib/libSDL2-2.0.0.dylib /opt/local/lib64/
-
-### Merge the SDL2 into a single file
-RUN x86_64-apple-darwin17-lipo /opt/local/lib32/libSDL2-2.0.0.dylib /opt/local/lib64/libSDL2-2.0.0.dylib -output /opt/local/lib/libSDL2-2.0.0.dylib -create
 
 ### Vulkan
 # VulkanSDK-1.2.135.0 is the last version to be distributed within tar.gz, the dmg images can't be extracted using 7z
@@ -174,31 +118,6 @@ RUN mv dynamic/* /opt/local/lib/
 ## Import fix
 COPY darwin/fix_imports.sh /root/
 
-### Faudio
-ENV FAUDIO="20.09"
-RUN mkdir -p /root/faudio
-WORKDIR /root/faudio
-RUN git clone -b "${FAUDIO}" https://github.com/FNA-XNA/FAudio
-WORKDIR /root/faudio/FAudio
-COPY darwin/patch-faudio-remove-deployment-target.patch .
-RUN patch -p0 < patch-faudio-remove-deployment-target.patch
-RUN mkdir -p /root/faudio/build64
-RUN mkdir -p /root/faudio/build32
-RUN mkdir -p /root/faudio/build
-WORKDIR /root/faudio/build64
-RUN x86_64-apple-darwin17-cmake /root/faudio/FAudio
-RUN make
-RUN make install DESTDIR=install/
-RUN cp install/usr/local/include/* /opt/local/include
-
-WORKDIR /root/faudio/build32
-RUN i386-apple-darwin17-cmake /root/faudio/FAudio
-RUN make
-WORKDIR /root/faudio/build
-RUN x86_64-apple-darwin17-lipo ../build32/libFAudio.0.$FAUDIO.dylib ../build64/libFAudio.0.$FAUDIO.dylib -output libFAudio.0.$FAUDIO.dylib -create
-RUN ln -s libFAudio.0.$FAUDIO.dylib libFAudio.dylib
-RUN ln -s libFAudio.0.$FAUDIO.dylib libFAudio.0.dylib
-RUN cp -d *.dylib /opt/local/lib
 
 ## Removing preinstalled wine libs to prevent conflict
 RUN rm /opt/local/lib/libwine.*
