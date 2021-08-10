@@ -26,13 +26,13 @@ export LINUX_OPTIONS="--without-pulse --without-inotify --without-v4l2 --without
 
 cd "/root/wine-git/wine64-build/"
 echo "[STAGE 4/12] Configure 64bit"
-../configure --host x86_64-apple-darwin17 --enable-win64 --prefix="" --with-wine-tools="/root/wine-tools" --disable-option-checking --disable-tests --without-unwind ${LINUX_OPTIONS} || exit 5
+../configure --host x86_64-apple-darwin17 --enable-win64 --prefix="" --with-wine-tools="/root/wine-tools" --disable-option-checking --disable-tests --without-unwind --without-x ${LINUX_OPTIONS} || exit 5
 echo "[STAGE 5/12] Make 64 bits"
 make -j 4 || exit 6
 
 cd "/root/wine-git/wine32-build/"
 echo "[STAGE 6/12] Configure 32bit"
-../configure --host i386-apple-darwin17 TARGETFLAGS="-m32" --prefix="" --with-wine-tools="/root/wine-tools" --disable-option-checking --disable-tests --without-unwind  ${LINUX_OPTIONS} || exit 7
+../configure --host i386-apple-darwin17 TARGETFLAGS="-m32" --prefix="" --with-wine-tools="/root/wine-tools" --disable-option-checking --disable-tests --without-unwind --without-x ${LINUX_OPTIONS} || exit 7
 echo "[STAGE 7/12] Make 32bit"
 make -j 4 || exit 8
 
