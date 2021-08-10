@@ -64,6 +64,7 @@ class PhoenicisWinePackageCreator:
             builder.checksum()
         except:
             traceback.print_exc()
+            raise
         finally:
             print("Cleaning container")
             container.clean()
