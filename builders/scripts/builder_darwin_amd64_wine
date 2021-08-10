@@ -23,6 +23,10 @@ export LDFLAGS="-Wl,-rpath,@loader_path/../,-rpath,/opt/local/lib,-rpath,/opt/X1
 #### Linux only options to disable
 export LINUX_OPTIONS="--without-pulse --without-inotify --without-v4l2 --without-oss --without-udev --without-capi"
 
+#### Cache gnutls_cipher check, fixed wine-5.8
+# https://github.com/wine-mirror/wine/commit/7e0e556726deff3c93b2172de15cc1c523571b59
+export ac_cv_func_gnutls_cipher_init="yes"
+
 #### 64bit
 cd "/root/wine-git/wine64-build/"
 echo "[STAGE 4/11] Configure 64bit"
