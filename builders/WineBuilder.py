@@ -17,8 +17,7 @@ class WineBuilder:
 
     def prepare(self, operating_system, arch, version, distribution, repository, clone = True):
         if clone:
-           self.container.run(["git", "clone", "--progress", repository, "/root/wine-git"])
-           self.container.run(["git", "checkout", "-f", version], workdir="/root/wine-git")
+           self.container.run(["git", "clone", "-b", version, "--depth",  "1", "--progress", repository, "/root/wine-git"])
 
         self._apply_hooks("after-git", operating_system, arch, version, distribution)
 
