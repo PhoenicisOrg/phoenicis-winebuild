@@ -87,6 +87,8 @@ RUN VERSION="2.0.16" ARCH="i386" SDL2.sh
 RUN VERSION="21.08" ARCH="x86_64" faudio.sh
 RUN VERSION="21.08" ARCH="i386" faudio.sh
 
+RUN VERSION="1.28.2" ARCH="x86_64" mpg123.sh
+RUN VERSION="1.28.2" ARCH="i386" mpg123.sh
 
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
 # This will prevent wine-devel from installing it
