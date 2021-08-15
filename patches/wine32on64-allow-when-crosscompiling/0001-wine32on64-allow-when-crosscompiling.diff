@@ -1,13 +1,31 @@
-diff --git a/configure.ac b/configure.ac
-index 41059564..ba7f0caa 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -170,7 +170,7 @@ case $host in
+diff --git a/configure b/configure
+index 57cf27f0..de311210 100755
+--- a/configure
++++ b/configure
+@@ -5673,7 +5673,7 @@ HOSTSTACK_CFLAGS=""
+ 
+ case $host in
+   x86_64*|amd64*)
+-    if test "x$enable_win64" != "xyes" -a "x$enable_win32on64" != "xyes" -a "$cross_compiling" != "yes"
++    if test "x$enable_win64" != "xyes" -a "x$enable_win32on64" != "xyes" 
+     then
+       CC="$CC -m32"
+       CXX="$CXX -m32"
+@@ -5713,7 +5713,7 @@ $as_echo "$wine_cv_cc_m32" >&6; }
        export PKG_CONFIG_PATH
        enable_win16=${enable_win16:-yes}
        with_unwind=${with_unwind:-no}
 -    elif test "x$enable_win64" != "xyes" -a "x$enable_win32on64" = "xyes" -a "$cross_compiling" != "yes"
-+    elif test "x$enable_win64" != "xyes" -a "x$enable_win32on64" = "xyes"
++    elif test "x$enable_win64" != "xyes" -a "x$enable_win32on64" = "xyes" 
      then
        if test "x${GCC}" = "xyes"
        then
+@@ -17811,7 +17811,7 @@ if test "x$ac_cv_cflags__Werror" = xyes; then :
+ fi
+   fi
+ 
+-    if test "x$enable_win64" != "xyes" -a "x$enable_win32on64" = "xyes" -a "$cross_compiling" != "yes"
++    if test "x$enable_win64" != "xyes" -a "x$enable_win32on64" = "xyes"
+   then
+       { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether the compiler supports -Werror=extra-tokens" >&5
+ $as_echo_n "checking whether the compiler supports -Werror=extra-tokens... " >&6; }
