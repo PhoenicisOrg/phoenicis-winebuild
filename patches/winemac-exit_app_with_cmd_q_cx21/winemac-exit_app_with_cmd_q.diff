@@ -1,0 +1,13 @@
+diff --git a/dlls/winemac.drv/cocoa_app.m b/dlls/winemac.drv/cocoa_app.m
+index 46176f77f9..0263630232 100644
+--- a/dlls/winemac.drv/cocoa_app.m
++++ b/dlls/winemac.drv/cocoa_app.m
+@@ -264,7 +264,7 @@ - (void) transformProcessToForeground
+             else
+                 title = WineLocalizedString(STRING_MENU_ITEM_QUIT);
+             item = [submenu addItemWithTitle:title action:@selector(terminate:) keyEquivalent:@"q"];
+-            [item setKeyEquivalentModifierMask:NSEventModifierFlagCommand | NSEventModifierFlagOption];
++            [item setKeyEquivalentModifierMask:NSCommandKeyMask];
+             item = [[[NSMenuItem alloc] init] autorelease];
+             [item setTitle:WineLocalizedString(STRING_MENU_WINE)];
+             [item setSubmenu:submenu];
