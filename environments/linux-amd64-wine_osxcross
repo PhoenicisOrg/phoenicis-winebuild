@@ -123,6 +123,6 @@ COPY darwin/fix_imports.sh /root/
 
 
 ## Removing preinstalled wine libs to prevent conflict
-RUN rm /opt/local/lib/libwinesdk.*
+RUN rm /opt/local/lib/libwine.*
 RUN rm -r /opt/local/lib/wine
 RUN rm -r /opt/local/include/wine/
