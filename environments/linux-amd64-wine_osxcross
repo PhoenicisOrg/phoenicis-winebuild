@@ -102,7 +102,8 @@ RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-d
 # VulkanSDK-1.2.135.0 is the last version to be distributed within tar.gz, the dmg images can't be extracted using 7z
 ENV MOLTENVK="1.2.135.0"
 WORKDIR /root/
-RUN wget https://sdk.lunarg.com/sdk/download/${MOLTENVK}/mac/vulkansdk-macos-${MOLTENVK}.tar.gz
+# RUN wget https://sdk.lunarg.com/sdk/download/${MOLTENVK}/mac/vulkansdk-macos-${MOLTENVK}.tar.gz
+RUN wget https://web.archive.org/web/20200413122419if_/https://sdk.lunarg.com/sdk/download/1.2.135.0/mac/vulkansdk-macos-1.2.135.0.tar.gz
 RUN tar -xvf vulkansdk-macos-${MOLTENVK}.tar.gz
 WORKDIR /root/vulkansdk-macos-${MOLTENVK}/MoltenVK/macOS
 RUN mv framework/* /opt/local/Library/Frameworks/
@@ -122,6 +123,6 @@ COPY darwin/fix_imports.sh /root/
 
 
 ## Removing preinstalled wine libs to prevent conflict
-RUN rm /opt/local/lib/libwine.*
+RUN rm /opt/local/lib/libwinesdk.*
 RUN rm -r /opt/local/lib/wine
 RUN rm -r /opt/local/include/wine/
