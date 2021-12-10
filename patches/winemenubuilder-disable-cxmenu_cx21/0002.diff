@@ -1,0 +1,10 @@
+diff --git a/programs/winemenubuilder/Makefile.in b/programs/winemenubuilder/Makefile.in
+index c5eec57a..07e27028 100644
+--- a/programs/winemenubuilder/Makefile.in
++++ b/programs/winemenubuilder/Makefile.in
+@@ -3,5 +3,4 @@ APPMODE   = -mwindows -municode
+ IMPORTS   = uuid windowscodecs shell32 shlwapi ole32 user32 advapi32
+ 
+ C_SRCS = \
+-	cxmenu.c \
+ 	winemenubuilder.c

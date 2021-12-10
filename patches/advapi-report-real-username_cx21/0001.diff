@@ -1,0 +1,54 @@
+diff --git a/dlls/advapi32/advapi.c b/dlls/advapi32/advapi.c
+index 9b70c2e3..2a407760 100644
+--- a/dlls/advapi32/advapi.c
++++ b/dlls/advapi32/advapi.c
+@@ -39,6 +39,7 @@
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(advapi);
+ 
++
+ /******************************************************************************
+  * GetUserNameA [ADVAPI32.@]
+  */
+@@ -47,16 +48,6 @@ BOOL WINAPI GetUserNameA( LPSTR name, LPDWORD size )
+     DWORD len = GetEnvironmentVariableA( "WINEUSERNAME", name, *size );
+     BOOL ret;
+ 
+-    /* CrossOver Hack 12735: Use a consistent username */
+-    if (!getenv( "CX_REPORT_REAL_USERNAME" ))
+-    {
+-        len = sizeof("crossover");
+-        if ((ret = (len <= *size))) strcpy( name, "crossover" );
+-        else SetLastError( ERROR_INSUFFICIENT_BUFFER );
+-        *size = len;
+-        return ret;
+-    }
+-
+     if (!len) return FALSE;
+     if ((ret = (len < *size))) len++;
+     else SetLastError( ERROR_INSUFFICIENT_BUFFER );
+@@ -72,16 +63,6 @@ BOOL WINAPI GetUserNameW( LPWSTR name, LPDWORD size )
+     DWORD len = GetEnvironmentVariableW( L"WINEUSERNAME", name, *size );
+     BOOL ret;
+ 
+-    /* CrossOver Hack 12735: Use a consistent username */
+-    if (!getenv( "CX_REPORT_REAL_USERNAME" ))
+-    {
+-        len = ARRAY_SIZE( L"crossover" );
+-        if ((ret = (len <= *size))) wcscpy( name, L"crossover" );
+-        else SetLastError( ERROR_INSUFFICIENT_BUFFER );
+-        *size = len;
+-        return ret;
+-    }
+-
+     if (!len) return FALSE;
+     if ((ret = (len < *size))) len++;
+     else SetLastError( ERROR_INSUFFICIENT_BUFFER );
+@@ -89,6 +70,7 @@ BOOL WINAPI GetUserNameW( LPWSTR name, LPDWORD size )
+     return ret;
+ }
+ 
++
+ /******************************************************************************
+  * GetCurrentHwProfileA [ADVAPI32.@]
+  *

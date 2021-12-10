@@ -1,0 +1,19 @@
+Index: dlls/ntdll/signal_x86_64.c
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/dlls/ntdll/signal_x86_64.c b/dlls/ntdll/signal_x86_64.c
+--- a/dlls/ntdll/signal_x86_64.c	(revision a4000bccf3878800680ca7e12109c6870dd90275)
++++ b/dlls/ntdll/signal_x86_64.c	(date 1635095863395)
+@@ -2810,6 +2810,10 @@
+     {
+         DWORD c;
+ 
++        if(rec->ExceptionCode == 0xc0000005) {
++            exit(0);
++        }
++
+         TRACE( "code=%x flags=%x addr=%p ip=%lx tid=%04x\n",
+                rec->ExceptionCode, rec->ExceptionFlags, rec->ExceptionAddress,
+                context->Rip, GetCurrentThreadId() );
