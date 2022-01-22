@@ -5,7 +5,7 @@ cp -a "/root/wine-git" "/root/wine-tools" || exit 1
 ####### Build Tools
 echo "[STAGE 2/8] Configure tools"
 cd "/root/wine-tools"
-./configure CC="clang" CXX="clang++" --disable-option-checking --disable-tests --without-unwind --enable-win64  >>/dev/null 2>&1 || exit 2
+./configure CC="clang" CXX="clang++" --disable-option-checking --disable-tests --without-unwind --enable-win64 || exit 2
 
 echo "[STAGE 3/8] Make tools"
 make __tooldeps__ -j 4  >>/dev/null 2>&1 || exit 3
