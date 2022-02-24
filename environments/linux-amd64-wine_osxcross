@@ -78,17 +78,20 @@ RUN install-staging-libs.sh
 RUN VERSION="3.7.2" ARCH="x86_64" gnutls.sh
 RUN VERSION="3.7.2" ARCH="i386" gnutls.sh
 
-RUN VERSION="6.2" ARCH="x86_64" ncurses.sh
-RUN VERSION="6.2" ARCH="i386" ncurses.sh
+# Only around to keep macports libraries happy
+RUN VERSION="6.3" ARCH="x86_64" ncurses.sh
+RUN VERSION="6.3" ARCH="i386" ncurses.sh
 
-RUN VERSION="2.0.16" ARCH="x86_64" SDL2.sh
-RUN VERSION="2.0.16" ARCH="i386" SDL2.sh
+RUN VERSION="2.0.22" ARCH="x86_64" SDL2.sh
+RUN VERSION="2.0.22" ARCH="i386" SDL2.sh
 
-RUN VERSION="21.08" ARCH="x86_64" faudio.sh
-RUN VERSION="21.08" ARCH="i386" faudio.sh
+# FAudio-22.01 is the last version with the gstreamer backend, keep at this version for pre-wine-6.20
+RUN VERSION="22.01" ARCH="x86_64" faudio.sh
+RUN VERSION="22.01" ARCH="i386" faudio.sh
 
-RUN VERSION="1.28.2" ARCH="x86_64" mpg123.sh
-RUN VERSION="1.28.2" ARCH="i386" mpg123.sh
+# Now included upstream from wine-6.20
+RUN VERSION="1.29.3" ARCH="x86_64" mpg123.sh
+RUN VERSION="1.29.3" ARCH="i386" mpg123.sh
 
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
 # This will prevent wine-devel from installing it
@@ -96,27 +99,9 @@ RUN osxcross-macports -universal fakeinstall ncurses
 RUN osxcross-macports -universal fakeinstall pulseaudio
 
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
+RUN osxcross-macports install MoltenVK
 
-
-### Vulkan
-# VulkanSDK-1.2.135.0 is the last version to be distributed within tar.gz, the dmg images can't be extracted using 7z
-ENV MOLTENVK="1.2.135.0"
-WORKDIR /root/
-# RUN wget https://sdk.lunarg.com/sdk/download/${MOLTENVK}/mac/vulkansdk-macos-${MOLTENVK}.tar.gz
-RUN wget https://web.archive.org/web/20200413122419if_/https://sdk.lunarg.com/sdk/download/1.2.135.0/mac/vulkansdk-macos-1.2.135.0.tar.gz
-RUN tar -xvf vulkansdk-macos-${MOLTENVK}.tar.gz
-WORKDIR /root/vulkansdk-macos-${MOLTENVK}/MoltenVK/macOS
-RUN mv framework/* /opt/local/Library/Frameworks/
-RUN mv dynamic/* /opt/local/lib/
-
-### VK3D3
-#ENV VKD3D="vkd3d-1.1"
-#WORKDIR /root
-#RUN git clone https://github.com/KhronosGroup/SPIRV-Headers
-#RUN cp -a /root/SPIRV-Headers/include/* /opt/local/include/
-#RUN cp -r /root/vulkansdk-macos-${MOLTENVK}/macOS/include/* /opt/local/include/
-#RUN apt-get install -y libtool-bin
-#COPY darwin/install_vkd3d.sh /root/
+# VKD3D Merged into upstream from wine-7.4
 
 ## Import fix
 COPY darwin/fix_imports.sh /root/
