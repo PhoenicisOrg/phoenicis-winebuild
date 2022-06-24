@@ -97,6 +97,7 @@ RUN VERSION="1.29.3" ARCH="i386" mpg123.sh
 # This will prevent wine-devel from installing it
 RUN osxcross-macports -universal fakeinstall ncurses
 RUN osxcross-macports -universal fakeinstall pulseaudio
+RUN osxcross-macports -universal fakeinstall py310-markupsafe
 
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 RUN osxcross-macports install MoltenVK
