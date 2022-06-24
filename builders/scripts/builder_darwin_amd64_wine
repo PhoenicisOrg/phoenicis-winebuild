@@ -9,6 +9,12 @@ cd "/root/wine-tools"
 echo "[STAGE 2/10] Make tools"
 make __tooldeps__ -j 4  >>/dev/null 2>&1 || exit 3
 
+# cross-compiling of wine is broken due to nls not building (wine-7.6)
+# https://bugs.winehq.org/show_bug.cgi?id=52834
+if [ -d "nls" ]; then
+    make -C nls
+fi
+
 ####### Build wine
 mkdir -p "/root/wine-git/wine64-build/"
 mkdir -p "/root/wine-git/wine32-build/"
