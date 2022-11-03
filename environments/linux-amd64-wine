@@ -40,10 +40,10 @@ RUN dpkg -i *.deb
 RUN mkdir -p /root/sdl2/x86
 RUN mkdir -p /root/sdl2/x64
 WORKDIR /root/sdl2
-RUN wget https://www.libsdl.org/release/SDL2-2.0.9.tar.gz
-RUN tar -xvf SDL2-2.0.9.tar.gz -C x86/
-RUN tar -xvf SDL2-2.0.9.tar.gz -C x64/
-WORKDIR /root/sdl2/x64/SDL2-2.0.9/
+RUN wget https://www.libsdl.org/release/SDL2-2.24.2.tar.gz
+RUN tar -xvf SDL2-2.24.2.tar.gz -C x86/
+RUN tar -xvf SDL2-2.24.2.tar.gz -C x64/
+WORKDIR /root/sdl2/x64/SDL2-2.24.2/
 RUN ./configure --prefix="/usr/"
 RUN make
 RUN make install
@@ -87,7 +87,7 @@ RUN echo apt-get -y install libsane-dev:i386 libpcap0.8-dev:i386 libicu-dev:i386
 RUN echo apt-get -y install libwayland-dev:i386 libwayland-egl1-mesa:i386 libxkbcommon-dev:i386 libxcursor-dev:i386 libxi-dev:i386 libxrandr-dev:i386 libxinerama-dev:i386 libglu1-mesa-dev:i386 libdbus-1-dev:i386 fcitx-libs-dev:i386 libsamplerate0-dev:i386 libibus-1.0-dev:i386 >> /root/install_32bits_dependencies.sh
 
 #SDL (for FAudio)
-RUN echo "cd /root/sdl2/x86/SDL2-2.0.9/" >> /root/install_32bits_dependencies.sh
+RUN echo "cd /root/sdl2/x86/SDL2-2.24.2/" >> /root/install_32bits_dependencies.sh
 RUN echo "./configure --build=i386-pc-linux-gnu CFLAGS=\"-m32\" CXXFLAGS=\"-m32\" LDFLAGS=\"-m32\" --prefix=\"/usr/\"" >> /root/install_32bits_dependencies.sh
 RUN echo "make" >> /root/install_32bits_dependencies.sh
 RUN echo "make install" >> /root/install_32bits_dependencies.sh
