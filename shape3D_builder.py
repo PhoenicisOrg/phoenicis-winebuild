@@ -51,6 +51,10 @@ builder = WineBuilder(container, [{
     "name": "winemac-restore-spec",
     "operatingSystems": "darwin",
     "architectures": ["amd64"]
+}, {
+    "name": "winespool-native-print-dialog-hack",
+    "operatingSystems": "darwin",
+    "architectures": ["amd64"]
 }])
 
 builder.build("darwin", "amd64", "winecx-21.0.0", "cx", "https://github.com/PhoenicisOrg/winecx")
