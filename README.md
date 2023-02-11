@@ -32,7 +32,9 @@ Ensure that your current user belongs to the docker group. You might need to res
 
 ### OSX targeted builds
 
-You need to extract Mac OS 10.13 SDK from [XCode 9.4.1](https://download.developer.apple.com/Developer_Tools/Xcode_9.4.1/Xcode_9.4.1.xip), compress it into a .tar.xz file and place it to darwin/SDK directory  
+- Download [XCode 9.4.1](https://download.developer.apple.com/Developer_Tools/Xcode_9.4.1/Xcode_9.4.1.xip)
+- [Follow the SDK Packing section](https://github.com/tpoechtrager/osxcross#packaging-the-sdk-on-macos-xcode)
+- Copy `MacOSX10.13.sdk.tar.xz` into darwin/SDK directory  
 
 ## How to use
 
