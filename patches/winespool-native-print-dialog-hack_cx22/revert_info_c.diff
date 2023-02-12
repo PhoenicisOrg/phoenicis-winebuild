@@ -1,0 +1,100 @@
+diff --git a/dlls/winspool.drv/info.c b/dlls/winspool.drv/info.c
+index bfda4da..bd9b73e 100644
+--- a/dlls/winspool.drv/info.c
++++ b/dlls/winspool.drv/info.c
+@@ -195,7 +195,7 @@ static const  printenv_t * validate_envW(LPCWSTR env)
+     {
+         for (i = 0; i < ARRAY_SIZE(all_printenv); i++)
+         {
+-            if (!wcsicmp( env, all_printenv[i]->envname ))
++            if (!lstrcmpiW( env, all_printenv[i]->envname ))
+             {
+                 result = all_printenv[i];
+                 break;
+@@ -365,7 +365,7 @@ static HKEY WINSPOOL_OpenDriverReg(const void *pEnvironment)
+     LPWSTR buffer;
+     const printenv_t *env;
+     unsigned int len;
+-    static const WCHAR driver_fmt[] = L"System\\CurrentControlSet\\control\\Print\\Environments\\%s\\Drivers%s";
++    static const WCHAR driver_fmt[] = {'S', 'y', 's', 't', 'e', 'm', '\\', 'C', 'u', 'r', 'r', 'e', 'n', 't', 'C', 'o', 'n', 't', 'r', 'o', 'l', 'S', 'e', 't', '\\', 'c', 'o', 'n', 't', 'r', 'o', 'l', '\\', 'P', 'r', 'i', 'n', 't', '\\', 'E', 'n', 'v', 'i', 'r', 'o', 'n', 'm', 'e', 'n', 't', 's', '\\', '%', 's', '\\', 'D', 'r', 'i', 'v', 'e', 'r', 's', '%', 's', 0};
+ 
+     TRACE("(%s)\n", debugstr_w(pEnvironment));
+ 
+@@ -395,7 +395,7 @@ static CRITICAL_SECTION config_modules_cs = { &config_modules_cs_debug, -1, 0, 0
+ static int compare_config_modules(const void *key, const struct wine_rb_entry *entry)
+ {
+     config_module_t *module = WINE_RB_ENTRY_VALUE(entry, config_module_t, entry);
+-    return wcsicmp( key, module->name );
++    return lstrcmpiW( key, module->name );
+ }
+ 
+ static struct wine_rb_tree config_modules = { compare_config_modules };
+@@ -636,8 +636,8 @@ static BOOL get_internal_fallback_ppd( const WCHAR *ppd )
+ 
+ static WCHAR *get_ppd_filename( const WCHAR *dir, const WCHAR *file_name )
+ {
+-    static const WCHAR dot_ppd[] = L".ppd";
+-    static const WCHAR invalid_chars[] = L"*?<>|\"/\\";
++    static const WCHAR dot_ppd[] = {'.','p','p','d',0};
++    static const WCHAR invalid_chars[] = {'*', '?', '<', '>', '|', '"', '/', '\\', 0};
+     int dir_len = wcslen( dir ), file_len = wcslen( file_name );
+     int len = (dir_len + file_len + ARRAY_SIZE( dot_ppd )) * sizeof(WCHAR);
+     WCHAR *ppd = HeapAlloc( GetProcessHeap(), 0, len ), *p;
+@@ -661,7 +661,8 @@ static BOOL add_printer_driver( const WCHAR *name, const WCHAR *ppd_dir )
+     DRIVER_INFO_3W di3;
+     unsigned int i;
+     BOOL res = FALSE;
+-    WCHAR raw[] = L"RAW", driver_nt[] = L"wineps.drv";
++    WCHAR raw[] = {'R', 'A', 'W', 0};
++    WCHAR driver_nt[] = {'w', 'i', 'n', 'e', 'p', 's', '.', 'd', 'r', 'v', 0};
+ 
+     if (!ppd) return FALSE;
+     RtlInitUnicodeString( &nt_ppd, NULL );
+@@ -685,7 +686,7 @@ static BOOL add_printer_driver( const WCHAR *name, const WCHAR *ppd_dir )
+         di3.pEnvironment = (WCHAR *)all_printenv[i]->envname;
+         if (all_printenv[i]->driverversion == 0)
+         {
+-            WCHAR driver_9x[] = L"wineps16.drv";
++	    WCHAR driver_9x[] = {'w', 'i', 'n', 'e', 'p', 's', '1', '6', '.', 'd', 'r', 'v', 0};
+             /* We use wineps16.drv as driver for 16 bit */
+             di3.pDriverPath = driver_9x;
+             di3.pConfigFile = driver_9x;
+@@ -712,7 +713,7 @@ end:
+ 
+ static WCHAR *get_ppd_dir( void )
+ {
+-    static const WCHAR wine_ppds[] = L"wine_ppds\\";
++    static const WCHAR wine_ppds[] = {'w', 'i', 'n', 'e', '_', 'p', 'p', 'd', 's', '\\', 0};
+     DWORD len;
+     WCHAR *dir, tmp_path[MAX_PATH];
+     BOOL res;
+@@ -743,7 +744,10 @@ static BOOL init_unix_printers( void )
+     HANDLE added_printer;
+     PRINTER_INFO_2W pi2;
+     NTSTATUS status;
+-    WCHAR raw[] = L"RAW", winprint[] = L"WinPrint", empty[] = L"";
++    WCHAR raw[] = {'R', 'A', 'W', 0};
++    WCHAR winprint[] = {'W', 'i', 'n', 'P', 'r', 'i', 'n', 't', 0};
++    WCHAR empty[] = {0};
++
+     int i;
+ 
+     if (create_printers_reg_key( system_printers_key, &printers_key ))
+@@ -2451,7 +2455,7 @@ BOOL WINAPI AddJobW(HANDLE hPrinter, DWORD Level, LPBYTE pData, DWORD cbBuf, LPD
+     opened_printer_t *printer;
+     job_t *job;
+     BOOL ret = FALSE;
+-    static const WCHAR spool_path[] = L"spool\\PRINTERS\\";
++    static const WCHAR spool_path[] = {'s', 'p', 'o', 'o', 'l', '\\', 'P', 'R', 'I', 'N', 'T', 'E', 'R', 'S', '\\', 0};
+     WCHAR path[MAX_PATH], filename[MAX_PATH];
+     DWORD len;
+     ADDJOB_INFO_1W *addjob;
+@@ -2713,7 +2717,7 @@ HANDLE WINAPI AddPrinterW(LPWSTR pName, DWORD Level, LPBYTE pPrinter)
+     RegCloseKey(hkeyDriver);
+     RegCloseKey(hkeyDrivers);
+ 
+-    if (wcsicmp( pi->pPrintProcessor, L"WinPrint" ))
++    if (lstrcmpiW( pi->pPrintProcessor, L"WinPrint" ))
+     {
+         FIXME("Can't find processor %s\n", debugstr_w(pi->pPrintProcessor));
+ 	SetLastError(ERROR_UNKNOWN_PRINTPROCESSOR);

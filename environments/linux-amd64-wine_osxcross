@@ -98,6 +98,13 @@ RUN VERSION="1.29.3" ARCH="i386" mpg123.sh
 RUN osxcross-macports -universal fakeinstall ncurses
 RUN osxcross-macports -universal fakeinstall pulseaudio
 RUN osxcross-macports -universal fakeinstall py310-markupsafe
+RUN osxcross-macports -universal fakeinstall graphene
+RUN osxcross-macports -universal fakeinstall Xft2
+RUN osxcross-macports -universal fakeinstall mesa
+RUN osxcross-macports -universal fakeinstall libxslt
+RUN osxcross-macports -universal fakeinstall xorg-apps
+RUN osxcross-macports -universal fakeinstall xorg
+RUN osxcross-macports -universal fakeinstall xorg-server
 
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 RUN osxcross-macports install MoltenVK
@@ -112,3 +119,5 @@ COPY darwin/fix_imports.sh /root/
 RUN rm /opt/local/lib/libwine.*
 RUN rm -r /opt/local/lib/wine
 RUN rm -r /opt/local/include/wine/
+
+RUN apt -y install gobjc++-mingw-w64

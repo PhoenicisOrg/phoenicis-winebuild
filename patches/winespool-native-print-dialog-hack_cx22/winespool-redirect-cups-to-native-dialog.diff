@@ -1,0 +1,69 @@
+Index: dlls/winspool.drv/native_print.m
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/dlls/winspool.drv/native_print.m b/dlls/winspool.drv/native_print.m
+new file mode 100644
+--- /dev/null	(revision fd11fd363f3ca6fdde4d47dbcfec2ce33bff9147)
++++ b/dlls/winspool.drv/native_print.m	(revision fd11fd363f3ca6fdde4d47dbcfec2ce33bff9147)
+@@ -0,0 +1,59 @@
++#import <AppKit/AppKit.h>
++#import <Quartz/Quartz.h>
++
++#import <Carbon/Carbon.h>
++
++#if 0
++#pragma makedep unix
++#endif
++int do_print_file(char *psFileName) {
++    __block int ret = 0;
++
++    void (^block)(void) = ^{
++        NSString *nsPsFileName = [NSString stringWithCString:psFileName encoding:NSASCIIStringEncoding];
++        NSPrintInfo *printInfo = [NSPrintInfo sharedPrintInfo];
++
++        CGPSConverterCallbacks callbacks = { 0, 0, 0, 0, 0, 0, 0, 0 };   
++
++        NSData *data = [NSData dataWithContentsOfFile: [nsPsFileName stringByExpandingTildeInPath]]; 
++        CGPSConverterRef converter = CGPSConverterCreate(0, &callbacks, 0);
++        CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)data);
++        CFMutableDataRef result = CFDataCreateMutable(kCFAllocatorDefault, 0);
++        CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData(result);
++        CGPSConverterConvert(converter, provider, consumer, 0);
++        CFRelease(converter);
++        CFRelease(provider);
++        CFRelease(consumer);
++         
++        NSData *pdfData = CFMakeCollectable(result);
++        PDFDocument *pdfDocument = [[PDFDocument alloc] initWithData: pdfData];
++
++        //[printInfo setHorizontalPagination:NSFitPagination];
++        //[printInfo setVerticalPagination:NSFitPagination];
++
++
++        //NSRect picRect = NSRectFromCGRect(CGRectMake(0, 0, pic.size.width, pic.size.height));
++        //NSImageView *imageView = [[NSImageView alloc] initWithFrame:picRect];
++        //[imageView setImage:pic];
++
++        /* NSWindow* window  = [[[NSWindow alloc] initWithContentRect:picRect
++                                                         styleMask:NSWindowStyleMaskClosable
++                                                           backing:NSBackingStoreBuffered
++                                                             defer:NO] autorelease];
++        [window makeKeyAndOrderFront:NSApp];
++        [window.contentView addSubview:imageView];
++        */
++
++        // NSPrintOperation * picPrint = [NSPrintOperation printOperationWithView:imageView printInfo:printInfo];
++        PDFPrintScalingMode scale = kPDFPrintPageScaleNone;
++        NSPrintOperation *picPrint = [pdfDocument printOperationForPrintInfo: printInfo scalingMode: scale autoRotate: YES];
++
++        [picPrint setCanSpawnSeparateThread:YES];
++        [picPrint runOperation];
++    };
++
++    if ([NSThread isMainThread]) block();
++    else dispatch_sync(dispatch_get_main_queue(), block);
++
++    return ret;
++}
