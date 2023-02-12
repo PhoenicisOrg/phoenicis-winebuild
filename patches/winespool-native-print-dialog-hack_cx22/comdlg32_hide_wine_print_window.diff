@@ -1,0 +1,117 @@
+diff --git a/dlls/comdlg32/printdlg.c b/dlls/comdlg32/printdlg.c
+index a466687d..acd1c465 100644
+--- a/dlls/comdlg32/printdlg.c
++++ b/dlls/comdlg32/printdlg.c
+@@ -1268,11 +1268,6 @@ static BOOL PRINTDLG_ChangePrinterA(HWND hDlg, char *name, PRINT_PTRA *PrintStru
+ 
+     }
+ 
+-    /* help button */
+-    if ((lppd->Flags & PD_SHOWHELP)==0) {
+-        /* hide if PD_SHOWHELP not specified */
+-        ShowWindow(GetDlgItem(hDlg, pshHelp), SW_HIDE);
+-    }
+     return TRUE;
+ }
+ 
+@@ -1420,11 +1415,6 @@ static BOOL PRINTDLG_ChangePrinterW(HWND hDlg, WCHAR *name,
+ 
+     }
+ 
+-    /* help button */
+-    if ((lppd->Flags & PD_SHOWHELP)==0) {
+-        /* hide if PD_SHOWHELP not specified */
+-        ShowWindow(GetDlgItem(hDlg, pshHelp), SW_HIDE);
+-    }
+     return TRUE;
+ }
+ 
+@@ -1491,18 +1481,6 @@ static LRESULT PRINTDLG_WMInitDialog(HWND hDlg,
+ 	EndDialog(hDlg, FALSE);
+     }
+ 
+-    /*
+-     * if lppd->Flags PD_SHOWHELP is specified, a HELPMESGSTRING message
+-     * must be registered and the Help button must be shown.
+-     */
+-    if (lppd->Flags & PD_SHOWHELP) {
+-        if((PrintStructures->HelpMessageID =
+-	    RegisterWindowMessageA(HELPMSGSTRINGA)) == 0) {
+-	    COMDLG32_SetCommDlgExtendedError(CDERR_REGISTERMSGFAIL);
+-	    return FALSE;
+-	}
+-    } else
+-        PrintStructures->HelpMessageID = 0;
+ 
+     if(!(lppd->Flags &PD_PRINTSETUP)) {
+         PrintStructures->hwndUpDown =
+@@ -1599,18 +1577,6 @@ static LRESULT PRINTDLG_WMInitDialogW(HWND hDlg,
+ 	EndDialog(hDlg, FALSE);
+     }
+ 
+-    /*
+-     * if lppd->Flags PD_SHOWHELP is specified, a HELPMESGSTRING message
+-     * must be registered and the Help button must be shown.
+-     */
+-    if (lppd->Flags & PD_SHOWHELP) {
+-        if((PrintStructures->HelpMessageID =
+-	    RegisterWindowMessageW(HELPMSGSTRINGW)) == 0) {
+-	    COMDLG32_SetCommDlgExtendedError(CDERR_REGISTERMSGFAIL);
+-	    return FALSE;
+-	}
+-    } else
+-        PrintStructures->HelpMessageID = 0;
+ 
+     if(!(lppd->Flags &PD_PRINTSETUP)) {
+         PrintStructures->hwndUpDown =
+@@ -1699,8 +1665,6 @@ static LRESULT PRINTDLG_WMCommandA(HWND hDlg, WPARAM wParam,
+ 
+      case pshHelp:
+         TRACE(" HELP button was hit\n");
+-        SendMessageA(lppd->hwndOwner, PrintStructures->HelpMessageID,
+-        			(WPARAM) hDlg, (LPARAM) lppd);
+         break;
+ 
+      case chx2:                         /* collate pages checkbox */
+@@ -1859,8 +1823,7 @@ static LRESULT PRINTDLG_WMCommandW(HWND hDlg, WPARAM wParam,
+ 
+      case pshHelp:
+         TRACE(" HELP button was hit\n");
+-        SendMessageW(lppd->hwndOwner, PrintStructures->HelpMessageID,
+-        			(WPARAM) hDlg, (LPARAM) lppd);
++        
+         break;
+ 
+      case chx2:                         /* collate pages checkbox */
+@@ -2030,6 +1993,10 @@ static INT_PTR CALLBACK PrintDlgProcA(HWND hDlg, UINT uMsg, WPARAM wParam,
+     }
+ 
+     switch (uMsg) {
++    case 0x210:
++        printf("Init dialog: %x\n", uMsg);
++        EndDialog(hDlg,TRUE);
++        return TRUE;
+     case WM_COMMAND:
+         return PRINTDLG_WMCommandA(hDlg, wParam, PrintStructures);
+ 
+@@ -2240,20 +2207,6 @@ BOOL WINAPI PrintDlgA(LPPRINTDLGA lppd)
+         return FALSE;
+     }
+ 
+-    if(TRACE_ON(commdlg)) {
+-        char flagstr[1000] = "";
+-	const struct pd_flags *pflag = pd_flags;
+-	for( ; pflag->name; pflag++) {
+-	    if(lppd->Flags & pflag->flag)
+-	        strcat(flagstr, pflag->name);
+-	}
+-	TRACE("(%p): hwndOwner = %p, hDevMode = %p, hDevNames = %p\n"
+-              "pp. %d-%d, min p %d, max p %d, copies %d, hinst %p\n"
+-              "flags %08lx (%s)\n",
+-	      lppd, lppd->hwndOwner, lppd->hDevMode, lppd->hDevNames,
+-	      lppd->nFromPage, lppd->nToPage, lppd->nMinPage, lppd->nMaxPage,
+-	      lppd->nCopies, lppd->hInstance, lppd->Flags, flagstr);
+-    }
+ 
+     if(lppd->lStructSize != sizeof(PRINTDLGA)) {
+         WARN("structure size failure!!!\n");

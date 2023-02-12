@@ -1,0 +1,179 @@
+Index: dlls/winemac.drv/display.c
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
+--- a/dlls/winemac.drv/display.c	(revision bc0853f422ac1d9f01cd87f2a829477e8933e20a)
++++ b/dlls/winemac.drv/display.c	(revision ae1da1b7d4ae0f1ec0c011786e40dabd6a3222af)
+@@ -158,6 +158,18 @@
+ 
+ static BOOL inited_original_display_mode;
+ 
++
++static inline HMONITOR display_id_to_monitor(CGDirectDisplayID display_id)
++{
++    return (HMONITOR)(UINT_PTR)display_id;
++}
++
++static inline CGDirectDisplayID monitor_to_display_id(HMONITOR handle)
++{
++    return (CGDirectDisplayID)(UINT_PTR)handle;
++}
++
++
+ static HANDLE get_display_device_init_mutex(void)
+ {
+     static const WCHAR init_mutexW[] = {'d','i','s','p','l','a','y','_','d','e','v','i','c','e','_','i','n','i','t',0};
+@@ -1051,6 +1063,76 @@
+     return ret;
+ }
+ 
++
++/***********************************************************************
++ *              EnumDisplayMonitors  (MACDRV.@)
++ */
++BOOL macdrv_EnumDisplayMonitors(HDC hdc, LPRECT rect, MONITORENUMPROC proc, LPARAM lparam)
++{
++    struct macdrv_display *displays;
++    int num_displays;
++    int i;
++    BOOL ret = TRUE;
++
++    TRACE("%p, %s, %p, %#lx\n", hdc, wine_dbgstr_rect(rect), proc, (long)lparam);
++
++    if (hdc)
++    {
++        POINT origin;
++        RECT limit;
++
++        if (!GetDCOrgEx(hdc, &origin)) return FALSE;
++        if (GetClipBox(hdc, &limit) == ERROR) return FALSE;
++
++        if (rect && !IntersectRect(&limit, &limit, rect)) return TRUE;
++
++        if (macdrv_get_displays(&displays, &num_displays))
++            return FALSE;
++
++        for (i = 0; i < num_displays; i++)
++        {
++            RECT monrect = rect_from_cgrect(displays[i].frame);
++            OffsetRect(&monrect, -origin.x, -origin.y);
++            if (IntersectRect(&monrect, &monrect, &limit))
++            {
++                HMONITOR monitor = display_id_to_monitor(displays[i].displayID);
++                TRACE("monitor %d handle %p @ %s\n", i, monitor, wine_dbgstr_rect(&monrect));
++                if (!proc(monitor, hdc, &monrect, lparam))
++                {
++                    ret = FALSE;
++                    break;
++                }
++            }
++        }
++    }
++    else
++    {
++        if (macdrv_get_displays(&displays, &num_displays))
++            return FALSE;
++
++        for (i = 0; i < num_displays; i++)
++        {
++            RECT monrect = rect_from_cgrect(displays[i].frame);
++            RECT unused;
++            if (!rect || IntersectRect(&unused, &monrect, rect))
++            {
++                HMONITOR monitor = display_id_to_monitor(displays[i].displayID);
++                TRACE("monitor %d handle %p @ %s\n", i, monitor, wine_dbgstr_rect(&monrect));
++                if (!proc(monitor, 0, &monrect, lparam))
++                {
++                    ret = FALSE;
++                    break;
++                }
++            }
++        }
++    }
++
++    macdrv_free_displays(displays);
++
++    return ret;
++}
++
++
+ /***********************************************************************
+  *              EnumDisplaySettingsEx  (MACDRV.@)
+  *
+@@ -1337,6 +1419,60 @@
+     return ret;
+ }
+ 
++
++/***********************************************************************
++ *              GetMonitorInfo  (MACDRV.@)
++ */
++BOOL macdrv_GetMonitorInfo(HMONITOR monitor, LPMONITORINFO info)
++{
++    static const WCHAR adapter_name[] = { '\\','\\','.','\\','D','I','S','P','L','A','Y','%','d',0 }; /* CrossOver Hack 13441 */
++    struct macdrv_display *displays;
++    int num_displays;
++    CGDirectDisplayID display_id;
++    int i;
++
++    TRACE("%p, %p\n", monitor, info);
++
++    if (macdrv_get_displays(&displays, &num_displays))
++    {
++        ERR("couldn't get display list\n");
++        SetLastError(ERROR_GEN_FAILURE);
++        return FALSE;
++    }
++
++    display_id = monitor_to_display_id(monitor);
++    for (i = 0; i < num_displays; i++)
++    {
++        if (displays[i].displayID == display_id)
++            break;
++    }
++
++    if (i < num_displays)
++    {
++        info->rcMonitor = rect_from_cgrect(displays[i].frame);
++        info->rcWork    = rect_from_cgrect(displays[i].work_frame);
++
++        info->dwFlags = (i == 0) ? MONITORINFOF_PRIMARY : 0;
++
++        if (info->cbSize >= sizeof(MONITORINFOEXW))
++            snprintfW(((MONITORINFOEXW*)info)->szDevice, sizeof(((MONITORINFOEXW*)info)->szDevice) / sizeof(WCHAR),
++                      adapter_name, i + 1); /* CrossOver Hack 13441 */
++
++        TRACE(" -> rcMonitor %s rcWork %s dwFlags %08x szDevice %s\n", wine_dbgstr_rect(&info->rcMonitor),
++              wine_dbgstr_rect(&info->rcWork), info->dwFlags,
++              info->cbSize >= sizeof(MONITORINFOEXW) ? debugstr_w(((MONITORINFOEXW*)info)->szDevice) : "n/a");
++    }
++    else
++    {
++        ERR("invalid monitor handle\n");
++        SetLastError(ERROR_INVALID_HANDLE);
++    }
++
++    macdrv_free_displays(displays);
++    return (i < num_displays);
++}
++
++
+ /***********************************************************************
+  *              SetDeviceGammaRamp (MACDRV.@)
+  */
+diff --git a/dlls/winemac.drv/macdrv.h b/dlls/winemac.drv/macdrv.h
+index 66b98fce..67dd959c 100644
+--- a/dlls/winemac.drv/macdrv.h
++++ b/dlls/winemac.drv/macdrv.h
+@@ -183,7 +183,8 @@ extern BOOL macdrv_SystemParametersInfo(UINT action, UINT int_param, void *ptr_p
+ extern DWORD macdrv_MsgWaitForMultipleObjectsEx(DWORD count, const HANDLE *handles,
+                                                 DWORD timeout, DWORD mask, DWORD flags) DECLSPEC_HIDDEN;
+ extern void macdrv_ThreadDetach(void) DECLSPEC_HIDDEN;
+-
++extern BOOL macdrv_EnumDisplayMonitors(HDC hdc, LPRECT rect, MONITORENUMPROC proc, LPARAM lparam) DECLSPEC_HIDDEN;
++extern BOOL macdrv_GetMonitorInfo(HMONITOR monitor, LPMONITORINFO info) DECLSPEC_HIDDEN;
+
+ /* macdrv private window data */
+ struct macdrv_win_data

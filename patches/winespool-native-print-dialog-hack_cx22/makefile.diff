@@ -1,0 +1,25 @@
+diff --git a/dlls/winspool.drv/Makefile.in b/dlls/winspool.drv/Makefile.in
+index 6039f76b..d4b7c044 100644
+--- a/dlls/winspool.drv/Makefile.in
++++ b/dlls/winspool.drv/Makefile.in
+@@ -4,7 +4,9 @@ UNIXLIB   = winspool.so
+ IMPORTLIB = winspool
+ IMPORTS   = user32 gdi32 advapi32 shell32 kernel32
+ EXTRAINCL = $(CUPS_CFLAGS)
+-EXTRALIBS = $(APPLICATIONSERVICES_LIBS)
++EXTRALIBS = $(APPLICATIONSERVICES_LIBS) -framework AppKit -framework Carbon -framework Quartz
++
++EXTRADLLFLAGS = -mcygwin
+ 
+ C_SRCS = \
+ 	cups.c \
+@@ -12,3 +14,8 @@ C_SRCS = \
+ 	wspool.c
+ 
+ RC_SRCS = winspool.rc
++
++OBJC_SRCS = \
++	native_print.m
++
++native_print_EXTRADEFS = $(HOSTSTACK_CFLAGS)
+\ No newline at end of file
