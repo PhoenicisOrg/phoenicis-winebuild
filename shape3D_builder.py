@@ -32,10 +32,6 @@ builder = WineBuilder(container, [{
     "operatingSystems": "darwin",
     "architectures": ["amd64"]
 }, {
-    "name": "winemenubuilder-disable-cxmenu_cx21",
-    "operatingSystems": "darwin",
-    "architectures": ["amd64"]
-}, {
     "name": "shell32-disable-lnk",
     "operatingSystems": "darwin",
     "architectures": ["amd64"]
@@ -48,14 +44,14 @@ builder = WineBuilder(container, [{
     "operatingSystems": "darwin",
     "architectures": ["amd64"]
 }, {
-    "name": "winemac-restore-spec",
+    "name": "winemac-restore-spec_cx22",
     "operatingSystems": "darwin",
     "architectures": ["amd64"]
 }, {
-    "name": "winespool-native-print-dialog-hack",
+    "name": "winespool-native-print-dialog-hack_cx22",
     "operatingSystems": "darwin",
     "architectures": ["amd64"]
 }])
 
-builder.build("darwin", "amd64", "winecx-21.0.0", "cx", "https://github.com/PhoenicisOrg/winecx")
-builder.archive("shape3D_wine_21_2.tar.gz")
+builder.build("darwin", "amd64", "winecx-22.1.1", "cx", "https://github.com/PhoenicisOrg/winecx")
+builder.archive("shape3D_wine_22_1_1.tar.gz")
