@@ -106,6 +106,14 @@ RUN osxcross-macports -universal fakeinstall xorg-apps
 RUN osxcross-macports -universal fakeinstall xorg
 RUN osxcross-macports -universal fakeinstall xorg-server
 
+RUN osxcross-macports -universal fakeinstall xorg-server
+RUN osxcross-macports -universal fakeinstall xorg-xorgproto
+RUN osxcross-macports -universal fakeinstall xorg-libpthread-stubs
+RUN osxcross-macports -universal fakeinstall xorg-libxcb
+RUN osxcross-macports -universal fakeinstall py311-setuptools
+RUN osxcross-macports -universal fakeinstall py311-markupsafe
+RUN osxcross-macports -universal fakeinstall py311-markdown
+
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 RUN osxcross-macports install MoltenVK
 
