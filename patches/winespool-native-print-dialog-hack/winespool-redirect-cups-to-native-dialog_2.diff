@@ -1,26 +1,32 @@
-Index: dlls/winspool.drv/Makefile.in
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
 diff --git a/dlls/winspool.drv/Makefile.in b/dlls/winspool.drv/Makefile.in
---- a/dlls/winspool.drv/Makefile.in	(revision fd11fd363f3ca6fdde4d47dbcfec2ce33bff9147)
-+++ b/dlls/winspool.drv/Makefile.in	(date 1639234987494)
-@@ -3,10 +3,13 @@
- IMPORTLIB = winspool
+index 6039f76b..f1572975 100644
+--- a/dlls/winspool.drv/Makefile.in
++++ b/dlls/winspool.drv/Makefile.in
+@@ -1,10 +1,12 @@
+ EXTRADEFS = -DWINE_NO_LONG_TYPES -D_SPOOL32_
+ MODULE    = winspool.drv
+-UNIXLIB   = winspool.so
+-IMPORTLIB = winspool
++UNIXLIB   = winspool.drv.so
++IMPORTLIB = winspool
  IMPORTS   = user32 gdi32 advapi32 shell32 kernel32
  EXTRAINCL = $(CUPS_CFLAGS)
 -EXTRALIBS = $(APPLICATIONSERVICES_LIBS)
 +EXTRALIBS = $(APPLICATIONSERVICES_LIBS) -framework AppKit -framework Carbon -framework Quartz
- 
++
++EXTRADLLFLAGS = -mcygwin
+
  C_SRCS = \
- 	info.c \
+ 	cups.c \
+@@ -12,3 +14,8 @@ C_SRCS = \
  	wspool.c
- 
+
  RC_SRCS = winspool.rc
 +
 +OBJC_SRCS = \
 +	native_print.m
++
++native_print_EXTRADEFS = $(HOSTSTACK_CFLAGS)
 \ No newline at end of file
 Index: dlls/winspool.drv/info.c
 IDEA additional info:
