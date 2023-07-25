@@ -1,0 +1,53 @@
+diff --git a/.DS_Store b/.DS_Store
+index affc4cc8..2c41ebbd 100644
+Binary files a/.DS_Store and b/.DS_Store differ
+diff --git a/dlls/localspl/provider.c b/dlls/localspl/provider.c
+index ca8dc5fb..ce199586 100644
+--- a/dlls/localspl/provider.c
++++ b/dlls/localspl/provider.c
+@@ -916,6 +916,8 @@ static const  printenv_t * validate_envW(LPCWSTR env)
+     unsigned int i;
+ 
+     TRACE("(%s)\n", debugstr_w(env));
++    return all_printenv[1]; // x86_64
++
+     if (env && env[0])
+     {
+         for (i = 0; i < ARRAY_SIZE(all_printenv); i++)
+diff --git a/dlls/winspool.drv/Makefile.in b/dlls/winspool.drv/Makefile.in
+index 6039f76b..d4b7c044 100644
+--- a/dlls/winspool.drv/Makefile.in
++++ b/dlls/winspool.drv/Makefile.in
+@@ -4,7 +4,9 @@ UNIXLIB   = winspool.so
+ IMPORTLIB = winspool
+ IMPORTS   = user32 gdi32 advapi32 shell32 kernel32
+ EXTRAINCL = $(CUPS_CFLAGS)
+-EXTRALIBS = $(APPLICATIONSERVICES_LIBS)
++EXTRALIBS = $(APPLICATIONSERVICES_LIBS) -framework AppKit -framework Carbon -framework Quartz
++
++EXTRADLLFLAGS = -mcygwin
+ 
+ C_SRCS = \
+ 	cups.c \
+@@ -12,3 +14,8 @@ C_SRCS = \
+ 	wspool.c
+ 
+ RC_SRCS = winspool.rc
++
++OBJC_SRCS = \
++	native_print.m
++
++native_print_EXTRADEFS = $(HOSTSTACK_CFLAGS)
+\ No newline at end of file
+diff --git a/dlls/winspool.drv/info.c b/dlls/winspool.drv/info.c
+index 79503c10..fa1571f4 100644
+--- a/dlls/winspool.drv/info.c
++++ b/dlls/winspool.drv/info.c
+@@ -191,6 +191,7 @@ static const  printenv_t * validate_envW(LPCWSTR env)
+     unsigned int i;
+ 
+     TRACE("testing %s\n", debugstr_w(env));
++    return all_printenv[1]; // x86_64
+     if (env && env[0])
+     {
+         for (i = 0; i < ARRAY_SIZE(all_printenv); i++)

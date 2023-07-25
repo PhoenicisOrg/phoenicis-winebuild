@@ -93,6 +93,15 @@ RUN VERSION="22.01" ARCH="i386" faudio.sh
 RUN VERSION="1.29.3" ARCH="x86_64" mpg123.sh
 RUN VERSION="1.29.3" ARCH="i386" mpg123.sh
 
+RUN chmod +x /build-scripts/libpng.sh
+RUN chmod +x /build-scripts/freetype.sh
+
+RUN VERSION="1.6.40" ARCH="x86_64" libpng.sh
+RUN VERSION="1.6.40" ARCH="i386" libpng.sh
+
+RUN VERSION="2.13.1" ARCH="x86_64" freetype.sh
+RUN VERSION="2.13.1" ARCH="x86_64" freetype.sh
+
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
 # This will prevent wine-devel from installing it
 RUN osxcross-macports -universal fakeinstall ncurses
@@ -113,6 +122,9 @@ RUN osxcross-macports -universal fakeinstall xorg-libxcb
 RUN osxcross-macports -universal fakeinstall py311-setuptools
 RUN osxcross-macports -universal fakeinstall py311-markupsafe
 RUN osxcross-macports -universal fakeinstall py311-markdown
+
+RUN osxcross-macports -universal fakeinstall libpng
+RUN osxcross-macports -universal fakeinstall icu
 
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 RUN osxcross-macports install MoltenVK
