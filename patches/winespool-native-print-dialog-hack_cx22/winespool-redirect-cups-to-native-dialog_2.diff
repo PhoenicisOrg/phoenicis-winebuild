@@ -39,3 +39,4 @@ index 766f5c9b..52f10224 100644
 +	return schedule_lpr( printer_name, filename );
      }
  }
+
