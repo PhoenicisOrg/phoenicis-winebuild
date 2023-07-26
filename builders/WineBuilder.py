@@ -76,7 +76,7 @@ class WineBuilder:
             self.container.run(["sh", "-c", "git apply --3way " + gitPatchDirectory + "/" + patchGit["directory"] +"/*.diff"], workdir="/root/wine-git")
         else:
             self.container.put_directory("patches/" + patch["name"], "/root/patches/" + patch["name"])
-            self.container.run(["sh", "-c", "git apply --3way /root/patches/" + patch["name"] + "/*.diff"], workdir="/root/wine-git")
+            self.container.run(["sh", "-c", "git apply --verbose --3way /root/patches/" + patch["name"] + "/*.diff"], workdir="/root/wine-git")
 
     def checksum(self):
         if self._local_archive is not None:

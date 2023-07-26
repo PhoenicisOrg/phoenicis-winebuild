@@ -23,7 +23,7 @@ new file mode 100644
 +        NSString *nsPsFileName = [NSString stringWithCString:psFileName encoding:NSASCIIStringEncoding];
 +        NSPrintInfo *printInfo = [NSPrintInfo sharedPrintInfo];
 +
-+        CGPSConverterCallbacks callbacks = { 0, 0, 0, 0, 0, 0, 0, 0 };   
++        CGPSConverterCallbacks callbacks = { 0, 0, 0, 0, 0, 0, 0, 0 };
 +
 +        NSData *data = [NSData dataWithContentsOfFile: [nsPsFileName stringByExpandingTildeInPath]]; 
 +        CGPSConverterRef converter = CGPSConverterCreate(0, &callbacks, 0);
@@ -34,7 +34,7 @@ new file mode 100644
 +        CFRelease(converter);
 +        CFRelease(provider);
 +        CFRelease(consumer);
-+         
++
 +        NSData *pdfData = CFMakeCollectable(result);
 +        PDFDocument *pdfDocument = [[PDFDocument alloc] initWithData: pdfData];
 +

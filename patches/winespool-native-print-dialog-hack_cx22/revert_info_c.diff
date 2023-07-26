@@ -1,5 +1,5 @@
 diff --git a/dlls/winspool.drv/info.c b/dlls/winspool.drv/info.c
-index bfda4da..bd9b73e 100644
+index 79503c10..b2160c22 100644
 --- a/dlls/winspool.drv/info.c
 +++ b/dlls/winspool.drv/info.c
 @@ -195,7 +195,7 @@ static const  printenv_t * validate_envW(LPCWSTR env)
