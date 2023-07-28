@@ -9,7 +9,7 @@ index 6039f76b..d4b7c044 100644
 -EXTRALIBS = $(APPLICATIONSERVICES_LIBS)
 +EXTRALIBS = $(APPLICATIONSERVICES_LIBS) -framework AppKit -framework Carbon -framework Quartz
 +
-+EXTRADLLFLAGS = -mcygwin
++# EXTRADLLFLAGS = -mcygwin
  
  C_SRCS = \
  	cups.c \
