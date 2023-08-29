@@ -1,0 +1,13 @@
+diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
+index da0d1515..bad42998 100644
+--- a/dlls/winemac.drv/display.c
++++ b/dlls/winemac.drv/display.c
+@@ -1491,7 +1491,7 @@ void macdrv_UpdateDisplayDevices( const struct gdi_device_manager *device_manage
+     INT gpu_count, adapter_count, monitor_count;
+     DWORD len;
+ 
+-    if (!force && !force_display_devices_refresh) return;
++    //if (!force && !force_display_devices_refresh) return;
+     force_display_devices_refresh = FALSE;
+ 
+     /* Initialize GPUs */
