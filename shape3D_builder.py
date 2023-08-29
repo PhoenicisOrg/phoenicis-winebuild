@@ -44,7 +44,7 @@ builder = WineBuilder(container, [{
     "operatingSystems": "darwin",
     "architectures": ["amd64"]
 }, {
-    "name": "winemac-restore-spec_cx22",
+    "name": "winemac-force-update-display-devices",
     "operatingSystems": "darwin",
     "architectures": ["amd64"]
 }, {

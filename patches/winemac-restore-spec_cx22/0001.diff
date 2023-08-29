@@ -1,12 +1,8 @@
-Index: dlls/winemac.drv/display.c
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
 diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
---- a/dlls/winemac.drv/display.c	(revision bc0853f422ac1d9f01cd87f2a829477e8933e20a)
-+++ b/dlls/winemac.drv/display.c	(revision ae1da1b7d4ae0f1ec0c011786e40dabd6a3222af)
-@@ -158,6 +158,18 @@
+index da0d1515..1cc1dcf2 100644
+--- a/dlls/winemac.drv/display.c
++++ b/dlls/winemac.drv/display.c
+@@ -109,6 +109,18 @@ static CRITICAL_SECTION modes_section = { &critsect_debug, -1, 0, 0, 0, 0 };
  
  static BOOL inited_original_display_mode;
  
@@ -25,7 +21,7 @@ diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
  static HANDLE get_display_device_init_mutex(void)
  {
      static const WCHAR init_mutexW[] = {'d','i','s','p','l','a','y','_','d','e','v','i','c','e','_','i','n','i','t',0};
-@@ -1051,6 +1063,76 @@
+@@ -1066,6 +1078,76 @@ better:
      return ret;
  }
  
@@ -33,7 +29,7 @@ diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
 +/***********************************************************************
 + *              EnumDisplayMonitors  (MACDRV.@)
 + */
-+BOOL macdrv_EnumDisplayMonitors(HDC hdc, LPRECT rect, MONITORENUMPROC proc, LPARAM lparam)
++BOOL CDECL macdrv_EnumDisplayMonitors(HDC hdc, LPRECT rect, MONITORENUMPROC proc, LPARAM lparam)
 +{
 +    struct macdrv_display *displays;
 +    int num_displays;
@@ -102,7 +98,7 @@ diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
  /***********************************************************************
   *              EnumDisplaySettingsEx  (MACDRV.@)
   *
-@@ -1337,6 +1419,60 @@
+@@ -1352,6 +1434,60 @@ done:
      return ret;
  }
  
@@ -110,7 +106,7 @@ diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
 +/***********************************************************************
 + *              GetMonitorInfo  (MACDRV.@)
 + */
-+BOOL macdrv_GetMonitorInfo(HMONITOR monitor, LPMONITORINFO info)
++BOOL CDECL macdrv_GetMonitorInfo(HMONITOR monitor, LPMONITORINFO info)
 +{
 +    static const WCHAR adapter_name[] = { '\\','\\','.','\\','D','I','S','P','L','A','Y','%','d',0 }; /* CrossOver Hack 13441 */
 +    struct macdrv_display *displays;
@@ -164,16 +160,46 @@ diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
   *              SetDeviceGammaRamp (MACDRV.@)
   */
 diff --git a/dlls/winemac.drv/macdrv.h b/dlls/winemac.drv/macdrv.h
-index 66b98fce..67dd959c 100644
+index 66b98fce..8f582952 100644
 --- a/dlls/winemac.drv/macdrv.h
 +++ b/dlls/winemac.drv/macdrv.h
+@@ -135,9 +135,9 @@ static inline RECT rect_from_cgrect(CGRect cgrect)
+ extern void macdrv_Beep(void) DECLSPEC_HIDDEN;
+ extern LONG macdrv_ChangeDisplaySettingsEx(LPCWSTR devname, LPDEVMODEW devmode,
+                                            HWND hwnd, DWORD flags, LPVOID lpvoid) DECLSPEC_HIDDEN;
+-extern BOOL macdrv_EnumDisplaySettingsEx(LPCWSTR devname, DWORD mode,
++extern BOOL macdrv_EnumDisplaySettingsEx(LPCWSTR devname, DWORD mode,
+                                          LPDEVMODEW devmode, DWORD flags) DECLSPEC_HIDDEN;
+-extern void macdrv_UpdateDisplayDevices( const struct gdi_device_manager *device_manager,
++extern void macdrv_UpdateDisplayDevices( const struct gdi_device_manager *device_manager,
+                                          BOOL force, void *param ) DECLSPEC_HIDDEN;
+ extern BOOL macdrv_GetDeviceGammaRamp(PHYSDEV dev, LPVOID ramp) DECLSPEC_HIDDEN;
+ extern BOOL macdrv_SetDeviceGammaRamp(PHYSDEV dev, LPVOID ramp) DECLSPEC_HIDDEN;
 @@ -183,7 +183,8 @@ extern BOOL macdrv_SystemParametersInfo(UINT action, UINT int_param, void *ptr_p
  extern DWORD macdrv_MsgWaitForMultipleObjectsEx(DWORD count, const HANDLE *handles,
                                                  DWORD timeout, DWORD mask, DWORD flags) DECLSPEC_HIDDEN;
  extern void macdrv_ThreadDetach(void) DECLSPEC_HIDDEN;
 -
-+extern BOOL macdrv_EnumDisplayMonitors(HDC hdc, LPRECT rect, MONITORENUMPROC proc, LPARAM lparam) DECLSPEC_HIDDEN;
-+extern BOOL macdrv_GetMonitorInfo(HMONITOR monitor, LPMONITORINFO info) DECLSPEC_HIDDEN;
-
++// extern BOOL macdrv_EnumDisplayMonitors(HDC hdc, LPRECT rect, MONITORENUMPROC proc, LPARAM lparam) DECLSPEC_HIDDEN;
++// extern BOOL macdrv_GetMonitorInfo(HMONITOR monitor, LPMONITORINFO info) DECLSPEC_HIDDEN;
+ 
  /* macdrv private window data */
  struct macdrv_win_data
+diff --git a/dlls/winemac.drv/winemac.drv.spec b/dlls/winemac.drv/winemac.drv.spec
+index b060d1cc..d1c67232 100644
+--- a/dlls/winemac.drv/winemac.drv.spec
++++ b/dlls/winemac.drv/winemac.drv.spec
+@@ -1,6 +1,7 @@
+ # System tray
+ @ cdecl wine_notify_icon(long ptr)
+-
++@ cdecl EnumDisplayMonitors(long ptr ptr long) macdrv_EnumDisplayMonitors 
++@ cdecl GetMonitorInfo(long ptr) macdrv_GetMonitorInfo 
+ # IME
+ @ stdcall ImeConfigure(long long long ptr)
+ @ stdcall ImeConversionList(long wstr ptr long long)
+@@ -18,3 +19,4 @@
+ @ stdcall ImeToAsciiEx(long long ptr ptr long long)
+ @ stdcall ImeUnregisterWord(wstr long wstr)
+ @ stdcall NotifyIME(long long long long)
++

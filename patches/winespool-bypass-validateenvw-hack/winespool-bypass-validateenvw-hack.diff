@@ -11,15 +11,3 @@ index ca8dc5fb..ce199586 100644
      if (env && env[0])
      {
          for (i = 0; i < ARRAY_SIZE(all_printenv); i++)
-diff --git a/dlls/winspool.drv/info.c b/dlls/winspool.drv/info.c
-index 79503c10..fa1571f4 100644
---- a/dlls/winspool.drv/info.c
-+++ b/dlls/winspool.drv/info.c
-@@ -191,6 +191,7 @@ static const  printenv_t * validate_envW(LPCWSTR env)
-     unsigned int i;
- 
-     TRACE("testing %s\n", debugstr_w(env));
-+    return all_printenv[1]; // x86_64
-     if (env && env[0])
-     {
-         for (i = 0; i < ARRAY_SIZE(all_printenv); i++)
