@@ -1,5 +1,5 @@
 diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
-index da0d1515..5580c492 100644
+index da0d1515..c37b8d03 100644
 --- a/dlls/winemac.drv/display.c
 +++ b/dlls/winemac.drv/display.c
 @@ -1482,6 +1482,7 @@ void macdrv_displays_changed(const macdrv_event *event)
@@ -27,12 +27,3 @@ index da0d1515..5580c492 100644
      force_display_devices_refresh = FALSE;
  
      /* Initialize GPUs */
-@@ -1572,3 +1581,7 @@ void macdrv_init_display_devices(BOOL force)
-     /* trigger refresh in win32u */
-     NtUserGetDisplayConfigBufferSizes( QDC_ONLY_ACTIVE_PATHS, &num_path, &num_mode );
- }
-+
-+void reforce_display_devices() {
-+    force_display_devices_refresh = TRUE;
-+}
-\ No newline at end of file
