@@ -1,13 +1,38 @@
 diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
-index da0d1515..bad42998 100644
+index da0d1515..5580c492 100644
 --- a/dlls/winemac.drv/display.c
 +++ b/dlls/winemac.drv/display.c
-@@ -1491,7 +1491,7 @@ void macdrv_UpdateDisplayDevices( const struct gdi_device_manager *device_manage
+@@ -1482,6 +1482,7 @@ void macdrv_displays_changed(const macdrv_event *event)
+ 
+ static BOOL force_display_devices_refresh;
+ 
++long forced_updates = 0;
+ void macdrv_UpdateDisplayDevices( const struct gdi_device_manager *device_manager,
+                                   BOOL force, void *param )
+ {
+@@ -1491,7 +1492,15 @@ void macdrv_UpdateDisplayDevices( const struct gdi_device_manager *device_manage
      INT gpu_count, adapter_count, monitor_count;
      DWORD len;
  
 -    if (!force && !force_display_devices_refresh) return;
-+    //if (!force && !force_display_devices_refresh) return;
++
++    if (!force && !force_display_devices_refresh) {
++        if (forced_updates > 10) {
++            return;
++        } else {
++            forced_updates++;
++        }
++    }
++
      force_display_devices_refresh = FALSE;
  
      /* Initialize GPUs */
+@@ -1572,3 +1581,7 @@ void macdrv_init_display_devices(BOOL force)
+     /* trigger refresh in win32u */
+     NtUserGetDisplayConfigBufferSizes( QDC_ONLY_ACTIVE_PATHS, &num_path, &num_mode );
+ }
++
++void reforce_display_devices() {
++    force_display_devices_refresh = TRUE;
++}
+\ No newline at end of file
