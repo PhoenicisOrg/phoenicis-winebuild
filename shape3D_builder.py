@@ -51,6 +51,10 @@ builder = WineBuilder(container, [{
     "name": "winespool-native-print-dialog-hack_cx22",
     "operatingSystems": "darwin",
     "architectures": ["amd64"]
+}, {
+    "name": "ntdll-allow_trailing_spaces",
+    "operatingSystems": "darwin",
+    "architectures": ["amd64"]
 }])
 
 builder.build("darwin", "amd64", "winecx-22.1.1", "cx", "https://github.com/PhoenicisOrg/winecx")
