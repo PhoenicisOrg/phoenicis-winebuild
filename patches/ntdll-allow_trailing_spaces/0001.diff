@@ -1,0 +1,28 @@
+Subject: [PATCH] allow space in names
+---
+Index: dlls/ntdll/path.c
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/dlls/ntdll/path.c b/dlls/ntdll/path.c
+--- a/dlls/ntdll/path.c	(revision 984f608c2885c80284ca8f35d6ad72d5193b3658)
++++ b/dlls/ntdll/path.c	(date 1695063938199)
+@@ -102,7 +102,7 @@
+     end--;
+ 
+     /* remove trailing spaces */
+-    while (end >= start && *end == ' ') end--;
++    // while (end >= start && *end == ' ') end--;
+ 
+     /* now we have a potential device name between start and end, check it */
+     switch(end - start + 1)
+@@ -476,7 +476,7 @@
+     }
+ 
+     /* remove trailing spaces and dots (yes, Windows really does that, don't ask) */
+-    while (p > path + mark && (p[-1] == ' ' || p[-1] == '.')) p--;
++    while (p > path + mark && (p[-1] == '.')) p--;
+     *p = 0;
+ }
+ 
