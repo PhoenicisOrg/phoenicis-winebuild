@@ -1,8 +1,12 @@
 FROM amd64/debian:stretch
 
-RUN echo 'deb-src http://deb.debian.org/debian stretch main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://security.debian.org/debian-security stretch/updates main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://deb.debian.org/debian stretch-updates main' >> /etc/apt/sources.list
+RUN echo 'deb http://archive.debian.org/debian stretch main' > /etc/apt/sources.list
+RUN echo 'deb http://archive.debian.org/debian-security stretch/updates main' >> /etc/apt/sources.list
+RUN echo 'deb http://archive.debian.org/debian stretch-proposed-updates main' >> /etc/apt/sources.list
+
+RUN echo 'deb-src http://archive.debian.org/debian stretch main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://archive.debian.org/debian-security stretch/updates main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://archive.debian.org/debian stretch-proposed-updates main' >> /etc/apt/sources.list
 
 RUN dpkg --add-architecture i386
 
