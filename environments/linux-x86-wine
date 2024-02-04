@@ -1,8 +1,8 @@
-FROM i386/debian:stretch
+FROM i386/debian:12
 
-RUN echo 'deb-src http://deb.debian.org/debian stretch main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://security.debian.org/debian-security stretch/updates main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://deb.debian.org/debian stretch-updates main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian bookworm main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://security.debian.org/debian-security bookworm-security main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian bookworm-updates main' >> /etc/apt/sources.list
 
 RUN apt-get update
 RUN apt-get -y build-dep wine
@@ -21,17 +21,18 @@ RUN apt-get -y install libvulkan-dev
 RUN apt-get -y install wget
 RUN mkdir -p /root/vkd3d
 WORKDIR /root/vkd3d
-RUN wget http://cdn-fastly.deb.debian.org/debian/pool/main/v/vulkan/libvulkan1_1.1.70+dfsg1-1~bpo9+1_i386.deb
+# RUN wget http://cdn-fastly.deb.debian.org/debian/pool/main/v/vulkan/libvulkan1_1.1.70+dfsg1-1~bpo9+1_i386.deb
+RUN wget https://ftp.debian.org/debian/pool/main/v/vulkan-loader/libvulkan1_1.3.275.0-1_i386.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-3_i386.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-3_i386.deb
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-3_i386.deb
-RUN wget http://cdn-fastly.deb.debian.org/debian/pool/main/v/vulkan/libvulkan-dev_1.1.70+dfsg1-1~bpo9+1_i386.deb
+RUN wget https://ftp.debian.org/debian/pool/main/v/vulkan-loader/libvulkan-dev_1.3.275.0-1_i386.deb
 RUN dpkg -i *.deb
 
 #OSSv4
 RUN mkdir -p /root/ossv4
 WORKDIR /root/ossv4
-RUN wget https://deb.debian.org/debian/pool/main/o/oss4/oss4-dev_4.2-build2020-1_all.deb
+RUN wget https://ftp.debian.org/debian/pool/main/o/oss4/oss4-dev_4.2-build2020-2_all.deb
 RUN dpkg -i *.deb
 
 #SDL (for FAudio)
