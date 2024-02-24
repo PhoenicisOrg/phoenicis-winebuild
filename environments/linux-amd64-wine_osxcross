@@ -1,12 +1,12 @@
-FROM amd64/debian:buster
+FROM amd64/debian:12
 
 ########################################
 # Prepare a building environment
 ########################################
 
-RUN echo 'deb-src http://deb.debian.org/debian buster main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://security.debian.org/debian-security buster/updates main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://deb.debian.org/debian buster-updates main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian bookworm main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://security.debian.org/debian-security bookworm-security main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian bookworm-updates main' >> /etc/apt/sources.list
 
 RUN apt-get update
 RUN apt-get -y build-dep wine
