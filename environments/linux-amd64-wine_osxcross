@@ -128,6 +128,7 @@ RUN osxcross-macports -universal fakeinstall icu
 
 RUN osxcross-macports -universal fakeinstall freetype
 RUN osxcross-macports -universal fakeinstall gettext-runtime
+RUN osxcross-macports -universal fakeinstall libtextstyle
 
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 RUN osxcross-macports install MoltenVK
