@@ -11,7 +11,7 @@ RUN echo 'deb-src http://deb.debian.org/debian bookworm-updates main' >> /etc/ap
 RUN apt-get update
 RUN apt-get -y build-dep wine
 RUN apt-get -y install git llvm clang wget
-RUN apt-get -y install libjs-mathjax python-yaml lib32gcc1 lib32stdc++6 libc6-i386 libctypes-ocaml-dev ocaml-nox libjs-jquery python-six python-pygments libjs-underscore cmake
+RUN apt-get -y install libjs-mathjax python-yaml lib32gcc1 lib32stdc++6 libc6-i386 libctypes-ocaml-dev ocaml-nox libjs-jquery python3-six python3-pygments libjs-underscore cmake
 RUN apt-get -y install gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
 RUN apt-get -y install texinfo
 
