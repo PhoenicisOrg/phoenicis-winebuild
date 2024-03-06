@@ -1,5 +1,10 @@
 FROM i386/debian:12
 
+RUN for key in 0E98404D386FA1D9 6ED0E7B82643E131 F8D2585B8783D481 54404762BBB6E853 BDE6D2B9216EC7A8; do \
+        gpg --recv-keys "$key" \
+        && gpg --export "$key" | apt-key add - ; \
+    done
+
 RUN echo 'deb-src http://deb.debian.org/debian bookworm main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://security.debian.org/debian-security bookworm-security main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://deb.debian.org/debian bookworm-updates main' >> /etc/apt/sources.list
