@@ -126,6 +126,8 @@ RUN osxcross-macports -universal fakeinstall py311-markdown
 RUN osxcross-macports -universal fakeinstall libpng
 RUN osxcross-macports -universal fakeinstall icu
 
+RUN osxcross-macports -universal fakeinstall freetype
+
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 RUN osxcross-macports install MoltenVK
 
