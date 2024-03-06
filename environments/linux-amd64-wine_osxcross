@@ -140,7 +140,7 @@ RUN osxcross-macports -universal fakeinstall glib2
 RUN osxcross-macports -universal fakeinstall libpixman
 RUN osxcross-macports -universal fakeinstall fontconfig
 RUN osxcross-macports -universal fakeinstall expat
-
+RUN osxcross-macports -universal fakeinstall libffi
 
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 RUN osxcross-macports install MoltenVK
