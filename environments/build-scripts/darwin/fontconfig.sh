@@ -4,6 +4,10 @@
 
 prepare
 
+export FREETYPE_LIBS="-L/opt/local/lib"
+export FREETYPE_CFLAGS="-I/opt/local/include/freetype2"
+export CC="$ARCH-apple-darwin17-gcc -lfreetype"
+
 wget https://www.freedesktop.org/software/fontconfig/release/fontconfig-$VERSION.tar.gz || exit 1
 tar -xf "fontconfig-$VERSION.tar.gz" || exit 1
 cd "fontconfig-$VERSION" || exit 1
