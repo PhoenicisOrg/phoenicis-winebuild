@@ -142,6 +142,7 @@ RUN osxcross-macports -universal fakeinstall fontconfig
 RUN osxcross-macports -universal fakeinstall expat
 RUN osxcross-macports -universal fakeinstall libffi
 RUN osxcross-macports -universal fakeinstall py311
+RUN osxcross-macports -universal fakeinstall pango
 
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 RUN osxcross-macports install MoltenVK
