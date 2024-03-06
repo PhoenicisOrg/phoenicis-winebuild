@@ -104,8 +104,8 @@ RUN VERSION="2.13.1" ARCH="i386" freetype.sh
 
 RUN chmod +x /build-scripts/fontconfig.sh
 
-RUN VERSION="2.15.0" ARCH="x86_64" fontconfig.sh
-RUN VERSION="2.15.0" ARCH="i386" fontconfig.sh
+# RUN VERSION="2.15.0" ARCH="x86_64" fontconfig.sh
+# RUN VERSION="2.15.0" ARCH="i386" fontconfig.sh
 
 
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
