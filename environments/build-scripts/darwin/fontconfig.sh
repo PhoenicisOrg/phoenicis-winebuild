@@ -4,9 +4,9 @@
 
 prepare
 
-wget https://download.savannah.gnu.org/releases/freetype/freetype-$VERSION.tar.xz || exit 1
-tar -xf "freetype-$VERSION.tar.xz" || exit 1
-cd "freetype-$VERSION" || exit 1
+wget https://www.freedesktop.org/software/fontconfig/release/fontconfig-$VERSION.tar.gz || exit 1
+tar -xf "fontconfig-$VERSION.tar.gz" || exit 1
+cd "fontconfig-$VERSION" || exit 1
 
 ./configure --host $ARCH-apple-darwin17 $configure_options --prefix="/opt/local" || exit 2
 make -j 4 || exit 2
