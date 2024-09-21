@@ -15,7 +15,11 @@ Phoenicis Winebuild can:
 
 -   Python 3
 -   Docker
+<<<<<<< HEAD
 -   docker-py
+=======
+-   ~~docker-py~~
+>>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 
 ```
     pip install docker

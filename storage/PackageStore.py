@@ -33,7 +33,11 @@ class PackageStore:
 
     def fetch_missing_versions(self, distribution):
         # FIXME: The right distribution data should be passed instead of concatenating / parsing
+<<<<<<< HEAD
         all_wine_versions = WineVersionFetcher(distribution.split("-")[0]).fetch_versions(majors=[2, 3, 4, 5, 6, 7, 8]) # FIXME: Put inside a configuration file
+=======
+        all_wine_versions = WineVersionFetcher(distribution.split("-")[0]).fetch_versions(majors=[2, 3, 4, 5, 6, 7, 8, 9]) # FIXME: Put inside a configuration file
+>>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 
         built_versions = self.fetch_versions(distribution)
         missing_versions = []

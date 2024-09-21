@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 FROM amd64/debian:buster
 
 RUN echo 'deb-src http://deb.debian.org/debian buster main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://security.debian.org/debian-security buster/updates main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://deb.debian.org/debian buster-updates main' >> /etc/apt/sources.list
+=======
+FROM amd64/debian:12
+
+RUN echo 'deb-src http://deb.debian.org/debian bookworm main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://security.debian.org/debian-security bookworm-security main' >> /etc/apt/sources.list
+RUN echo 'deb-src http://deb.debian.org/debian bookworm-updates main' >> /etc/apt/sources.list
+>>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 
 RUN dpkg --add-architecture i386
 
@@ -23,11 +31,20 @@ RUN apt-get -y install mingw-w64
 # VKD3D
 RUN mkdir -p /root/vkd3d-64
 WORKDIR /root/vkd3d-64
+<<<<<<< HEAD
 RUN wget http://ftp.us.debian.org/debian/pool/main/v/vulkan-loader/libvulkan1_1.1.97-2_amd64.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-3_amd64.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-3_amd64.deb
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-3_amd64.deb
 RUN wget http://ftp.us.debian.org/debian/pool/main/v/vulkan-loader/libvulkan-dev_1.1.97-2_amd64.deb
+=======
+RUN wget https://ftp.debian.org/debian/pool/main/v/vulkan-loader/libvulkan1_1.3.275.0-1_amd64.deb
+RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-3_amd64.deb
+RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-3_amd64.deb
+RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-3_amd64.deb
+RUN wget https://ftp.debian.org/debian/pool/main/v/vulkan-loader/libvulkan-dev_1.3.275.0-1_amd64.deb
+
+>>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 RUN dpkg -i *.deb
 
 #OSSv4
@@ -76,12 +93,20 @@ RUN echo apt-get -y install libvulkan-dev:i386 >> /root/install_32bits_dependenc
 RUN mkdir -p /root/vkd3d-32
 WORKDIR /root/vkd3d-32
 
+<<<<<<< HEAD
 RUN wget http://ftp.debian.org/debian/pool/main/v/vulkan-loader/libvulkan1_1.1.97-2_i386.deb
 
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-3_i386.deb
 RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-3_i386.deb
 RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-3_i386.deb
 RUN wget http://ftp.us.debian.org/debian/pool/main/v/vulkan-loader/libvulkan-dev_1.1.97-2_i386.deb
+=======
+RUN wget https://ftp.debian.org/debian/pool/main/v/vulkan-loader/libvulkan1_1.3.275.0-1_i386.deb
+RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d-dev_1.1-3_i386.deb
+RUN wget http://deb.debian.org/debian/pool/main/v/vkd3d/libvkd3d1_1.1-3_i386.deb
+RUN wget http://ftp.de.debian.org/debian/pool/main/v/vkd3d/libvkd3d-utils1_1.1-3_i386.deb
+RUN wget https://ftp.debian.org/debian/pool/main/v/vulkan-loader/libvulkan-dev_1.3.275.0-1_i386.deb
+>>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 RUN echo dpkg -i /root/vkd3d-32/*.deb >> /root/install_32bits_dependencies.sh
 
 RUN echo apt-get -y install libsane-dev:i386 libpcap0.8-dev:i386 libicu-dev:i386 g++-multilib  libglib2.0-dev:i386 libpulse-dev:i386 libfontconfig1-dev:i386 libopenal-dev:i386 libldap-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 fontconfig:i386 libncurses-dev:i386 liblcms2-dev:i386 libxcomposite-dev:i386 libosmesa-dev:i386 libmpg123-dev:i386 libxslt-dev:i386 libxml2-dev:i386 libgnutls28-dev:i386 libfreetype6-dev:i386 opencl-dev:i386  libv4l-dev:i386 libgphoto2-dev:i386 libtiff-dev:i386 libudev-dev:i386 libcapi20-dev:i386 >> /root/install_32bits_dependencies.sh
