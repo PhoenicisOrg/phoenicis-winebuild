@@ -1,31 +1,17 @@
-<<<<<<< HEAD
-FROM amd64/debian:buster
-=======
 FROM amd64/debian:12
->>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 
 ########################################
 # Prepare a building environment
 ########################################
 
-<<<<<<< HEAD
-RUN echo 'deb-src http://deb.debian.org/debian buster main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://security.debian.org/debian-security buster/updates main' >> /etc/apt/sources.list
-RUN echo 'deb-src http://deb.debian.org/debian buster-updates main' >> /etc/apt/sources.list
-=======
 RUN echo 'deb-src http://deb.debian.org/debian bookworm main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://security.debian.org/debian-security bookworm-security main' >> /etc/apt/sources.list
 RUN echo 'deb-src http://deb.debian.org/debian bookworm-updates main' >> /etc/apt/sources.list
->>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 
 RUN apt-get update
 RUN apt-get -y build-dep wine
 RUN apt-get -y install git llvm clang wget
-<<<<<<< HEAD
-RUN apt-get -y install libjs-mathjax python-yaml lib32gcc1 lib32stdc++6 libc6-i386 libctypes-ocaml-dev ocaml-nox libjs-jquery python-six python-pygments libjs-underscore cmake
-=======
 RUN apt-get -y install libjs-mathjax python3-yaml lib32gcc-s1 lib32stdc++6 libc6-i386 libctypes-ocaml-dev ocaml-nox libjs-jquery python3-six python3-pygments libjs-underscore cmake
->>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 RUN apt-get -y install gcc-mingw-w64-i686 gcc-mingw-w64-x86-64
 RUN apt-get -y install texinfo
 
@@ -114,9 +100,6 @@ RUN VERSION="1.6.40" ARCH="x86_64" libpng.sh
 RUN VERSION="1.6.40" ARCH="i386" libpng.sh
 
 RUN VERSION="2.13.1" ARCH="x86_64" freetype.sh
-<<<<<<< HEAD
-RUN VERSION="2.13.1" ARCH="x86_64" freetype.sh
-=======
 RUN VERSION="2.13.1" ARCH="i386" freetype.sh
 
 RUN chmod +x /build-scripts/fontconfig.sh
@@ -126,7 +109,6 @@ RUN apt -y install gperf
 RUN VERSION="2.15.0" ARCH="x86_64" fontconfig.sh
 RUN VERSION="2.15.0" ARCH="i386" fontconfig.sh
 
->>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 
 # We need to compile ncurses by ourselves (see above) to avoid terminals database is inaccessible error
 # This will prevent wine-devel from installing it
@@ -152,8 +134,6 @@ RUN osxcross-macports -universal fakeinstall py311-markdown
 RUN osxcross-macports -universal fakeinstall libpng
 RUN osxcross-macports -universal fakeinstall icu
 
-<<<<<<< HEAD
-=======
 RUN osxcross-macports -universal fakeinstall freetype
 RUN osxcross-macports -universal fakeinstall gettext-runtime
 RUN osxcross-macports -universal fakeinstall gettext
@@ -166,7 +146,6 @@ RUN osxcross-macports -universal fakeinstall libffi
 RUN osxcross-macports -universal fakeinstall py311
 RUN osxcross-macports -universal fakeinstall pango
 
->>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
 RUN MACOSX_DEPLOYMENT_TARGET="10.11" osxcross-macports -universal install wine-devel
 RUN osxcross-macports install MoltenVK
 
