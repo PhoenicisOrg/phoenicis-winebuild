@@ -1,0 +1,20 @@
+diff --git a/dlls/winspool.drv/Makefile.in b/dlls/winspool.drv/Makefile.in
+index eaec4841..4b9575cb 100644
+--- a/dlls/winspool.drv/Makefile.in
++++ b/dlls/winspool.drv/Makefile.in
+@@ -3,10 +3,14 @@ UNIXLIB   = winspool.so
+ IMPORTLIB = winspool
+ IMPORTS   = user32 gdi32 advapi32 compstui shell32
+ UNIX_CFLAGS  = $(CUPS_CFLAGS)
+-UNIX_LIBS    = $(APPLICATIONSERVICES_LIBS)
++UNIX_LIBS = $(APPLICATIONSERVICES_LIBS) -framework AppKit -framework Carbon -framework Quartz
+ 
+ SOURCES = \
+ 	cups.c \
+ 	info.c \
+ 	winspool.rc \
+ 	wspool.c
++
++OBJC_SRCS = native_print.m
++
++native_print_EXTRADEFS = $(HOSTSTACK_CFLAGS)

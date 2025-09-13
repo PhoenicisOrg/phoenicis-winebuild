@@ -1,0 +1,29 @@
+diff --git a/dlls/winemac.drv/display.c b/dlls/winemac.drv/display.c
+index d05de64a..4c34597a 100644
+--- a/dlls/winemac.drv/display.c
++++ b/dlls/winemac.drv/display.c
+@@ -1137,6 +1137,8 @@ void macdrv_displays_changed(const macdrv_event *event)
+ 
+ static BOOL force_display_devices_refresh;
+ 
++long forced_updates = 0;
++
+ static BOOL is_same_devmode(const DEVMODEW *a, const DEVMODEW *b)
+ {
+     return a->dmDisplayOrientation == b->dmDisplayOrientation &&
+@@ -1179,7 +1181,14 @@ BOOL macdrv_UpdateDisplayDevices( const struct gdi_device_manager *device_manage
+     DEVMODEW *mode, *modes;
+     DWORD len;
+ 
+-    if (!force && !force_display_devices_refresh) return TRUE;
++    if (!force && !force_display_devices_refresh) {
++       if (forced_updates > 10) {
++          return TRUE;
++       } else {
++          forced_updates++;
++       }
++    }
++
+     force_display_devices_refresh = FALSE;
+ 
+     if (macdrv_get_displays(&displays, &display_count))

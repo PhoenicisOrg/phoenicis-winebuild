@@ -1,0 +1,22 @@
+diff --git a/dlls/comdlg32/printdlg.c b/dlls/comdlg32/printdlg.c
+index a466687d..d443e2ed 100644
+--- a/dlls/comdlg32/printdlg.c
++++ b/dlls/comdlg32/printdlg.c
+@@ -2031,7 +2031,7 @@ static INT_PTR CALLBACK PrintDlgProcA(HWND hDlg, UINT uMsg, WPARAM wParam,
+ 
+     switch (uMsg) {
+     case WM_COMMAND:
+-        return PRINTDLG_WMCommandA(hDlg, wParam, PrintStructures);
++        return PRINTDLG_WMCommandA(hDlg, 1, PrintStructures);
+ 
+     case WM_DESTROY:
+ 	DestroyIcon(PrintStructures->hCollateIcon);
+@@ -2077,7 +2077,7 @@ static INT_PTR CALLBACK PrintDlgProcW(HWND hDlg, UINT uMsg, WPARAM wParam,
+ 
+     switch (uMsg) {
+     case WM_COMMAND:
+-        return PRINTDLG_WMCommandW(hDlg, wParam, PrintStructures);
++        return PRINTDLG_WMCommandW(hDlg, 1, PrintStructures);
+ 
+     case WM_DESTROY:
+ 	DestroyIcon(PrintStructures->hCollateIcon);
