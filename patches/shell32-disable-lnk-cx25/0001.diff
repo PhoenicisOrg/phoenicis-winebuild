@@ -1,0 +1,21 @@
+diff --git a/.DS_Store b/.DS_Store
+index e267b789..4a0f9a37 100644
+Binary files a/.DS_Store and b/.DS_Store differ
+diff --git a/dlls/.DS_Store b/dlls/.DS_Store
+index 71f1c56c..abfc2465 100644
+Binary files a/dlls/.DS_Store and b/dlls/.DS_Store differ
+diff --git a/dlls/shell32/shlview_cmenu.c b/dlls/shell32/shlview_cmenu.c
+index c898e965..49b80d23 100644
+--- a/dlls/shell32/shlview_cmenu.c
++++ b/dlls/shell32/shlview_cmenu.c
+@@ -1063,10 +1063,6 @@ static HRESULT WINAPI ItemMenu_InvokeCommand(
+             TRACE("Verb FCIDM_SHVIEW_PROPERTIES\n");
+             DoOpenProperties(This, lpcmi->hwnd);
+             break;
+-        case FCIDM_SHVIEW_CREATELINK: /* CX HACK 14911 */
+-            TRACE("Verb FCIDM_SHVIEW_CREATELINK\n");
+-            DoCreateLink(This);
+-            break;
+         default:
+             FIXME("Unhandled verb %#x.\n", id);
+             return E_INVALIDARG;
