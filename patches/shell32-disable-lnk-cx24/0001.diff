@@ -1,0 +1,15 @@
+diff --git a/dlls/shell32/shlview_cmenu.c b/dlls/shell32/shlview_cmenu.c
+index 54076221..04ac0b6f 100644
+--- a/dlls/shell32/shlview_cmenu.c
++++ b/dlls/shell32/shlview_cmenu.c
+@@ -830,10 +784,6 @@ static HRESULT WINAPI ItemMenu_InvokeCommand(
+             TRACE("Verb FCIDM_SHVIEW_PROPERTIES\n");
+             DoOpenProperties(This, lpcmi->hwnd);
+             break;
+-        case FCIDM_SHVIEW_CREATELINK: /* CX HACK 14911 */
+-            TRACE("Verb FCIDM_SHVIEW_CREATELINK\n");
+-            DoCreateLink(This);
+-            break;
+         default:
+             FIXME("Unhandled Verb %xl\n",LOWORD(lpcmi->lpVerb));
+             return E_INVALIDARG;
