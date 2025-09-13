@@ -23,10 +23,15 @@ cd "/root/wine-git"
 export LDFLAGS="-Wl,-rpath,@loader_path/../ -Wl,-rpath,/opt/local/lib -Wl,-rpath,/opt/X11/lib"
 export SDL2_CFLAGS="-I/opt/local/include -I/opt/local/include/SDL2"
 <<<<<<< HEAD
+export FREETYPE_LIBS="-L/opt/local/lib"
+export FREETYPE_CFLAGS="-I/opt/local/include/freetype2"
+=======
+<<<<<<< HEAD
 =======
 export FREETYPE_LIBS="-L/opt/local/lib"
 export FREETYPE_CFLAGS="-I/opt/local/include/freetype2"
 >>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
+>>>>>>> 030c9eef72ff24a8f221af8cd6a423e0c3614911
 
 #### Linux only options to disable
 export LINUX_OPTIONS="--without-pulse --without-inotify --without-v4l2 --without-oss --without-udev --without-capi"
