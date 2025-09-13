@@ -4,7 +4,15 @@
 
 prepare
 
+<<<<<<< HEAD
 wget https://download.savannah.gnu.org/releases/freetype/freetype-$VERSION.tar.xz || exit 1
+=======
+<<<<<<< HEAD
+wget https://download.savannah.gnu.org/releases/freetype/freetype-$VERSION.tar.xz || exit 1
+=======
+wget https://download.savannah.gnu.org/releases/freetype/freetype-$VERSION.tar.xz || exit 1
+>>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
+>>>>>>> 030c9eef72ff24a8f221af8cd6a423e0c3614911
 tar -xf "freetype-$VERSION.tar.xz" || exit 1
 cd "freetype-$VERSION" || exit 1
 

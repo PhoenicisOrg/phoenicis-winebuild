@@ -50,8 +50,17 @@ class Task(threading.Thread, ABC):
                 self.status = "DONE"
                 for event in self._on_finish_events:
                     event()
+<<<<<<< HEAD
             except Exception as e:
                 print("Error in task %s" % self.id())
+=======
+<<<<<<< HEAD
+            except:
+=======
+            except Exception as e:
+                print("Error in task %s" % self.id())
+>>>>>>> 3b409a4892875922bc993ca8d2f9cf9d13bbc649
+>>>>>>> 030c9eef72ff24a8f221af8cd6a423e0c3614911
                 self.status = "ERROR"
                 for event in self._on_error_events:
                     event()
